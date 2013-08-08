@@ -1,0 +1,12 @@
+<view xmlns="http://labkey.org/data/xml/view" title="LDAP Sync Settings">
+    <permissions>
+        <permission name="admin"/>
+    </permissions>
+    <dependencies>
+        <dependency path="ldk.context"/>
+        <dependency path="ldk/ux/MultiSelect.js"/>
+        <dependency path="ldk/ux/ItemSelector.css"/>
+        <dependency path="ldk/ux/ItemSelector.js"/>
+        <dependency path="ldk/panel/LdapSettingsPanel.js"/>
+    </dependencies>
+</view>

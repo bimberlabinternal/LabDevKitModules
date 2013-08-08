@@ -1,0 +1,11 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Notification Management">
+    <permissions>
+        <permission name="read"/>
+    </permissions>
+    <dependencies>
+        <dependency path="ldk.context"/>
+        <dependency path="Security/util/SecurityCache.js"/>
+        <dependency path="Security/field/PrincipalComboBox.js"/>
+        <dependency path="LDK/Panel/NotificationAdminPanel.js"/>
+    </dependencies>
+</view>

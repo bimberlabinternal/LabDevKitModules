@@ -1,0 +1,10 @@
+.passed-test-group,
+.failed-test-group { color: #fff; }
+
+.passed-test-group { background-color: #090; }
+.failed-test-group { background-color: #900; }
+
+#info, 
+#info ul li { margin: 10px; }
+
+#info ul { list-style: disc; }

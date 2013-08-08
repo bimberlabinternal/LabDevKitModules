@@ -1,0 +1,29 @@
+/* Custom formatting on Ext4 grids */
+
+/* allows text wrapping in rows of the grid */
+.ldk-wrap-text .x4-grid-cell-inner {
+    white-space: normal !important;
+}
+
+/* provide slight padding around text and headers */
+.ldk-grid .x4-grid-cell {
+    padding: 4px;
+}
+
+/* Possibly also add header padding? */
+/*.ldk-grid .x4-column-header {*/
+    /**/
+/*}*/
+
+
+/* end of grid styles */
+
+
+/* this restores the rounded edges to a webpart when rendered inside an Ext4 panel */
+div.ldk-wp table.labkey-wp {
+    border-collapse: separate !important;
+}
+
+.ldk-clickable:hover {
+    text-decoration: underline;
+}

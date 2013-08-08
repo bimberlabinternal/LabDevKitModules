@@ -1,0 +1,125 @@
+package org.labkey.ldk.query;
+
+import org.apache.commons.lang3.StringUtils;
+import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.collections.CaseInsensitiveHashSet;
+import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableSelector;
+import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
+import org.labkey.api.security.UserManager;
+import org.labkey.api.util.MemTracker;
+import org.labkey.api.util.PageFlowUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * User: bimber
+ * Date: 6/27/13
+ * Time: 5:40 PM
+ */
+public class LookupValidationHelper
+{
+    private Container _container;
+    private User _user;
+    private TableInfo _table;
+    private Map<String, UserSchema> _userSchemaMap = new HashMap<String, UserSchema>();
+    private Map<String, Map<String, String>> _allowableValueMap = new HashMap<String, Map<String, String>>();
+
+    private LookupValidationHelper(String containerId, int userId, String schemaName, String queryName)
+    {
+        _container = ContainerManager.getForId(containerId);
+        if (_container == null)
+            throw new IllegalArgumentException("Unknown container: " + containerId);
+
+        _container = _container.isWorkbook() ? _container.getParent() : _container;
+
+        _user = UserManager.getUser(userId);
+        if (_user == null)
+            throw new IllegalArgumentException("Unknown user: " + userId);
+
+        UserSchema us = getUserSchema(schemaName);
+        if (us == null)
+            throw new IllegalArgumentException("Unknown schema: " + schemaName);
+
+        _table = us.getTable(queryName);
+        if (_table == null)
+            throw new IllegalArgumentException("Unknown table: " + schemaName + "." + queryName);
+
+        assert MemTracker.put(this);
+    }
+
+    public static LookupValidationHelper create(String containerId, int userId, String schemaName, String queryName)
+    {
+        return new LookupValidationHelper(containerId, userId, schemaName, queryName);
+    }
+
+    private UserSchema getUserSchema(String name)
+    {
+        if (_userSchemaMap.containsKey(name))
+            return _userSchemaMap.get(name);
+
+        UserSchema us = QueryService.get().getUserSchema(_user, _container, name);
+        _userSchemaMap.put(name, us);
+
+        return us;
+    }
+
+    /**
+     * Provides a case-normalized lookup of the passed value.  Will return null is the passed value is not found in allowable values
+     */
+    public Object getLookupValue(String value, String fieldName)
+    {
+        value = StringUtils.trimToNull(value);
+        if (value == null)
+            return value;
+
+        ColumnInfo ci = _table.getColumn(FieldKey.fromString(fieldName));
+        if (ci == null)
+            throw new IllegalArgumentException("Unknown column: " + fieldName);
+
+        Map<String, String> allowable = getAllowableValues(ci);
+        if (allowable == null)
+            return null;
+
+        return allowable.get(value);
+    }
+
+    private Map<String, String> getAllowableValues(ColumnInfo ci)
+    {
+        String name = ci.getName();
+        if (_allowableValueMap.containsKey(name))
+            return _allowableValueMap.get(name);
+
+        TableInfo fkTableInfo = ci.getFkTableInfo();
+        if (fkTableInfo == null)
+            return null;
+
+        ColumnInfo targetCol = fkTableInfo.getColumn(ci.getFk().getLookupColumnName());
+        if (targetCol == null)
+            return null;
+
+        TableSelector ts = new TableSelector(fkTableInfo, PageFlowUtil.set(targetCol), null, null);
+        String[] vals = ts.getArray(String.class);
+        if (vals != null)
+        {
+            Map<String, String> map = new CaseInsensitiveHashMap();
+            for (String val : vals)
+            {
+                map.put(val, val);
+            }
+            _allowableValueMap.put(name, map);
+        }
+        else
+            _allowableValueMap.put(name, null);
+
+        return _allowableValueMap.get(name);
+    }
+}

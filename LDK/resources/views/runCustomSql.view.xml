@@ -1,0 +1,5 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Run Custom SQL">
+    <dependencies>
+        <dependency path="ldk.context"/>
+    </dependencies>
+</view>

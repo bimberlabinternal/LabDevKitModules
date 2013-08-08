@@ -1,0 +1,41 @@
+<libraries xmlns="http://labkey.org/clientLibrary/xml/">
+    <library compileInProductionMode="true">
+        <script path="LDK/Ext4Overrides.js"/>
+        <script path="LDK/stylesheet.css"/>
+        <script path="LDK/Utils.js"/>
+        <script path="LDK/Assert.js"/>
+        <script path="LDK/SelectRowsRow.js"/>
+        <script path="LDK/DataRegionUtils.js"/>
+        <script path="LDK/ConvertUtils.js"/>
+        <script path="LDK/QueryHelper.js"/>
+        <script path="LDK/DateRangePanel.js"/>
+        <script path="LDK/ux/DateTimeField.js"/>
+        <script path="LDK/StoreUtils.js"/>
+        <script path="LDK/AssayUtils.js"/>
+        <script path="LDK/field/EditInPlaceElement.js"/>
+        <script path="LDK/panel/NavPanel.js"/>
+        <script path="LDK/panel/BulkEditPanel.js"/>
+        <script path="LDK/panel/ContentResizingPanel.js"/>
+        <script path="LDK/panel/WebpartPanel.js"/>
+        <script path="LDK/panel/QueryPanel.js"/>
+        <script path="LDK/panel/DetailsPanel.js"/>
+        <script path="LDK/panel/MultiRecordDetailsPanel.js"/>
+        <script path="LDK/panel/GraphPanel.js"/>
+        <script path="LDK/GridHelpers.js"/>
+        <script path="LDK/grid/Panel.js"/>
+        <script path="LDK/panel/AbstractFilterType.js"/>
+        <script path="LDK/panel/SingleSubjectFilterType.js"/>
+        <script path="LDK/panel/MultiSubjectFilterType.js"/>
+        <script path="LDK/panel/NoFiltersFilterType.js"/>
+        <script path="LDK/panel/TabbedReportPanel.js"/>
+        <script path="LDK/plugin/SelfCenteringWindow.js"/>
+        <script path="LDK/data/CaseInsensitiveModel.js"/>
+        <script path="LDK/data/LabKeyStore.js"/>
+    </library>
+    <dependencies>
+        <dependency path="Ext4ClientApi"/>
+        <dependency path="extWidgets/SearchPanel.js"/>
+        <dependency path="vis/vis"/>
+        <dependency path="vischart"/>
+    </dependencies>
+</libraries>

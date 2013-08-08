@@ -1,0 +1,139 @@
+<script type="text/javascript">
+    Ext4.onReady(function(){
+        var webpart = <%=webpartContext%>;
+        Ext4.define('LDK.panel.FolderSizeSummaryPanel', {
+            extend: 'Ext.panel.Panel',
+
+            initComponent: function(){
+                Ext4.apply(this, {
+                    itemId: 'folderSummarPanel',
+                    border: false,
+                    items: [{
+                        html: 'This report will summarize the size of file roots for the container path selected.',
+                        border: false,
+                        style: 'padding-bottom: 20px;'
+                    },{
+                        itemId: 'formField',
+                        border: false,
+                        width: 500,
+                        defaults: {
+                            border: false,
+                            labelWidth: 150
+                        },
+                        items: [{
+                            xtype: 'textfield',
+                            itemId: 'containerPath',
+                            fieldLabel: 'Container Path',
+                            width: 500
+                        },{
+                            xtype: 'checkbox',
+                            itemId: 'showChildren',
+                            fieldLabel: 'Include Children',
+                            checked: true
+                        },{
+                            xtype: 'checkbox',
+                            itemId: 'includeWorkbooks',
+                            fieldLabel: 'Include Workbooks',
+                            checked: false
+                        },{
+                            xtype: 'checkbox',
+                            itemId: 'includeAllRoots',
+                            fieldLabel: 'Include All File Roots',
+                            helpPopup: 'If checked, each type of file root (file, pipeline, etc) will be reported separately',
+                            checked: false
+                        },{
+                            xtype: 'checkbox',
+                            itemId: 'includeFileCounts',
+                            fieldLabel: 'Include # of Files',
+                            helpPopup: 'If checked, the total number of files per folder will be shown',
+                            checked: true
+                        }],
+                        buttons: [{
+                            text: 'Load Report',
+                            handler: function(btn){
+                                btn.up('#folderSummarPanel').loadData();
+                            }
+                        }]
+                    },{
+                        itemId: 'reportSummary',
+                        border: false
+                    }]
+                });
+
+                this.callParent();
+            },
+
+            loadData: function(){
+                var containerPath = this.down('#containerPath').getValue() || '/';
+                var showChildren = this.down('#showChildren').getValue();
+                var includeWorkbooks = this.down('#includeWorkbooks').getValue();
+                var includeAllRoots = this.down('#includeAllRoots').getValue();
+                var includeFileCounts = this.down('#includeFileCounts').getValue();
+
+                var target = this.down('#reportSummary');
+                target.removeAll();
+                target.add({
+                    border: false,
+                    html: 'Loading...'
+                });
+
+                Ext4.Msg.wait('Loading...');
+                LABKEY.Ajax.request({
+                    url: LABKEY.ActionURL.buildURL('ldk', 'getFileRootSizes', containerPath),
+                    params: {
+                        showChildren: showChildren,
+                        includeWorkbooks: includeWorkbooks,
+                        includeFileCounts: includeFileCounts,
+                        includeAllRoots: includeAllRoots
+                    },
+                    scope: this,
+                    success: LABKEY.Utils.getCallbackWrapper(this.onLoad, this),
+                    failure: LDK.Utils.getErrorCallback()
+                });
+            },
+
+            onLoad: function(results){
+                var toAdd = [];
+                Ext4.each(results.fileRoots, function(c){
+                    var obj = {
+                        border: false,
+                        items: []
+                    };
+
+                    obj.items.push({
+                        html: '<b>Container: ' + c.path +'</b>',
+                        border: false,
+                        style: 'padding-bottom: 5px;padding-top: 5px;'
+                    });
+
+                    Ext4.each(c.fileRoots, function(fr){
+                        obj.items.push({
+                            style: 'padding-left: 10px;padding-bottom: 5px;',
+                            border: false,
+                            html: [
+                                'Root Type: ' + fr.name,
+                                'Path: ' + fr.rootPath,
+                                'Size: ' + fr.rootSize,
+                                (Ext4.isEmpty(fr.totalFiles) ? '' : 'Total Files: ' + fr.totalFiles)
+                            ].join('<br>')
+                        });
+                    }, this);
+
+                    toAdd.push(obj);
+                });
+
+                var target = this.down('#reportSummary');
+                Ext4.Msg.hide();
+                target.removeAll();
+                if (toAdd.length)
+                    target.add(toAdd);
+                else
+                    target.add({
+                        html: 'There were no file roots returned'
+                    });
+            }
+        });
+
+        Ext4.create('LDK.panel.FolderSizeSummaryPanel').render(webpart.wrapperDivId);
+    });
+</script>

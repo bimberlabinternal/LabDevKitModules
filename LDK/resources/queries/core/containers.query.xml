@@ -1,0 +1,16 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="containers" tableDbType="TABLE">
+                <columns>
+                    <column columnName="IdPrefixedName">
+                        <columnTitle>Folder</columnTitle>
+                    </column>
+                    <column columnName="title">
+                        <displayWidth>200</displayWidth>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

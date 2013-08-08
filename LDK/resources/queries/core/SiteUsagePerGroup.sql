@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) 2010-2011 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+SELECT
+
+m.UserId,
+g.Name AS GroupName,
+a.Date,
+a.EventType,
+--a.comment,
+
+FROM core.groups g
+
+LEFT JOIN core.Members m ON (g.UserId = m.GroupId.UserId)
+LEFT JOIN "/".auditlog.audit a
+ON (a.CreatedBy.UserId = m.UserId.UserId AND a.EventType = 'UserAuditEvent' AND a.Comment LIKE '%logged in%')
+
+WHERE g.Name IS NOT NULL
+AND g.Name != ''
+AND a.Date IS NOT NULL

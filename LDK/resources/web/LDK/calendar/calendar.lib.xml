@@ -1,0 +1,50 @@
+<libraries xmlns="http://labkey.org/clientLibrary/xml/">
+    <library compileInProductionMode="true">
+        <script path="LDK/calendar/resources/css/calendar.css"/>
+
+        <script path="LDK/calendar/src/data/EventMappings.js"/>
+        <script path="LDK/calendar/src/data/EventModel.js"/>
+        <script path="LDK/calendar/src/data/CalendarMappings.js"/>
+        <script path="LDK/calendar/src/data/CalendarModel.js"/>
+        <script path="LDK/calendar/src/data/Calendars.js"/>
+        <script path="LDK/calendar/src/data/Events.js"/>
+        <script path="LDK/calendar/src/data/MemoryCalendarStore.js"/>
+        <script path="LDK/calendar/src/data/MemoryEventStore.js"/>
+        <script path="LDK/calendar/src/data/CalendarMappings.js"/>
+
+        <script path="LDK/calendar/src/dd/StatusProxy.js"/>
+        <script path="LDK/calendar/src/dd/DragZone.js"/>
+        <script path="LDK/calendar/src/dd/DropZone.js"/>
+        <script path="LDK/calendar/src/dd/DayDragZone.js"/>
+        <script path="LDK/calendar/src/dd/DayDropZone.js"/>
+
+        <script path="LDK/calendar/src/form/field/CalendarCombo.js"/>
+        <script path="LDK/calendar/src/form/field/DateRange.js"/>
+        <script path="LDK/calendar/src/form/field/ReminderCombo.js"/>
+        <script path="LDK/calendar/src/form/EventDetails.js"/>
+        <script path="LDK/calendar/src/form/EventWindow.js"/>
+
+        <script path="LDK/calendar/src/template/BoxLayout.js"/>
+        <script path="LDK/calendar/src/template/DayBody.js"/>
+        <script path="LDK/calendar/src/template/DayHeader.js"/>
+        <script path="LDK/calendar/src/template/Month.js"/>
+
+        <script path="LDK/calendar/src/util/Date.js"/>
+        <script path="LDK/calendar/src/util/WeekEventRenderer.js"/>
+
+        <script path="LDK/calendar/src/view/AbstractCalendar.js"/>
+        <script path="LDK/calendar/src/view/MonthDayDetail.js"/>
+        <script path="LDK/calendar/src/view/Month.js"/>
+        <script path="LDK/calendar/src/view/DayBody.js"/>
+        <script path="LDK/calendar/src/view/DayHeader.js"/>
+        <script path="LDK/calendar/src/view/Day.js"/>
+        <script path="LDK/calendar/src/view/Week.js"/>
+
+        <script path="LDK/calendar/src/CalendarPanel.js"/>
+        <script path="LDK/calendar/src/App.js"/>
+    </library>
+    <dependencies>
+        <dependency path="Ext4ClientApi"/>
+    </dependencies>
+</libraries>
+        

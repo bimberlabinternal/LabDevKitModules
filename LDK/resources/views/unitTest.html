@@ -1,0 +1,30 @@
+<script type="text/javascript">
+    LABKEY.requiresCss("laboratory/Ext.ux.UnitTest.css");
+    LABKEY.requiresScript("/laboratory/Ext.ux.UnitTest.js");
+
+    Ext.onReady(function() {
+        Ext.ux.NewUnitTest({
+            testName: 'Custom AJAX Test.',
+            testGroup: 'Custom Tests',
+            testFunction: function(testObj) {
+                LABKEY.Query.selectRows({
+                    schemaName: 'laboratory',
+                    queryName: 'samples',
+                    success: function(data){
+                        this.assertEquals(data.rows.length, 5, "Wrong row number");
+                    },
+                    failure: function(result){
+                        this.failValue = "Error: " + result.exception;
+                        this.markTestAsFailed()
+                    },
+                    scope: this
+                });
+
+                //return nothing to indicate test not complete
+            }
+        });
+
+        Ext.ux.UnitTest.init();
+    });
+</script>
+<div id="unitTest"></div>

@@ -1,0 +1,6 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Calendar">
+    <dependencies>
+        <dependency path="ldk.context"/>
+        <dependency path="ldk/calendar/calendar.lib.xml"/>
+    </dependencies>
+</view>

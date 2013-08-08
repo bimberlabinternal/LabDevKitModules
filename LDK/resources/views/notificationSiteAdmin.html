@@ -1,0 +1,104 @@
+<script type="text/javascript">
+    Ext4.onReady(function(){
+        LABKEY.Ajax.request({
+            url : LABKEY.ActionURL.buildURL('ldk', 'getSiteNotificationDetails', '/'),
+            method : 'POST',
+            failure: LDK.Utils.getErrorCallback(),
+            success: LABKEY.Utils.getCallbackWrapper(function(results){
+                var webpart = <%=webpartContext%>;
+
+                var items = [{
+                    html: 'The notification service can be enabled or disabled at the site level using the setting below.  This will supercede all container-level settings.',
+                    style: 'padding-bottom: 10px;'
+                },{
+                    layout: 'hbox',
+                    items: [{
+                        xtype: 'combo',
+                        fieldLabel: 'Status of Notification Service',
+                        labelWidth: 200,
+                        displayField: 'display',
+                        valueField: 'value',
+                        queryMode: 'local',
+                        value: results.serviceEnabled ? true : false,
+                        store: {
+                            type: 'array',
+                            fields: ['display', 'value'],
+                            data: [
+                                ['Enabled', true],
+                                ['Disabled', false]
+                            ]
+                        }
+                    },{
+                        xtype: 'button',
+                        text: 'Save',
+                        handler: function(btn){
+                            var val = btn.up('panel').down('combo').getValue();
+
+                            LABKEY.Ajax.request({
+                                url: LABKEY.ActionURL.buildURL('ldk', 'setNotificationSettings', '/', {enabled: val}),
+                                scope: this,
+                                failure: LDK.Utils.getErrorCallback(),
+                                success: function(response){
+                                    Ext4.Msg.alert('Success', 'Settings saved', function(){
+                                        window.location.reload();
+                                    }, this);
+                                }
+                            })
+                        }
+                    }],
+                    style: 'margin-left: 10px;padding-bottom: 20px;'
+                },{
+                    xtype: 'labkey-linkbutton',
+                    text: 'Click here to manage subscriptions to site-wide notifications',
+                    href: LABKEY.ActionURL.buildURL('ldk', 'notificationAdmin', '/')
+                },{
+                    style: 'padding-bottom: 20px;'
+                },{
+                    html: 'The following containers have one or more active notifications.  ' +
+                        'Click the links below to open the notification admin page for that folder.',
+                    style: 'padding-bottom: 10px;'
+                }];
+
+                Ext4.each(results.notifications, function(n){
+                    var obj = {
+                        defaults: {
+                            style: 'padding-left: 10px',
+                            border: false
+                        },
+                        items: [{
+                            border: false,
+                            html: '<b>' + n.name + '</b>',
+                            style: 'padding-bottom: 5px;padding-top: 10px;'
+                        }]
+                    };
+
+                    Ext4.each(n.containers, function(c){
+                        obj.items.push({
+                            xtype: 'labkey-linkbutton',
+                            text: c.path,
+                            linkTarget: '_blank',
+                            url: LABKEY.ActionURL.buildURL('ldk', 'notificationAdmin', c.path)
+                        });
+                    }, this);
+
+                    if (obj.items.length == 1){
+                        obj.items.push({
+                            html: 'There are no containers actively using this notification'
+                        })
+                    }
+
+                    items.push(obj);
+                }, this);
+
+                Ext4.create('Ext.panel.Panel', {
+                    border: false,
+                    defaults: {
+                        border: false
+                    },
+                    items: items
+                }).render(webpart.wrapperDivId);
+            }, this)
+        });
+
+    });
+</script>
