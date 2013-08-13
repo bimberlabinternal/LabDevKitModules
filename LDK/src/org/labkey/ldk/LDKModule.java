@@ -36,6 +36,7 @@ import org.labkey.api.settings.AdminConsole;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.ldk.ldap.LdapScheduler;
+import org.labkey.ldk.ldap.LdapSyncAuditProvider;
 import org.labkey.ldk.ldap.LdapSyncAuditViewFactory;
 import org.labkey.ldk.notification.NotificationServiceImpl;
 import org.labkey.ldk.notification.SiteSummaryNotification;
@@ -84,6 +85,7 @@ public class LDKModule extends ExtendedSimpleModule
     protected void doStartupAfterSpringConfig(ModuleContext moduleContext)
     {
         AuditLogService.get().addAuditViewFactory(LdapSyncAuditViewFactory.getInstance());
+        AuditLogService.registerAuditType(new LdapSyncAuditProvider());
 
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "notification service admin", DetailsURL.fromString("/ldk/notificationSiteAdmin.view").getActionURL());
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "ldap sync admin", DetailsURL.fromString("/ldk/ldapSettings.view").getActionURL());

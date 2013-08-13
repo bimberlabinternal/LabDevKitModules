@@ -181,6 +181,7 @@ labModules/LDK/src/org/labkey/ldk/ldap/LdapConnectionWrapper.java -text
 labModules/LDK/src/org/labkey/ldk/ldap/LdapEntry.java -text
 labModules/LDK/src/org/labkey/ldk/ldap/LdapScheduler.java -text
 labModules/LDK/src/org/labkey/ldk/ldap/LdapSettings.java -text
+labModules/LDK/src/org/labkey/ldk/ldap/LdapSyncAuditProvider.java -text
 labModules/LDK/src/org/labkey/ldk/ldap/LdapSyncAuditViewFactory.java -text
 labModules/LDK/src/org/labkey/ldk/ldap/LdapSyncRunner.java -text
 labModules/LDK/src/org/labkey/ldk/notification/NotificationJob.java -text
