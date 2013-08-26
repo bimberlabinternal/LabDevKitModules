@@ -19,19 +19,13 @@ package org.labkey.ldk;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.audit.AuditLogService;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationService;
-import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
-import org.labkey.api.module.SimpleModule;
-import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.DetailsURL;
-import org.labkey.api.query.QuerySchema;
-import org.labkey.api.query.QueryService;
 import org.labkey.api.settings.AdminConsole;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
@@ -67,6 +61,7 @@ public class LDKModule extends ExtendedSimpleModule
         return true;
     }
 
+    @NotNull
     @Override
     protected Collection<WebPartFactory> createWebPartFactories()
     {
@@ -96,6 +91,7 @@ public class LDKModule extends ExtendedSimpleModule
         NotificationService.get().registerNotification(new SiteSummaryNotification());
     }
 
+    @NotNull
     @Override
     public Collection<String> getSummary(Container c)
     {

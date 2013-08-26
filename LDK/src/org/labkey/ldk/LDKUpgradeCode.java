@@ -2,6 +2,7 @@ package org.labkey.ldk;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.FileSqlScriptProvider;
 import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.SqlScriptManager;
@@ -49,18 +50,13 @@ public class LDKUpgradeCode implements UpgradeCode
                     //
                 }
 
+                DbSchema schema = LDKSchema.getInstance().getSchema();
                 FileSqlScriptProvider provider = new FileSqlScriptProvider((DefaultModule) ModuleLoader.getInstance().getModule(LDKModule.class));
-                SqlScriptRunner.SqlScript script = new FileSqlScriptProvider.FileSqlScript(provider, "naturalize_install.sql", "LDK");
+                SqlScriptRunner.SqlScript script = new FileSqlScriptProvider.FileSqlScript(provider, schema, "naturalize_install.sql", "LDK");
 
-                Connection conn = LDKSchema.getInstance().getSchema().getScope().getUnpooledConnection();
-
-                try
+                try (Connection conn = schema.getScope().getUnpooledConnection())
                 {
-                    SqlScriptManager.runScript(context.getUpgradeUser(), script, context, conn);
-                }
-                finally
-                {
-                    conn.close();
+                    SqlScriptManager.get(provider, schema).runScript(context.getUpgradeUser(), script, context, conn);
                 }
             }
         }
