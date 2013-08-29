@@ -197,6 +197,11 @@ public class LdapSyncAuditProvider extends AbstractAuditTypeProvider implements 
             _fields.add(createFieldSpec(COLUMN_NAME_MEMBERSHIPS_CHANGED, JdbcType.INTEGER));
         }
 
+        public LdapSyncAuditDomainKind()
+        {
+            super(LdapSyncRunner.AUDIT_EVENT_TYPE);
+        }
+
         @Override
         protected Set<PropertyStorageSpec> getColumns()
         {
