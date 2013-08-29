@@ -9,7 +9,6 @@ import org.labkey.api.data.SqlScriptManager;
 import org.labkey.api.data.SqlScriptRunner;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.data.dialect.SqlDialect;
-import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.util.ExceptionUtil;
@@ -51,7 +50,7 @@ public class LDKUpgradeCode implements UpgradeCode
                 }
 
                 DbSchema schema = LDKSchema.getInstance().getSchema();
-                FileSqlScriptProvider provider = new FileSqlScriptProvider((DefaultModule) ModuleLoader.getInstance().getModule(LDKModule.class));
+                FileSqlScriptProvider provider = new FileSqlScriptProvider(ModuleLoader.getInstance().getModule(LDKModule.class));
                 SqlScriptRunner.SqlScript script = new FileSqlScriptProvider.FileSqlScript(provider, schema, "naturalize_install.sql", "LDK");
 
                 try (Connection conn = schema.getScope().getUnpooledConnection())

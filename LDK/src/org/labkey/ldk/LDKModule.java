@@ -106,13 +106,6 @@ public class LDKModule extends ExtendedSimpleModule
     }
 
     @Override
-    @NotNull
-    public Set<DbSchema> getSchemasToTest()
-    {
-        return PageFlowUtil.set(LDKSchema.getInstance().getSchema());
-    }
-
-    @Override
     public UpgradeCode getUpgradeCode()
     {
         return new LDKUpgradeCode();
