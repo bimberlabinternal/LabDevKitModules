@@ -53,7 +53,7 @@ LDK.Utils.tsort = function(edges){
 
         visited[idstr] = true;
 
-        node.afters.forEach(function(afterID) {
+        Ext4.Array.forEach(node.afters, function(afterID) {
             if (ancestors.indexOf(afterID) >= 0)  // if already in ancestors, a closed chain exists.
                 throw new Error('closed chain : ' +  afterID + ' is in ' + id);
 
