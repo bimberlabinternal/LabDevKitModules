@@ -7,7 +7,6 @@ iths/VBD/resources/views/samplesearch.view.xml -text
 iths/VBD/resources/views/searchresults.html -text
 iths/VBD/resources/views/searchresults.view.xml -text
 iths/VBD/resources/web/VBD/VBDSearchFilterPanel.js -text
-iths/cbr/build.xml -text
 iths/cbr/module.properties -text
 iths/cbr/resources/schemas/cbr.xml -text
 iths/cbr/resources/schemas/dbscripts/postgresql/cbr-0.00-0.01.sql -text
@@ -196,7 +195,6 @@ labModules/LDK/src/org/labkey/ldk/query/DefaultTableCustomizer.java -text
 labModules/LDK/src/org/labkey/ldk/query/LookupValidationHelper.java -text
 labModules/LDK/tools/naturalize/naturalize.cs -text
 labModules/laboratory/Laboratory.iml -text
-labModules/laboratory/build.xml -text
 labModules/laboratory/module.properties -text
 labModules/laboratory/resources/folderTypes/Expt[!!-~]Workbook.folderType.xml -text
 labModules/laboratory/resources/folderTypes/Laboratory.folderType.xml -text
