@@ -77,13 +77,13 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                 },{
                     layout: 'vbox',
                     items: [{
-                        xtype: 'labkey-linkbutton',
+                        xtype: 'ldk-linkbutton',
                         text: 'Run Report',
                         target: '_self',
                         linkCls: 'labkey-text-link',
                         href: LABKEY.ActionURL.buildURL('ldk', 'runNotification', null, {key: notification.key})
                     },{
-                        xtype: 'labkey-linkbutton',
+                        xtype: 'ldk-linkbutton',
                         text: 'Manage Subscribed Users/Groups',
                         target: '_self',
                         linkCls: 'labkey-text-link',

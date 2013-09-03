@@ -391,7 +391,7 @@ Ext4.define('LDK.ext.SpreadsheetImportWindow', {
                     html: 'This allows you to upload records to this grid using an excel template.  Click the link below to download the template.',
                     style: 'padding-bottom: 10px;'
                 },{
-                    xtype: 'labkey-linkbutton',
+                    xtype: 'ldk-linkbutton',
                     text: 'Download Template',
                     linkPrefix: '[',
                     linkSuffix: ']',

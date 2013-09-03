@@ -26,6 +26,13 @@ Ext4.define('LDK.panel.MultiRecordDetailsPanel', {
 
         this.store = this.getStore();
         this.mon(this.store, 'load', this.onStoreLoad, this);
+        this.mon(this.store, 'exception', function(store, msg){
+            LDK.Utils.logToServer({
+                msg: msg
+            });
+            alert(msg);
+        }, this);
+
         if (!this.store.getCount() || this.store.isLoading)
             this.store.load();
         else
@@ -33,7 +40,7 @@ Ext4.define('LDK.panel.MultiRecordDetailsPanel', {
     },
 
     showLoadMask: function(){
-        this.loadMask = this.loadMask || new Ext4.LoadMask(this, {msg:"Loading..."});
+        this.loadMask = this.loadMask || new Ext4.LoadMask(this, {msg: 'Loading...'});
 
         if (this.rendered){
             this.loadMask.show();
@@ -77,6 +84,7 @@ Ext4.define('LDK.panel.MultiRecordDetailsPanel', {
                 showRecordSelectors: true,
                 buttonBarPosition: 'top',
                 title: this.titlePrefix,
+                failure: LDK.Utils.getErrorCallback(),
                 timeout: 0
             });
 

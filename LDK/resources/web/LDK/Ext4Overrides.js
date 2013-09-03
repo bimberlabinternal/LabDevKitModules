@@ -94,5 +94,32 @@ Ext4.override(Ext4.form.field.ComboBox, {
             }
         }
         return true;
+    },
+
+    //this is overriden to allow the combo to be reset even when forceSelection=true
+    assertValue: function() {
+        var me = this,
+                value = me.getRawValue(),
+                rec;
+
+        if (me.forceSelection && (!Ext4.isEmpty(value) || !me.allowBlank)) {
+            if (me.multiSelect) {
+                // For multiselect, check that the current displayed value matches the current
+                // selection, if it does not then revert to the most recent selection.
+                if (value !== me.getDisplayValue()) {
+                    me.setValue(me.lastSelection);
+                }
+            } else {
+                // For single-select, match the displayed value to a record and select it,
+                // if it does not match a record then revert to the most recent selection.
+                rec = me.findRecordByDisplay(value);
+                if (rec) {
+                    me.select(rec);
+                } else {
+                    me.setValue(me.lastSelection);
+                }
+            }
+        }
+        me.collapse();
     }
 });

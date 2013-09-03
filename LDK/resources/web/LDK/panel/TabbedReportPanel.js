@@ -95,7 +95,16 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         //when we shift top-level tabs, it is possible for a previously loaded report to still show, yet
         //not have the right IDs.  therefore when we change tabs, we force the child to fire tabchange.
         //its listener should only reload if necessary
+
+        //NOTE: if we have a default tab set, it will initially be active.  if we loaded the page with a different
+        //top-level tab selected toggling tabs could result in loading that child tab unintentionally.
+        //if we toggle to a new top-level tab, but there is no previously loaded child, treat it like no tab is selected
         var childTab = tab.getActiveTab();
+        if (oldTab && childTab && !childTab.hasLoaded){
+            tab.setActiveTab(null);
+            childTab = null;
+        }
+
         if (childTab){
             tab.fireEvent('tabchange', tab, childTab);
         }
@@ -175,7 +184,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         if (!this.checkValid())
             return;
 
-        if(btn)
+        if (btn)
             this.forceRefresh = true;
 
         this.activeReport = null;
@@ -329,12 +338,12 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
     doResize: function(itemWidth){
         var width2 = this.getWidth();
-        if(itemWidth > width2){
+        if (itemWidth > width2){
             this.setWidth(itemWidth);
             this.doLayout();
         }
         else if (itemWidth < width2) {
-            if(this.originalWidth && width2 != this.originalWidth){
+            if (this.originalWidth && width2 != this.originalWidth){
                 this.setWidth(Math.max(this.originalWidth, itemWidth));
                 this.doLayout();
             }
@@ -514,7 +523,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             this.activeFilterType = target.add(cfg);
         }
 
-        if(this.loadOnRender || this.autoLoadDefaultTab){
+        if (this.loadOnRender || this.autoLoadDefaultTab){
             this.onSubmit();
             this.loadOnRender = null;
             this.autoLoadDefaultTab = null;
@@ -551,7 +560,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
     getFiltersFromUrl: function(){
         var context = {};
-        if(document.location.hash){
+        if (document.location.hash){
             var token = document.location.hash.split('#');
             token = token[1].split('&');
 
@@ -606,7 +615,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             var category = report.category;
 
             //create top-level tab
-            if(!tabPanel.down('panel[itemId="' + category + '"]')){
+            if (!tabPanel.down('panel[itemId="' + category + '"]')){
                 tabPanel.add({
                     xtype: 'tabpanel',
                     style: 'margin-bottom: 10px;',
@@ -628,7 +637,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             var reportId = report.id || report.name;
 
             //create 2nd tier tab
-            if(!subTab.down('panel[itemId="' + reportId + '"]')){
+            if (!subTab.down('panel[itemId="' + reportId + '"]')){
                 var theTab = subTab.add({
                     xtype: 'panel',
                     style: 'margin-bottom: 10px;',
@@ -644,7 +653,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                     }
                 });
 
-                if(this.report == reportId){
+                if (this.report == reportId){
                     this.activeReport = theTab;
                 }
 
@@ -652,7 +661,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             }
         }, this);
 
-        if(this.activeReport){
+        if (this.activeReport){
             this.silentlySetActiveTab(this.activeReport);
         }
         else if (this.defaultReport){
@@ -690,7 +699,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
 
         var submitBtn = this.down('#submitBtn');
-        if(submitBtn){
+        if (submitBtn){
             this.tabsReady = true;
             submitBtn.setDisabled(false);
         }
@@ -724,7 +733,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         var reload = false;
         if (tab.filters){
             for (var i in filters){
-                if(JSON.stringify(filters[i]) !== JSON.stringify(tab.filters[i])){
+                if (JSON.stringify(filters[i]) !== JSON.stringify(tab.filters[i])){
                     reload = true;
                     break;
                 }
@@ -735,7 +744,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
 
         //indicates tab already has up to date content
-        if(reload == false && !this.forceRefresh){
+        if (reload == false && !this.forceRefresh){
             this.onTabChange(tab);
             console.log('no reload needed');
             return;
@@ -746,6 +755,8 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         tab.removeAll();
 
         this.activeReport = tab;
+        tab.hasLoaded = true;
+        this.hasLoaded = true;
         this.displayReport(tab);
     },
 

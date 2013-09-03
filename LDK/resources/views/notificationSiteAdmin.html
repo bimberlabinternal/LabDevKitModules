@@ -48,7 +48,7 @@
                     }],
                     style: 'margin-left: 10px;padding-bottom: 20px;'
                 },{
-                    xtype: 'labkey-linkbutton',
+                    xtype: 'ldk-linkbutton',
                     text: 'Click here to manage subscriptions to site-wide notifications',
                     href: LABKEY.ActionURL.buildURL('ldk', 'notificationAdmin', '/')
                 },{
@@ -74,7 +74,7 @@
 
                     Ext4.each(n.containers, function(c){
                         obj.items.push({
-                            xtype: 'labkey-linkbutton',
+                            xtype: 'ldk-linkbutton',
                             text: c.path,
                             linkTarget: '_blank',
                             url: LABKEY.ActionURL.buildURL('ldk', 'notificationAdmin', c.path)

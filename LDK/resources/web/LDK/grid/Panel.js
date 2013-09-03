@@ -16,6 +16,22 @@ Ext4.define('LDK.grid.Panel', {
         //this.on('afterlayout', this.setupTextWrapping, null, {delay: 200});
     },
 
+    getEditingPlugin: function(){
+        var plugin = this.callParent(arguments);
+        if (plugin){
+            Ext4.override(plugin, {
+                getEditingContext: function(record, columnHeader){
+                    if (!columnHeader || !columnHeader.dataIndex){
+                        return null;
+                    }
+
+                    return this.callOverridden(arguments);
+                }
+            });
+        }
+        return plugin;
+    },
+
     /**
      * This adds CSS to enable text wrapping, but only on non-hidden columns
      * Hidden columns are still rendered on the page, except with 0 width, so their
@@ -40,12 +56,19 @@ Ext4.define('LDK.grid.Panel', {
                 }
             });
         }
+    },
+
+    onMenuCreate: function(headerCt, menu){
+        menu.items.each(function(item){
+            if (item.text == 'Columns'){
+                console.log('remove');
+                menu.remove(item);
+            }
+        }, this);
+
+        console.log(arguments);
     }
-//    onMenuCreate: function(headerCt, menu){
-//        console.log('menu create');
-//        console.log(arguments);
-//    },
-//
+
 //    onColumnHide: function(ct, column){
 //        console.log('hide');
 //        console.log(column);

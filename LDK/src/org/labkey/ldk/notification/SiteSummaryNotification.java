@@ -40,6 +40,8 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.exp.api.ExpProtocol;
 import org.labkey.api.exp.api.ExperimentService;
+import org.labkey.api.exp.list.ListDefinition;
+import org.labkey.api.exp.list.ListService;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.exp.query.ExpRunTable;
 import org.labkey.api.ldk.LDKService;
@@ -69,8 +71,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -555,21 +559,42 @@ public class SiteSummaryNotification implements Notification
     private void getListSummary(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
     {
         msg.append("<br><b>Lists Summary:</b><br><br>");
+
+        DbSchema schema = DbSchema.get("list");
+        int listCount = schema.getTableNames().size();
+        msg.append("Total # of Lists: " + NumberFormat.getInstance().format(listCount) + "<br><br>");
+
+        int maxLists = 20;
+        msg.append("Top " + maxLists + " Lists By Size:<br>");
+
+        Map<String, Long> listMap = new HashMap<>();
+        for (String name : schema.getTableNames())
+        {
+            TableInfo ti = schema.getTable(name);
+            Long rowCount = new TableSelector(ti).getRowCount();
+            listMap.put(name, rowCount);
+        }
+
+
+        List<Map.Entry<String, Long>> list = new ArrayList<>(listMap.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<String, Long>>() {
+            public int compare(Map.Entry<String, Long> e1, Map.Entry<String, Long> e2) {
+                return e2.getValue().compareTo(e1.getValue());
+            }
+        });
+
         msg.append("<table border=1 style='border-collapse: collapse;'>");
-        msg.append("<tr style='font-weight:bold;'><td>Metric</td><td>Value</td></tr>");
+        msg.append("<tr style='font-weight:bold;'><td>Table Name</td><td>Container Path</td><td># of Rows</td></tr>");
 
-        DbSchema schema = DbSchema.get("exp");
-        TableInfo listsTable = schema.getTable("list");
-        Long listCount = new TableSelector(listsTable).getRowCount();
-        msg.append("<tr><td># of Lists</td><td>" + NumberFormat.getInstance().format(listCount) + "</td></tr>");
-
-        TableInfo indexVarcharTable = schema.getTable("indexvarchar");
-        Long varcharCount = new TableSelector(indexVarcharTable).getRowCount();
-
-        TableInfo indexIntegerTable = schema.getTable("indexinteger");
-        Long integerCount = new TableSelector(indexIntegerTable).getRowCount();
-
-        msg.append("<tr><td># Records In All Lists</td><td>" + NumberFormat.getInstance().format(varcharCount + integerCount) + "</td></tr>");
+        for (Map.Entry<String, Long> entry : list.subList(0, Math.min(maxLists, list.size())))
+        {
+            Integer rowId = Integer.parseInt(entry.getKey().substring(1, entry.getKey().indexOf('d')));
+            Container listContainer = ContainerManager.getForRowId(rowId);
+            String listName = entry.getKey().split("_")[1];
+            ListDefinition ld = ListService.get().getList(listContainer, listName);
+            if (ld != null)
+                msg.append("<tr><td>" + ld.getName() + "</td><td>" + listContainer.getPath() + "</td><td>" + NumberFormat.getInstance().format(entry.getValue()) + "</td></tr>");
+        }
 
         msg.append("</table><br>");
     }

@@ -64,6 +64,7 @@ labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.33-12.34.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.34-12.35.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/naturalize_install.sql -text
 labModules/LDK/resources/schemas/ldk.xml -text
+labModules/LDK/resources/scripts/ldk/Assert.js -text
 labModules/LDK/resources/scripts/ldk/Utils.js -text
 labModules/LDK/resources/views/begin.html -text
 labModules/LDK/resources/views/begin.view.xml -text
@@ -97,6 +98,7 @@ labModules/LDK/resources/web/LDK/RemoteGroup.js -text
 labModules/LDK/resources/web/LDK/SelectRowsRow.js -text
 labModules/LDK/resources/web/LDK/StoreUtils.js -text
 labModules/LDK/resources/web/LDK/Utils.js -text
+labModules/LDK/resources/web/LDK/button/LinkButton.js -text
 labModules/LDK/resources/web/LDK/calendar/calendar.lib.xml -text
 labModules/LDK/resources/web/LDK/calendar/resources/css/calendar.css -text
 labModules/LDK/resources/web/LDK/calendar/resources/css/examples.css -text
@@ -270,6 +272,8 @@ labModules/laboratory/resources/schemas/dbscripts/postgresql/laboratory-12.293-1
 labModules/laboratory/resources/schemas/dbscripts/postgresql/laboratory-12.294-12.295.sql -text
 labModules/laboratory/resources/schemas/dbscripts/postgresql/laboratory-12.295-12.296.sql -text
 labModules/laboratory/resources/schemas/dbscripts/postgresql/laboratory-12.296-12.297.sql -text
+labModules/laboratory/resources/schemas/dbscripts/postgresql/laboratory-12.297-12.298.sql -text
+labModules/laboratory/resources/schemas/dbscripts/postgresql/laboratory-12.298-12.299.sql -text
 labModules/laboratory/resources/schemas/dbscripts/postgresql/obsolete/laboratory-0.00-11.00.sql -text
 labModules/laboratory/resources/schemas/dbscripts/postgresql/obsolete/laboratory-11.00-11.01.sql -text
 labModules/laboratory/resources/schemas/dbscripts/postgresql/obsolete/laboratory-11.01-11.12.sql -text
@@ -322,6 +326,8 @@ labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.293-12
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.294-12.295.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.295-12.296.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.296-12.297.sql -text
+labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.297-12.298.sql -text
+labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.298-12.299.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/obsolete/laboratory-0.00-11.12.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/obsolete/laboratory-11.12-11.14.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/obsolete/laboratory-11.14-11.15.sql -text

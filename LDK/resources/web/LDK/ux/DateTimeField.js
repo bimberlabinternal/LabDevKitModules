@@ -84,7 +84,14 @@ Ext.define('Ext.ux.form.field.DateTime', {
             bubbleEvents: ['change'],
             flex:1,
             isFormField:false, //exclude from field query's
-            submitValue:false
+            submitValue:false,
+            getErrors: function(value){
+                var errors = Ext.form.field.Date.prototype.getErrors.apply(this, arguments);
+                if (this.ownerCt && this.ownerCt.getErrors)
+                    errors = errors.concat(this.ownerCt.getErrors());
+
+                return errors;
+            }
         }, me.dateConfig));
         me.items.push(me.dateField);
 
@@ -105,6 +112,13 @@ Ext.define('Ext.ux.form.field.DateTime', {
                         this.dateField.setValue(new Date());
                     }
                 }
+            },
+            getErrors: function(value){
+                var errors = Ext.form.field.Time.prototype.getErrors.apply(this, arguments);
+                if (this.ownerCt && this.ownerCt.getErrors)
+                    errors = errors.concat(this.ownerCt.getErrors());
+
+                return errors;
             }
         }, me.timeConfig));
         me.items.push(me.timeField);
@@ -212,12 +226,20 @@ Ext.define('Ext.ux.form.field.DateTime', {
             data[me.getName()] = '' + me.getSubmitValue();
         }
         return data;
+    },
+
+    isValid: function(){
+        //ensure both will be called
+        var v1 = this.dateField.isValid();
+        var v2 = this.timeField.isValid();
+        return v1 && v2
+    },
+
+    destroy: function(){
+        this.dateField.destroy();
+        this.timeField.destroy();
+        this.callParent(arguments);
     }
 });
 
 })(Ext4)
-
-//Ext4.override(Ext4.ux.form.field.DateTime, {
-//    labelableRenderTpl: Ext4.form.field.Base.prototype.labelableRenderTpl,
-//    getLabelableRenderData: Ext4.form.field.Base.prototype.getLabelableRenderData
-//});

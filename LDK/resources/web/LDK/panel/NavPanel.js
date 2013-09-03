@@ -153,7 +153,7 @@ Ext4.define('LDK.panel.NavPanel', {
                 bodyStyle: 'background-color: transparent;',
                 defaults: Ext4.apply({}, section.itemDefaults, LDK.panel.NavPanel.ITEM_DEFAULTS),
                 items: [{
-                    xtype: 'labkey-linkbutton',
+                    xtype: 'ldk-linkbutton',
                     style: LDK.panel.NavPanel.ITEM_STYLE_DEFAULT + ';margin-left: 2px;',
                     text: item.name,
                     href: item.url ? item.url : item.urlConfig ? LABKEY.ActionURL.buildURL(item.urlConfig.controller, item.urlConfig.action, null, item.urlConfig.params) : null,
@@ -171,7 +171,7 @@ Ext4.define('LDK.panel.NavPanel', {
                 items: [
                     this.getLabelItemCfg(item),
                     {
-                        xtype: 'labkey-linkbutton',
+                        xtype: 'ldk-linkbutton',
                         linkCls: 'labkey-text-link-noarrow',
                         style: LDK.panel.NavPanel.ITEM_STYLE_DEFAULT + ';margin-left: 2px;',
                         text: item.itemText,
@@ -217,7 +217,7 @@ Ext4.define('LDK.panel.NavPanel', {
                 }
                 else {
                     cfg.items.push({
-                        xtype: 'labkey-linkbutton',
+                        xtype: 'ldk-linkbutton',
                         text: 'Import Data',
                         tooltip: item.importTooltip || 'Click to import data',
                         hidden: !LABKEY.Security.currentUser.canInsert,
@@ -333,7 +333,7 @@ Ext4.define('LDK.panel.NavPanel', {
                     this.getSpacer()
                 ,
                     this.getImportItemCfg(item, {
-                        xtype: 'labkey-linkbutton',
+                        xtype: 'ldk-linkbutton',
                         text: 'Create New Workbook',
                         hidden: !LABKEY.Security.currentUser.canInsert,
                         tooltip: 'Click to create a new workbook',
@@ -363,7 +363,7 @@ Ext4.define('LDK.panel.NavPanel', {
                 items: [
                     this.getLabelItemCfg(item)
                 ,{
-                    xtype: 'labkey-linkbutton',
+                    xtype: 'ldk-linkbutton',
                     linkCls: 'labkey-text-link-noarrow',
                     tooltip: 'Click to view these records',
                     href: item.queryName ? LABKEY.ActionURL.buildURL('query', 'executeQuery', null, params): null,
@@ -387,7 +387,7 @@ Ext4.define('LDK.panel.NavPanel', {
         Ext4.apply(config, item);
 
         return {
-            xtype: 'labkey-linkbutton',
+            xtype: 'ldk-linkbutton',
             tooltip: config.searchTooltip || 'Click to display a search panel',
             href: config.url ? config.url : config.urlConfig ? LABKEY.ActionURL.buildURL(config.urlConfig.controller, config.urlConfig.action, null, config.urlConfig.params) : null,
             text: 'Search'
@@ -398,7 +398,7 @@ Ext4.define('LDK.panel.NavPanel', {
         config = config || {};
         Ext4.apply(config, item);
         return {
-            xtype: 'labkey-linkbutton',
+            xtype: 'ldk-linkbutton',
             text: config.browseTooltip || 'Browse All',
             tooltip: 'Click to display a table of all records',
             href: config.url ? config.url : config.urlConfig ? LABKEY.ActionURL.buildURL(config.urlConfig.controller, config.urlConfig.action, null, config.urlConfig.params) : null
@@ -409,7 +409,7 @@ Ext4.define('LDK.panel.NavPanel', {
         config = config || {};
         Ext4.apply(config, item);
         return {
-            xtype: 'labkey-linkbutton',
+            xtype: 'ldk-linkbutton',
             text: config.text || 'Import Data',
             tooltip: config.importTooltip || 'Click to import new data',
             hidden: config.showImport===false || !LABKEY.Security.currentUser.canInsert,

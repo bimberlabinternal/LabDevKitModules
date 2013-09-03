@@ -2,7 +2,7 @@ Ext4.define('LDK.data.CaseInsensitiveModel', {
     extend: 'Ext.data.Model',
 
     //note: alias this property, since Ext will auto-generate this field and it can lead to conflicts
-    idProperty: '_id_',
+    idProperty: '_internalId',
 
     constructor: function(){
 
@@ -14,8 +14,16 @@ Ext4.define('LDK.data.CaseInsensitiveModel', {
         if (!this.caseInsensitiveFieldMap){
             this.caseInsensitiveFieldMap = {};
             this.fields.each(function(f){
-                LDK.Assert.assertEmpty('LDK.data.LabKeyStore has fields of the same name with different case: ' + this.caseInsensitiveFieldMap[f.name.toLowerCase()] + ' / ' + f.dataIndex, this.caseInsensitiveFieldMap[f.name.toLowerCase()]);
-                this.caseInsensitiveFieldMap[f.name.toLowerCase()] = f.name;
+                if (f && f.name){
+                    LDK.Assert.assertNotEmpty('LDK.data.LabKeyStore has fields without a name: ' + this.caseInsensitiveFieldMap[f.name.toLowerCase()] + ' / ' + f.dataIndex, f.name);
+                    LDK.Assert.assertEmpty('LDK.data.LabKeyStore has fields of the same name with different case: ' + this.caseInsensitiveFieldMap[f.name.toLowerCase()] + ' / ' + f.dataIndex, this.caseInsensitiveFieldMap[f.name.toLowerCase()]);
+                    this.caseInsensitiveFieldMap[f.name.toLowerCase()] = f.name;
+                }
+                else {
+                    LDK.Utils.logToServer({
+                        message: 'Field is either null or lacks a name: ' + (f ? f.name : '')
+                    });
+                }
             }, this);
         }
 
@@ -28,6 +36,11 @@ Ext4.define('LDK.data.CaseInsensitiveModel', {
     },
 
     resolveField: function(name){
+        if (Ext4.isEmpty(name)){
+            console.error('Unable to resolve field: ' + name);
+            return;
+        }
+
         var resolved = this.getCaseInsensitiveFieldMap()[name.toLowerCase()];
         if (!resolved){
             console.error('Unable to resolve field: ' + name);

@@ -40,14 +40,14 @@ LDK.Utils.tsort = function(edges){
     });
 
     // 2. topological sort
-    Ext4.Array.forEach(Object.keys(nodes), function visit(idstr, ancestors) {
+    Ext4.Array.forEach(Ext4.Object.getKeys(nodes), function visit(idstr, ancestors) {
         var node = nodes[idstr],
             id   = node.id;
 
         // if already exists, do nothing
         if (visited[idstr]) return;
 
-        if (!Array.isArray(ancestors)) ancestors = [];
+        if (!Ext4.isArray(ancestors)) ancestors = [];
 
         ancestors.push(id);
 

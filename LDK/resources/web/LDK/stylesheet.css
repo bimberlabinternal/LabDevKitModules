@@ -10,6 +10,12 @@
     padding: 4px;
 }
 
+.x4-reset .x4-grid-row-focused .x4-grid-cell .labkey-grid-cell-invalid {
+    background-color: #f29c8d !important;
+}
+
+
+
 /* Possibly also add header padding? */
 /*.ldk-grid .x4-column-header {*/
     /**/
