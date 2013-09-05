@@ -97,6 +97,7 @@ Ext4.define('LDK.panel.NavPanel', {
                 width: this.colWidth,
                 style: 'padding-right:10px;background-color: transparent;',
                 bodyStyle: 'background-color: transparent;border-top-width:0px;',
+                cls:   'ldk-navpanel-section',
                 defaults: {
                     border: false
                 },
@@ -132,6 +133,7 @@ Ext4.define('LDK.panel.NavPanel', {
                         renderer = this.renderers[renderer];
 
                     item = renderer.call(this, sectionCfg.items[j], sectionCfg);
+                    item.cls = 'ldk-navpanel-section-row';
 
                     section.add(item);
                 }
