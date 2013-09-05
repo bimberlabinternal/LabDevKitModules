@@ -90,7 +90,7 @@ Ext4.define('LDK.button.LinkButton', {
         var me = this, menu = me.menu;
 
         if (me.rendered) {
-            if (me.tooltip && Ext4.quickTipsActive && me.getTipAttr() != 'title') {
+            if (me.tooltip && Ext4.quickTipsActive) {
                 Ext4.tip.QuickTipManager.getQuickTip().cancelShow(me.el);
             }
 
