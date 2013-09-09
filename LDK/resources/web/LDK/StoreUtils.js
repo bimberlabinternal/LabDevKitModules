@@ -320,6 +320,7 @@ LDK.StoreUtils = new function(){
             var col = {};
 
             col.dataIndex = field.dataIndex || field.name;
+            col.name = field.name;
             col.header = field.header || field.caption || field.label || field.name;
             col.customized = true;
 
