@@ -1245,7 +1245,7 @@ public class LDKController extends SpringActionController
                 DetailsURL importUrl = DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField);
                 importUrl.setContainerContext(getContainer());
 
-                DetailsURL updateUrl = DetailsURL.fromString("/query/manageRecord.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}");
+                DetailsURL updateUrl = DetailsURL.fromString("/ldk/manageRecord.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}");
                 updateUrl.setContainerContext(getContainer());
 
                 DetailsURL detailsUrl = DetailsURL.fromString("/query/recordDetails.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}");
@@ -1259,6 +1259,7 @@ public class LDKController extends SpringActionController
                 url.addParameter("updateURL", updateUrl.toString());
                 url.addParameter("deleteURL", deleteUrl.toString());
                 url.addParameter("showInsertNewButton", false);
+                url.addParameter("dataRegionName", "query");
             }
 
             url.addParameter("queryName", queryName);

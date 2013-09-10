@@ -48,6 +48,11 @@ Ext4.onReady(function(){
                         saveInSession: true,
                         scope: this,
                         success: function(results){
+                            if (!results){
+                                console.log(results);
+                                alert('There was an error');
+                            }
+
                             grid.add({
                                 xtype: 'ldk-querypanel',
                                 queryConfig: {

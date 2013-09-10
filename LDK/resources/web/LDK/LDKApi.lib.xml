@@ -9,12 +9,15 @@
         <script path="LDK/DataRegionUtils.js"/>
         <script path="LDK/ConvertUtils.js"/>
         <script path="LDK/QueryHelper.js"/>
+        <script path="LDK/plugin/UserEditableCombo.js"/>
         <script path="LDK/DateRangePanel.js"/>
         <script path="LDK/ux/DateTimeField.js"/>
         <script path="LDK/StoreUtils.js"/>
         <script path="LDK/AssayUtils.js"/>
+        <script path="LDK/plugin/CellEditing.js"/>
         <script path="LDK/button/LinkButton.js"/>
         <script path="LDK/field/EditInPlaceElement.js"/>
+        <script path="LDK/form/Panel.js"/>
         <script path="LDK/panel/NavPanel.js"/>
         <script path="LDK/panel/BulkEditPanel.js"/>
         <script path="LDK/panel/ContentResizingPanel.js"/>

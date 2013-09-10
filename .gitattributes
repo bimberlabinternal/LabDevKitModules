@@ -72,6 +72,8 @@ labModules/LDK/resources/views/folderSizeSummary.html -text
 labModules/LDK/resources/views/folderSizeSummary.view.xml -text
 labModules/LDK/resources/views/ldapSettings.html -text
 labModules/LDK/resources/views/ldapSettings.view.xml -text
+labModules/LDK/resources/views/manageRecord.html -text
+labModules/LDK/resources/views/manageRecord.view.xml -text
 labModules/LDK/resources/views/notificationAdmin.html -text
 labModules/LDK/resources/views/notificationAdmin.view.xml -text
 labModules/LDK/resources/views/notificationSiteAdmin.html -text
@@ -142,6 +144,7 @@ labModules/LDK/resources/web/LDK/calendar/src/view/Week.js -text
 labModules/LDK/resources/web/LDK/data/CaseInsensitiveModel.js -text
 labModules/LDK/resources/web/LDK/data/LabKeyStore.js -text
 labModules/LDK/resources/web/LDK/field/EditInPlaceElement.js -text
+labModules/LDK/resources/web/LDK/form/Panel.js -text
 labModules/LDK/resources/web/LDK/grid/Panel.js -text
 labModules/LDK/resources/web/LDK/images/cross.png -text
 labModules/LDK/resources/web/LDK/images/printer.png -text
@@ -161,7 +164,9 @@ labModules/LDK/resources/web/LDK/panel/QueryPanel.js -text
 labModules/LDK/resources/web/LDK/panel/SingleSubjectFilterType.js -text
 labModules/LDK/resources/web/LDK/panel/TabbedReportPanel.js -text
 labModules/LDK/resources/web/LDK/panel/WebpartPanel.js -text
+labModules/LDK/resources/web/LDK/plugin/CellEditing.js -text
 labModules/LDK/resources/web/LDK/plugin/SelfCenteringWindow.js -text
+labModules/LDK/resources/web/LDK/plugin/UserEditableCombo.js -text
 labModules/LDK/resources/web/LDK/printer.css -text
 labModules/LDK/resources/web/LDK/stylesheet.css -text
 labModules/LDK/resources/web/LDK/tsort.js -text
@@ -411,6 +416,7 @@ labModules/laboratory/resources/web/laboratory/tabbedReports.js -text
 labModules/laboratory/resources/web/laboratory/utils.js -text
 labModules/laboratory/resources/web/laboratory/window/AppendStandardsWindow.js -text
 labModules/laboratory/resources/web/laboratory/window/AssaySpreadsheetImportWindow.js -text
+labModules/laboratory/resources/web/laboratory/window/ChangeAssayResultStatusWindow.js -text
 labModules/laboratory/resources/web/laboratory/window/CopyRunWindow.js -text
 labModules/laboratory/resources/web/laboratory/window/SaveStandardsWindow.js -text
 labModules/laboratory/resources/web/laboratory/window/WellAssignmentWindow.js -text
@@ -473,6 +479,7 @@ onprcEHRModules/README.txt -text
 onprcEHRModules/onprc_reports/ONPRC_Reports.iml -text
 onprcEHRModules/onprc_reports/build.xml -text
 onprcEHRModules/onprc_reports/module.properties -text
+onprcEHRModules/onprc_reports/resources/queries/sequenceanalysis/MHC_Data_Pivoted.sql -text
 onprcEHRModules/onprc_reports/resources/queries/sequenceanalysis/MHC_Data_Raw.sql -text
 onprcEHRModules/onprc_reports/resources/queries/sequenceanalysis/MHC_Data_Unified.query.xml -text
 onprcEHRModules/onprc_reports/resources/queries/sequenceanalysis/MHC_Data_Unified.sql -text

@@ -6,6 +6,8 @@ Ext4.define('LDK.grid.Panel', {
     extend: 'LABKEY.ext4.GridPanel',
     alias: 'widget.ldk-gridpanel',
 
+    selType: 'ldk-rowmodel',
+
     initComponent: function(){
         Ext4.apply(this, {
             cls: 'ldk-grid'
@@ -14,22 +16,6 @@ Ext4.define('LDK.grid.Panel', {
         this.callParent(arguments);
 
         //this.on('afterlayout', this.setupTextWrapping, null, {delay: 200});
-    },
-
-    getEditingPlugin: function(){
-        var plugin = this.callParent(arguments);
-        if (plugin){
-            Ext4.override(plugin, {
-                getEditingContext: function(record, columnHeader){
-                    if (!columnHeader || !columnHeader.dataIndex){
-                        return null;
-                    }
-
-                    return this.callOverridden(arguments);
-                }
-            });
-        }
-        return plugin;
     },
 
     /**
@@ -67,6 +53,13 @@ Ext4.define('LDK.grid.Panel', {
         }, this);
 
         console.log(arguments);
+    },
+
+    getEditingPlugin: function(){
+        return Ext4.create('LDK.grid.plugin.CellEditing', {
+            pluginId: this.editingPluginId,
+            clicksToEdit: this.clicksToEdit
+        });
     }
 
 //    onColumnHide: function(ct, column){
@@ -196,5 +189,71 @@ Ext4.apply(LABKEY.ext4.GRIDBUTTONS, {
                 grid.getView().refresh();
             }
         }, config);
+    }
+});
+
+//adapted from: http://stackoverflow.com/questions/10179047/extjs-4-excel-style-keyboard-navigation-in-an-editable-grid
+Ext4.define('LDK.grid.panel.RowSelectionModel', {
+    extend: 'Ext.selection.RowModel',
+    alias: 'selection.ldk-rowmodel',
+
+    lastId:null,
+
+    onEditorTab: function(ep, e) {
+        var me = this,
+                view = me.view,
+                record = ep.getActiveRecord(),
+                header = ep.getActiveColumn(),
+                position = view.getPosition(record, header),
+                direction = e.shiftKey ? 'left' : 'right',
+                newPosition = view.walkCells(position, direction, e, false),
+                newId=newPosition.row,
+                grid=view.up('gridpanel');
+
+        var deltaX;
+        if (me.lastId != newId && me.lastId!=null){
+            deltaX = me.lastId < newId ? -Infinity : Infinity;
+            header = grid.headerCt.getHeaderAtIndex(newPosition.column);
+            if(header){
+                while (!header.getEditor()){
+                    newPosition= view.walkCells(newPosition,direction, e, false);
+                    header=grid.headerCt.getHeaderAtIndex(newPosition.column);
+                }
+            }
+        }
+        else {
+            deltaX = ep.context.column.width * (direction == 'right' ? 1 : -1);
+        }
+        grid.scrollByDeltaX(deltaX);
+        me.lastId = newPosition.row;
+        if (newPosition)
+            ep.startEditByPosition(newPosition);
+        else
+            ep.completeEdit();
+    },
+
+    onEditorEnter:function(ep,e){
+        var me = this,
+                view = me.view,
+                record = ep.getActiveRecord(),
+                header = ep.getActiveColumn(),
+                position = view.getPosition(record, header),
+                direction = e.shiftKey ? 'up' : 'down',
+                newPosition = view.walkCells(position, direction, e, false),
+                newId=newPosition.row,
+                grid=view.up('gridpanel');
+
+        //NOTE: if the editor is a combo and it is expanded, defer to the combo's handling
+        if (ep.activeEditor && ep.activeEditor.field && ep.activeEditor.field.isExpanded){
+            return;
+        }
+
+        var deltaY = 20 * (direction == 'down' ? 1 : -1);
+        grid.scrollByDeltaY(deltaY);
+        me.lastId = newPosition.row;
+        if (newPosition)
+            ep.startEditByPosition(newPosition);
+        else
+            ep.completeEdit();
     }
 });

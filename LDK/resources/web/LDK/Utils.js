@@ -441,14 +441,6 @@ LDK.Utils = new function(){
 
         isSharedProject: function(){
             return LABKEY.Security.currentContainer.path == ('/' + LABKEY.Security.getSharedContainer())
-        },
-
-        getDataRegionWhereClause: function(dataRegion, tableAlias){
-            var selectorCols = !Ext4.isEmpty(dataRegion.selectorCols) ? dataRegion.selectorCols : dataRegion.pkCols;
-            LDK.Assert.assertNotEmpty('Unable to find selector columns for: ' + dataRegion.schemaName + '.' + dataRegion.queryName, selectorCols);
-
-            var colExpr = '(' + tableAlias + '.' + selectorCols.join(" || ',' || " + tableAlias + ".") + ')';
-            return "WHERE " + colExpr + " IN ('" + dataRegion.getChecked().join("', '") + "')";
         }
     }
 }

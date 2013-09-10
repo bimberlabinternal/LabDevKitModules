@@ -1,0 +1,8 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Manage Record" frame="portal">
+    <permissions>
+        <permission name="insert" />
+    </permissions>
+    <dependencies>
+        <dependency path="Ext4ClientApi"/>
+    </dependencies>
+</view>
