@@ -281,7 +281,7 @@ public class NotificationServiceImpl extends NotificationService
             if (up instanceof Group)
             {
                 Group g = (Group)up;
-                Set<UserPrincipal> members = SecurityManager.getAllGroupMembers(g, MemberType.BOTH);
+                Set<UserPrincipal> members = SecurityManager.getAllGroupMembers(g, MemberType.ALL_GROUPS_AND_USERS);
                 if (members.contains(u))
                     ups.add(up);
             }
@@ -369,7 +369,7 @@ public class NotificationServiceImpl extends NotificationService
                 if (group.isSystemGroup())
                     throw new IllegalArgumentException("Invalid group ID: site groups are not allowed");
 
-                Set<User> members = SecurityManager.getAllGroupMembers(group, MemberType.USERS);
+                Set<User> members = SecurityManager.getAllGroupMembers(group, MemberType.ACTIVE_AND_INACTIVE_USERS);
                 List<Address> addresses = new ArrayList<>();
                 for (User u : members)
                 {

@@ -1,10 +1,7 @@
 package org.labkey.ldk.ldap;
 
-import org.apache.directory.api.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.api.ldap.model.exception.LdapException;
-import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.RuntimeSQLException;
@@ -340,7 +337,7 @@ public class LdapSyncRunner implements Job
     private void syncGroupMembership(LdapEntry group, Group existingGroup) throws LdapException
     {
         List<LdapEntry> children = _wrapper.getGroupMembers(group.getDn().getName());
-        Set<UserPrincipal> existingMembers = SecurityManager.getAllGroupMembers(existingGroup, MemberType.BOTH);
+        Set<UserPrincipal> existingMembers = SecurityManager.getAllGroupMembers(existingGroup, MemberType.ALL_GROUPS_AND_USERS);
 
         Set<UserPrincipal> ldapChildren = new HashSet<>();
         for (LdapEntry child : children)
@@ -359,7 +356,7 @@ public class LdapSyncRunner implements Job
         }
 
         //refresh list
-        existingMembers = SecurityManager.getAllGroupMembers(existingGroup, MemberType.BOTH);
+        existingMembers = SecurityManager.getAllGroupMembers(existingGroup, MemberType.ALL_GROUPS_AND_USERS);
         if (!_settings.getMemberSyncMode().equals(LdapSettings.MemberSyncMode.noAction))
         {
             for (UserPrincipal u : existingMembers)
