@@ -30,7 +30,7 @@ Ext4.define('LDK.QueryHelper', {
          */
         getRecordsFromSelectRows: function(results){
             //use reader for type-conversion
-            var reader = Ext4.create('LABKEY.ext4.ExtendedJsonReader', {});
+            var reader = Ext4.create('LABKEY.ext4.data.JsonReader', {});
             var data =  reader.readRecords(results);
             return data.records;
         },
