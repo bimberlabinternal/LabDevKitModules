@@ -135,4 +135,57 @@ public class DefaultTableCustomizer implements TableCustomizer
     {
         _auditMode = auditMode;
     }
+
+    public static void appendEnddateColumns(AbstractTableInfo ti)
+    {
+        appendEnddate(ti);
+        appendDateOnly(ti);
+    }
+
+    private static void appendEnddate(AbstractTableInfo ti)
+    {
+        ColumnInfo enddate = ti.getColumn("enddate");
+        if (enddate != null && ti.getColumn("enddateCoalesced") == null)
+        {
+            SQLFragment sql = new SQLFragment("CAST(COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + ", {fn curdate()}) as date)");
+            ExprColumn col = new ExprColumn(ti, "enddateCoalesced", sql, JdbcType.DATE);
+            col.setCalculated(true);
+            col.setUserEditable(false);
+            col.setHidden(true);
+            col.setLabel("Enddate, Coalesced");
+
+            if (enddate.getFormat() != null)
+                col.setFormat(enddate.getFormat());
+
+            ti.addColumn(col);
+        }
+
+        if (enddate != null && ti.getColumn("enddatetimeCoalesced") == null)
+        {
+            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + ", {fn now()})");
+            ExprColumn col = new ExprColumn(ti, "enddatetimeCoalesced", sql, JdbcType.DATE);
+            col.setCalculated(true);
+            col.setUserEditable(false);
+            col.setHidden(true);
+            col.setLabel("End Time, Coalesced");
+            col.setFormat("yyyy-MM-dd HH:mm");
+
+            ti.addColumn(col);
+        }
+    }
+
+    private static void appendDateOnly(AbstractTableInfo ti)
+    {
+        ColumnInfo date = ti.getColumn("date");
+        if (date != null && ti.getColumn("dateOnly") == null)
+        {
+            SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDateTimeToDateCast(ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName()));
+            ExprColumn col = new ExprColumn(ti, "dateOnly", sql, JdbcType.DATE);
+            col.setCalculated(true);
+            col.setUserEditable(false);
+            col.setHidden(true);
+            col.setLabel("Date Only");
+            ti.addColumn(col);
+        }
+    }
 }

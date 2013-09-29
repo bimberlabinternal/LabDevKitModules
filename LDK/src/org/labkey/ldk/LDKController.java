@@ -365,7 +365,7 @@ public class LDKController extends SpringActionController
             StringBuilder sb = new StringBuilder();
             Date lastRun = NotificationServiceImpl.get().getLastRunDate(n);
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm");
-            sb.append("The notification email was last run on: " + (lastRun == null ? "never" : df.format(lastRun)) + "<p><hr><p>");
+            sb.append("The notification email was last sent on: " + (lastRun == null ? "never" : df.format(lastRun)) + "<p><hr><p>");
 
             User u = NotificationServiceImpl.get().getUser(getContainer());
             if (u == null)
@@ -384,6 +384,39 @@ public class LDKController extends SpringActionController
         public NavTree appendNavTrail(NavTree root)
         {
             return root.addChild(_title == null ? "Notification" : _title);
+        }
+    }
+
+    @RequiresPermissionClass(AdminPermission.class)
+    public class SendNotificationAction extends ApiAction<RunNotificationForm>
+    {
+        public ApiResponse execute(RunNotificationForm form, BindException errors) throws Exception
+        {
+            Map<String, Object> result = new HashMap<>();
+
+            if (form.getKey() == null)
+            {
+                errors.reject(ERROR_MSG, "No notification provided");
+                return null;
+            }
+
+            Notification n = NotificationService.get().getNotification(form.getKey());
+            if (n == null)
+            {
+                errors.reject(ERROR_MSG, "Unknown notification: " + form.getKey());
+                return null;
+            }
+
+            if (!n.isAvailable(getContainer()))
+            {
+                errors.reject(ERROR_MSG, "The notification " + form.getKey() + " is not available in this container");
+                return null;
+            }
+
+            NotificationServiceImpl.get().runForContainer(n, getContainer());
+
+            result.put("success", true);
+            return new ApiSimpleResponse(result);
         }
     }
 

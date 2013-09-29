@@ -18,7 +18,7 @@ Ext4.define('LDK.grid.plugin.CellEditing', {
 
     getEditingContext: function(record, columnHeader){
         //NOTE: this exists to prevent editing on calculated columns or others not bound to a field
-        if (!columnHeader || !columnHeader.dataIndex){
+        if (Ext4.isObject(columnHeader) && !columnHeader.dataIndex){
             return null;
         }
 

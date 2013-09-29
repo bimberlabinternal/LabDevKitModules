@@ -78,10 +78,25 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                     layout: 'vbox',
                     items: [{
                         xtype: 'ldk-linkbutton',
-                        text: 'Run Report',
+                        text: 'Run Report In Browser',
                         target: '_self',
                         linkCls: 'labkey-text-link',
                         href: LABKEY.ActionURL.buildURL('ldk', 'runNotification', null, {key: notification.key})
+                    },{
+                        xtype: 'ldk-linkbutton',
+                        text: 'Manually Trigger Email',
+                        linkCls: 'labkey-text-link',
+                        notificationKey: notification.key,
+                        handler: function(btn){
+                            Ext4.Msg.confirm('Send Email', 'You are about to manually trigger this notification email to send, which will go to all subscribed users.  Are you sure you want to do this?', function(val){
+                                if (val == 'yes'){
+                                    LABKEY.Ajax.request({
+                                        url: LABKEY.ActionURL.buildURL('ldk', 'sendNotification', null, {key: btn.notificationKey}),
+                                        failure: LDK.Utils.getErrorCallback()
+                                    });
+                                }
+                            }, this);
+                        }
                     },{
                         xtype: 'ldk-linkbutton',
                         text: 'Manage Subscribed Users/Groups',
@@ -156,6 +171,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
             },{
                 xtype: 'textfield',
                 fieldLabel: 'Notification User',
+                tabIndex: 1,
                 allowBlank: false,
                 helpPopup: 'This is the LabKey user that will be used to execute queries and send the emails.  It must be an admin in this folder.',
                 dataIndex: 'user',
@@ -165,6 +181,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
             },{
                 xtype: 'textfield',
                 fieldLabel: 'Reply Email',
+                tabIndex: 1,
                 allowBlank: false,
                 hidden: !LABKEY.Security.currentUser.isAdmin,
                 helpPopup: 'This will be used as the reply email for all sent messages.',
@@ -282,7 +299,7 @@ Ext4.define('LDK.window.ManageNotificationWindow', {
     onLoad: function(response){
         var toAdd = [{
             xtype: 'labkey-principalcombo',
-            fieldLabel: 'Add User or Group',
+            fieldLabel: 'Add User Or Group',
             labelWidth: 150,
             width: 430,
             cache: Ext4.create('Security.util.SecurityCache', {
@@ -379,7 +396,9 @@ Ext4.define('LDK.window.ManageNotificationWindow', {
         }
 
         var target = this.down('#thePanel');
-        target.removeAll();
-        target.add(toAdd);
+        if (target){
+            target.removeAll();
+            target.add(toAdd);
+        }
     }
 });

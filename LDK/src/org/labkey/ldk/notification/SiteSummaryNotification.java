@@ -46,6 +46,7 @@ import org.labkey.api.exp.property.Domain;
 import org.labkey.api.exp.query.ExpRunTable;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.Notification;
+import org.labkey.api.ldk.notification.NotificationSection;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.pipeline.PipelineJobService;
 import org.labkey.api.pipeline.PipelineService;
@@ -61,6 +62,7 @@ import org.labkey.api.study.assay.AssayProtocolSchema;
 import org.labkey.api.study.assay.AssayProvider;
 import org.labkey.api.study.assay.AssayService;
 import org.labkey.api.util.ResultSetUtil;
+import org.labkey.ldk.LDKServiceImpl;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.validation.BindException;
 
@@ -185,6 +187,18 @@ public class SiteSummaryNotification implements Notification
         getTableSizeStats(c, u, msg, alerts, saved, newValues);
 
         getFileRootSizes(c, u, msg, alerts, saved, newValues);
+
+        //allow registering of additional sections
+        Set<NotificationSection> sections = ((LDKServiceImpl)LDKServiceImpl.get()).getSiteSummaryNotificationSections();
+        for (NotificationSection ns : sections)
+        {
+            if (ns.isAvailable(c, u))
+            {
+                String m = ns.getMessage(c, u);
+                if (m != null)
+                    msg.append(m);
+            }
+        }
 
         if (alerts.length() > 0)
         {
@@ -571,6 +585,13 @@ public class SiteSummaryNotification implements Notification
         for (String name : schema.getTableNames())
         {
             TableInfo ti = schema.getTable(name);
+            if (ti == null)
+            {
+                //note sure why we would ever hit this.  a schema caching issue?
+                log.error("Unable to find list table with table name: " + name);
+                continue;
+            }
+
             Long rowCount = new TableSelector(ti).getRowCount();
             listMap.put(name, rowCount);
         }

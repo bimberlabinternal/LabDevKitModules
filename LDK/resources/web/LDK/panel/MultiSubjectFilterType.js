@@ -134,7 +134,10 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         var otherSubjects = this.tabbedReportPanel.getSubjects();
         var subjects = this.getSubjects(otherSubjects);
         if (subjects && subjects.length){
-            return subjects.join(', ');
+            if (subjects.length <= 6)
+                return subjects.join(', ');
+
+            return subjects.slice(0,5).join(', ') + '...';
         }
 
         return '';

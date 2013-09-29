@@ -9,6 +9,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.files.FileContentService;
 import org.labkey.api.ldk.LDKService;
+import org.labkey.api.ldk.notification.NotificationSection;
 import org.labkey.api.security.User;
 import org.labkey.api.services.ServiceRegistry;
 import org.labkey.ldk.query.BuiltInColumnsCustomizer;
@@ -16,6 +17,7 @@ import org.labkey.ldk.query.ColumnOrderCustomizer;
 import org.labkey.ldk.query.DefaultTableCustomizer;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +30,8 @@ import java.util.Set;
  */
 public class LDKServiceImpl extends LDKService
 {
+    private Set<NotificationSection> _summaryNotificationSections = new HashSet<>();
+
     public LDKServiceImpl()
     {
 
@@ -124,5 +128,20 @@ public class LDKServiceImpl extends LDKService
     public void applyNaturalSort(AbstractTableInfo ti, String colName)
     {
         DefaultTableCustomizer.applyNaturalSort(ti, colName);
+    }
+
+    public void appendEnddateColumns(AbstractTableInfo ti)
+    {
+        DefaultTableCustomizer.appendEnddateColumns(ti);
+    }
+
+    public void registerSiteSummaryNotification(NotificationSection ns)
+    {
+        _summaryNotificationSections.add(ns);
+    }
+
+    public Set<NotificationSection> getSiteSummaryNotificationSections()
+    {
+        return Collections.unmodifiableSet(_summaryNotificationSections);
     }
 }

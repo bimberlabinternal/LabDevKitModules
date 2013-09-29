@@ -337,6 +337,7 @@ public class LdapSyncRunner implements Job
     private void syncGroupMembership(LdapEntry group, Group existingGroup) throws LdapException
     {
         List<LdapEntry> children = _wrapper.getGroupMembers(group.getDn().getName());
+        //NOTE: this is potentially going to include inactive users.  in this instance i dont believe that is an issue
         Set<UserPrincipal> existingMembers = SecurityManager.getAllGroupMembers(existingGroup, MemberType.ALL_GROUPS_AND_USERS);
 
         Set<UserPrincipal> ldapChildren = new HashSet<>();
@@ -356,6 +357,7 @@ public class LdapSyncRunner implements Job
         }
 
         //refresh list
+        //NOTE: this is potentially going to include inactive users.  in this instance i dont believe that is an issue
         existingMembers = SecurityManager.getAllGroupMembers(existingGroup, MemberType.ALL_GROUPS_AND_USERS);
         if (!_settings.getMemberSyncMode().equals(LdapSettings.MemberSyncMode.noAction))
         {

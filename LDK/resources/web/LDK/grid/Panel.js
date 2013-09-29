@@ -207,24 +207,26 @@ Ext4.define('LDK.grid.panel.RowSelectionModel', {
                 position = view.getPosition(record, header),
                 direction = e.shiftKey ? 'left' : 'right',
                 newPosition = view.walkCells(position, direction, e, false),
-                newId=newPosition.row,
-                grid=view.up('gridpanel');
+                newId = newPosition.row,
+                grid = view.up('gridpanel');
 
-        var deltaX;
-        if (me.lastId != newId && me.lastId!=null){
-            deltaX = me.lastId < newId ? -Infinity : Infinity;
-            header = grid.headerCt.getHeaderAtIndex(newPosition.column);
-            if(header){
-                while (!header.getEditor()){
-                    newPosition= view.walkCells(newPosition,direction, e, false);
-                    header=grid.headerCt.getHeaderAtIndex(newPosition.column);
-                }
-            }
-        }
-        else {
-            deltaX = ep.context.column.width * (direction == 'right' ? 1 : -1);
-        }
-        grid.scrollByDeltaX(deltaX);
+        //NOTE: x-scrolling is distracting, so disable for now
+//        var deltaX;
+//        if (me.lastId != newId && me.lastId!=null){
+//            deltaX = me.lastId < newId ? -Infinity : Infinity;
+//            header = grid.headerCt.getHeaderAtIndex(newPosition.column);
+//            if(header){
+//                while (!header.getEditor()){
+//                    newPosition= view.walkCells(newPosition,direction, e, false);
+//                    header=grid.headerCt.getHeaderAtIndex(newPosition.column);
+//                }
+//            }
+//        }
+//        else {
+//            deltaX = ep.context.column.width * (direction == 'right' ? 1 : -1);
+//        }
+//
+//        grid.scrollByDeltaX(deltaX);
         me.lastId = newPosition.row;
         if (newPosition)
             ep.startEditByPosition(newPosition);
@@ -240,8 +242,8 @@ Ext4.define('LDK.grid.panel.RowSelectionModel', {
                 position = view.getPosition(record, header),
                 direction = e.shiftKey ? 'up' : 'down',
                 newPosition = view.walkCells(position, direction, e, false),
-                newId=newPosition.row,
-                grid=view.up('gridpanel');
+                newId = newPosition.row,
+                grid = view.up('gridpanel');
 
         //NOTE: if the editor is a combo and it is expanded, defer to the combo's handling
         if (ep.activeEditor && ep.activeEditor.field && ep.activeEditor.field.isExpanded){

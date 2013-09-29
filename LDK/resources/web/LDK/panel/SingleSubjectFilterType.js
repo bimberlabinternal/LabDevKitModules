@@ -93,7 +93,10 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
     getTitle: function(){
         var subjects = this.getSubjects();
         if (subjects && subjects.length){
-            return subjects.join(', ');
+            if (subjects.length <= 6)
+                return subjects.join(', ');
+
+            return subjects.slice(0,5).join(', ') + '...';
         }
 
         return '';

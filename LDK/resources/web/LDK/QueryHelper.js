@@ -96,7 +96,7 @@ Ext4.define('LDK.QueryHelper', {
         if(this._store)
             return this._store;
 
-        return this._store = Ext4.create('LABKEY.ext4.Store', {
+        return this._store = Ext4.create('LABKEY.ext4.data.Store', {
             containerPath: this.containerPath,
             schemaName: this.schemaName,
             queryName: this.queryName,

@@ -53,7 +53,7 @@ Ext4.define('LDK.panel.MultiRecordDetailsPanel', {
     getStore: function(){
         if(!this.store.events){
             this.store.autoLoad = false;
-            this.store = Ext4.create('LABKEY.ext4.Store', this.store);
+            this.store = Ext4.create('LABKEY.ext4.data.Store', this.store);
         }
 
         return this.store;

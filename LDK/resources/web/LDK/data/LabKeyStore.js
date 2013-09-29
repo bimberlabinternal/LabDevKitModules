@@ -1,8 +1,8 @@
 /**
- * An extension to LABKEY.ext4.Store, which provides a case-insensitive model
+ * An extension to LABKEY.ext4.data.Store, which provides a case-insensitive model
  */
 Ext4.define('LDK.data.LabKeyStore', {
-    extend: 'LABKEY.ext4.Store',
+    extend: 'LABKEY.ext4.data.Store',
     alias: 'widget.ldk-labkeystore',
 
     constructor: function(){
@@ -34,14 +34,14 @@ Ext4.define('LDK.data.LabKeyStore', {
 });
 
 Ext4.define('LDK.data.proxy.AjaxProxy', {
-    extend: 'LABKEY.ext4.AjaxProxy',
+    extend: 'LABKEY.ext4.data.AjaxProxy',
     alias: 'proxy.LDKAjaxProxy',
 
     reader: 'LDKExtendedJsonReader'
 });
 
 Ext4.define('LDK.data.proxy.ExtendedJsonReader', {
-    extend: 'LABKEY.ext4.ExtendedJsonReader',
+    extend: 'LABKEY.ext4.data.JsonReader',
     alias: 'reader.LDKExtendedJsonReader',
 
     readRecords: function(data) {

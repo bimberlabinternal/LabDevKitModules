@@ -121,28 +121,39 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             });
 
             var toAdd = [];
-            for (var i = 0; i < subjects.length; i++){
-                toAdd.push({
-                    xtype: 'button',
-                    border: true,
-                    minWidth: 80,
-                    text: subjects[i]+' (X)',
-                    subjectID: subjects[i],
-                    style: 'margin: 2px;',
-                    handler: function(button){
-                        var panel = button.up('#buttonPanel');
-                        button.destroy();
+            if (subjects.length <= 12){
+                for (var i = 0; i < subjects.length; i++){
+                    toAdd.push({
+                        xtype: 'button',
+                        border: true,
+                        minWidth: 80,
+                        text: subjects[i]+' (X)',
+                        subjectID: subjects[i],
+                        style: 'margin: 2px;',
+                        handler: function(button){
+                            var panel = button.up('#buttonPanel');
+                            button.destroy();
 
-                        var total = panel.items.getCount();
-                        var owner = panel.up('panel');
-                        var div = owner.down('#totalPanel');
-                        div.destroy();
-                        owner.insert(0, {
-                            itemId: 'totalPanel',
-                            html: 'Total IDs: ' + total
-                        });
-                    },
-                    scope: this
+                            var total = panel.items.getCount();
+                            var owner = panel.up('panel');
+                            var div = owner.down('#totalPanel');
+                            div.destroy();
+                            owner.insert(0, {
+                                itemId: 'totalPanel',
+                                html: 'Total IDs: ' + total
+                            });
+                        },
+                        scope: this
+                    });
+                }
+            }
+            else {
+                toAdd.push({
+                    xtype: 'panel',
+                    subjectIDs: subjects,
+                    style: 'padding-top: 10px;',
+                    border: false,
+                    html: 'Too many to show'
                 });
             }
 
@@ -167,7 +178,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
         var subjects = [];
         panel.items.each(function(btn){
-            subjects.push(btn.subjectID);
+            if (btn.subjectID)
+                subjects.push(btn.subjectID);
+            else if (btn.subjectIDs)
+                subjects = subjects.concat(btn.subjectIDs);
         }, this);
 
         return subjects;

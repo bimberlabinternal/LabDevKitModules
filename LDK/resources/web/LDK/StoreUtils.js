@@ -2,7 +2,7 @@ Ext4.ns('LDK.StoreUtils');
 
 /**
  * A static helper with methods designed to assist with using an Ext4 store.  This allows us to augment the store without depending on
- * custom methods, meaning we are not tied exclusively to LABKEY.ext4.Store
+ * custom methods, meaning we are not tied exclusively to LABKEY.ext4.data.Store
  */
 LDK.StoreUtils = new function(){
 
@@ -320,7 +320,7 @@ LDK.StoreUtils = new function(){
             var col = {};
 
             col.dataIndex = field.dataIndex || field.name;
-            col.name = field.name;
+            col.name = field.dataIndex || field.name;
             col.header = field.header || field.caption || field.label || field.name;
             col.customized = true;
 

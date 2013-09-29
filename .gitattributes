@@ -438,6 +438,7 @@ labModules/laboratory/src/org/labkey/laboratory/LaboratoryUpgradeCode.java -text
 labModules/laboratory/src/org/labkey/laboratory/LaboratoryUserSchema.java -text
 labModules/laboratory/src/org/labkey/laboratory/SampleSetDataProvider.java -text
 labModules/laboratory/src/org/labkey/laboratory/SampleSetNavItem.java -text
+labModules/laboratory/src/org/labkey/laboratory/SamplesCountNavItem.java -text
 labModules/laboratory/src/org/labkey/laboratory/URLDataSource.java -text
 labModules/laboratory/src/org/labkey/laboratory/assay/AssayHelper.java -text
 labModules/laboratory/src/org/labkey/laboratory/assay/ManualEntryAssayImportMethod.java -text
@@ -455,7 +456,7 @@ labModules/laboratory/src/org/labkey/laboratory/query/SamplesCustomizer.java -te
 labModules/laboratory/src/org/labkey/laboratory/query/SubjectsTableCustomizer.java -text
 labModules/laboratory/src/org/labkey/laboratory/query/WorkbookIdDisplayColumn.java -text
 labModules/laboratory/src/org/labkey/laboratory/query/WorkbookModel.java -text
-labModules/laboratory/src/org/labkey/laboratory/table/ContainerScopedTable.java -text
+labModules/laboratory/src/org/labkey/laboratory/table/WrappingTableCustomizer.java -text
 labModules/laboratory/src/org/labkey/laboratory/view/workbookHeader.jsp -text
 onprcEHRModules/GeneticsCore/GeneticsCore.iml -text
 onprcEHRModules/GeneticsCore/build.xml -text
@@ -480,6 +481,7 @@ onprcEHRModules/README.txt -text
 onprcEHRModules/onprc_reports/ONPRC_Reports.iml -text
 onprcEHRModules/onprc_reports/build.xml -text
 onprcEHRModules/onprc_reports/module.properties -text
+onprcEHRModules/onprc_reports/resources/queries/MHC_Data/MHC_Data_Pivoted/Common[!!-~]Alleles.qview.xml -text
 onprcEHRModules/onprc_reports/resources/queries/sequenceanalysis/MHC_Data_Pivoted.sql -text
 onprcEHRModules/onprc_reports/resources/queries/sequenceanalysis/MHC_Data_Raw.sql -text
 onprcEHRModules/onprc_reports/resources/queries/sequenceanalysis/MHC_Data_Unified.query.xml -text

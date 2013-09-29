@@ -9,7 +9,7 @@ Ext4.override(Ext4.form.field.ComboBox, {
                 value = me.getRawValue(),
                 rec, currentValue;
 
-        if (me.forceSelection && (!Ext4.isEmpty(value) || !me.allowBlank)) {
+        if (me.forceSelection && !Ext4.isEmpty(value)) {
             if (me.multiSelect) {
                 // For multiselect, check that the current displayed value matches the current
                 // selection, if it does not then revert to the most recent selection.

@@ -30,6 +30,7 @@ Ext4.define('LDK.panel.QueryPanel', {
 
         var qwpConfig = Ext4.apply({
             showDetailsColumn: false,
+            suppressRenderErrors: true,
             linkTarget: '_blank',
             failure: LDK.Utils.getErrorCallback()
         }, panel.queryConfig);

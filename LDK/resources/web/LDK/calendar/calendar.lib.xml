@@ -44,7 +44,7 @@
         <script path="LDK/calendar/src/App.js"/>
     </library>
     <dependencies>
-        <dependency path="Ext4ClientApi"/>
+        <dependency path="clientapi/ext4.lib.xml"/>
     </dependencies>
 </libraries>
         

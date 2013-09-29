@@ -17,6 +17,7 @@ package org.labkey.ldk.notification;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.data.CompareType;
@@ -39,7 +40,10 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.ValidEmail;
+import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.util.ConfigurationException;
+import org.labkey.api.util.ExceptionUtil;
+import org.labkey.api.util.MailHelper;
 import org.labkey.ldk.LDKSchema;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
@@ -50,6 +54,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import javax.mail.Address;
+import javax.mail.Message;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -275,6 +280,7 @@ public class NotificationServiceImpl extends NotificationService
         json.put("category", n.getCategory());
         json.put("nextFireTime", getNextFireTime(n));
 
+        //find subscriptions for the current user
         List<UserPrincipal> ups = new ArrayList<>();
         for (UserPrincipal up : NotificationServiceImpl.get().getRecipients(n, c))
         {
@@ -354,12 +360,19 @@ public class NotificationServiceImpl extends NotificationService
         PropertyManager.saveProperties(pm);
     }
 
-    private Address[] getEmailsForPrincipal(UserPrincipal user) throws ValidEmail.InvalidEmailException
+    @NotNull
+    private List<Address> getEmailsForPrincipal(UserPrincipal user) throws ValidEmail.InvalidEmailException
     {
         if (user instanceof User)
         {
+            if (!((User) user).isActive())
+            {
+                _log.error("an inactive user is a notification recipient: " + user.getName());
+                return Collections.emptyList();
+            }
+
             ValidEmail validEmail = new ValidEmail(((User)user).getEmail());
-            return new Address[]{validEmail.getAddress()};
+            return Collections.singletonList(validEmail.getAddress());
         }
         else
         {
@@ -369,14 +382,22 @@ public class NotificationServiceImpl extends NotificationService
                 if (group.isSystemGroup())
                     throw new IllegalArgumentException("Invalid group ID: site groups are not allowed");
 
-                Set<User> members = SecurityManager.getAllGroupMembers(group, MemberType.ACTIVE_AND_INACTIVE_USERS);
+                //NOTE: this could include inactive users as members, so we filter them out
+                Set<User> members = SecurityManager.getAllGroupMembers(group, MemberType.ACTIVE_USERS);
                 List<Address> addresses = new ArrayList<>();
                 for (User u : members)
                 {
+                    //note: unlike user, dont log error since inactive users retain group membership
+                    if (!u.isActive())
+                    {
+                        continue;
+                    }
+
                     ValidEmail validEmail = new ValidEmail(u.getEmail());
                     addresses.add(validEmail.getAddress());
                 }
-                return addresses.toArray(new Address[members.size()]);
+
+                return addresses;
             }
             else
                 throw new IllegalArgumentException("Unable to resolve principalId");
@@ -429,7 +450,7 @@ public class NotificationServiceImpl extends NotificationService
         {
             try
             {
-                addresses.addAll(Arrays.asList(getEmailsForPrincipal(u)));
+                addresses.addAll(getEmailsForPrincipal(u));
             }
             catch (ValidEmail.InvalidEmailException e)
             {
@@ -506,6 +527,59 @@ public class NotificationServiceImpl extends NotificationService
         catch (SQLException e)
         {
             throw new RuntimeSQLException(e);
+        }
+    }
+
+    public void runForContainer(Notification notification, Container c)
+    {
+        User u = NotificationService.get().getUser(notification, c);
+        if (u == null)
+        {
+            _log.error("Invalid user when trying to run notification " + notification.getName() + " for container: " + c.getPath());
+            return;
+        }
+
+        if (!c.hasPermission(u, AdminPermission.class))
+        {
+            _log.error("Error running " + notification.getName() + ".  User " + u.getEmail() + " does not have admin permissions on container: " + c.getPath());
+            return;
+        }
+
+        if (!NotificationServiceImpl.get().isActive(notification, c))
+        {
+            _log.error("Error running " + notification.getName() + " in container : " + c.getPath() + ".  Notification is inactive, but a task was still scheduled");
+            return;
+        }
+
+        List<Address> recipients = NotificationServiceImpl.get().getEmails(notification, c);
+        if (recipients.size() == 0)
+        {
+            _log.info("Notification: " + notification.getName() + " has no recipients, skipping");
+            return;
+        }
+
+        try
+        {
+            String msg = notification.getMessage(c, u);
+            if (org.apache.commons.lang3.StringUtils.isEmpty(msg))
+            {
+                _log.info("Notification " + notification.getName() + " did not produce a message, will not send email");
+                return;
+            }
+
+            _log.info("Sending message for notification: " + notification.getName() + " to " + recipients.size() + " recipients");
+            MailHelper.MultipartMessage mail = MailHelper.createMultipartMessage();
+
+            mail.setFrom(NotificationServiceImpl.get().getReturnEmail(c));
+            mail.setSubject(notification.getEmailSubject());
+            mail.setBodyContent(msg, "text/html");
+            mail.addRecipients(Message.RecipientType.TO, recipients.toArray(new Address[recipients.size()]));
+
+            MailHelper.send(mail, u, c);
+        }
+        catch (Exception e)
+        {
+            ExceptionUtil.logExceptionToMothership(null, e);
         }
     }
 }
