@@ -46,6 +46,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                 itemId: notification.name,
                 items: [{
                     html: notification.name,
+                    cls: 'ldk-notificationlabel',
                     width: 200
                 },{
                     width: 350,
@@ -339,6 +340,8 @@ Ext4.define('LDK.window.ManageNotificationWindow', {
             });
         }
         else {
+            response.subscriptions = LDK.Utils.sortByProperty(response.subscriptions, 'name');
+
             var subscribedItems = [];
             Ext4.each(response.subscriptions, function(item){
                 subscribedItems.push({

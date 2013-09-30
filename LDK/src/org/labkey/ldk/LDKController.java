@@ -74,6 +74,8 @@ import java.io.File;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -460,6 +462,15 @@ public class LDKController extends SpringActionController
 
                 ret.add(map);
             }
+
+            Collections.sort(ret, new Comparator<Map<String, String>>()
+            {
+                @Override
+                public int compare(Map<String, String> o1, Map<String, String> o2)
+                {
+                    return o1.get("name").compareTo(o2.get("name"));
+                }
+            });
 
             result.put("subscriptions", ret);
             result.put("success", true);
