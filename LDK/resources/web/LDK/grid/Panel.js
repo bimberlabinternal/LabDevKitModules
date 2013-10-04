@@ -15,33 +15,6 @@ Ext4.define('LDK.grid.Panel', {
 
         this.callParent(arguments);
 
-        //this.on('afterlayout', this.setupTextWrapping, null, {delay: 200});
-    },
-
-    /**
-     * This adds CSS to enable text wrapping, but only on non-hidden columns
-     * Hidden columns are still rendered on the page, except with 0 width, so their
-     * text wraps abnormally if allowed.
-     */
-    setupTextWrapping: function(grid){
-        var cls = 'ldk-wrap-text';
-        if (grid.columns.length){
-            Ext4.each(grid.columns, function(column){
-                var id = column.getId();
-                var cells = Ext4.DomQuery.select('.x4-grid-cell-'+id);
-                column.addCls(cls);
-                column.cls = cls;
-
-                for (var i = 0; i < cells.length; i++){
-                    if (column.hidden === true) {
-                        Ext4.fly(cells[i]).removeCls();
-                    }
-                    else {
-                        Ext4.fly(cells[i]).addCls(cls);
-                    }
-                }
-            });
-        }
     },
 
     onMenuCreate: function(headerCt, menu){
