@@ -1,11 +1,14 @@
 package org.labkey.ldk;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Level;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.CoreSchema;
+import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.files.FileContentService;
 import org.labkey.api.ldk.LDKService;
@@ -31,6 +34,7 @@ import java.util.Set;
 public class LDKServiceImpl extends LDKService
 {
     private Set<NotificationSection> _summaryNotificationSections = new HashSet<>();
+    private Boolean _isNaturalizeInstalled = null;
 
     public LDKServiceImpl()
     {
@@ -143,5 +147,30 @@ public class LDKServiceImpl extends LDKService
     public Set<NotificationSection> getSiteSummaryNotificationSections()
     {
         return Collections.unmodifiableSet(_summaryNotificationSections);
+    }
+
+    public boolean isNaturalizeInstalled()
+    {
+        if (_isNaturalizeInstalled != null)
+        {
+            return _isNaturalizeInstalled;
+        }
+        else
+        {
+            try
+            {
+                // Attempt to use the core.GROUP_CONCAT() aggregate function. If this succeeds, we'll skip the install step.
+                SqlExecutor executor = new SqlExecutor(LDKSchema.getInstance().getSchema());
+                executor.setLogLevel(Level.OFF);
+                executor.execute("SELECT ldk.naturalize('Foo') FROM (SELECT 1 AS G) x");
+                _isNaturalizeInstalled = true;
+            }
+            catch (Exception e)
+            {
+                _isNaturalizeInstalled = false;
+            }
+
+            return _isNaturalizeInstalled;
+        }
     }
 }

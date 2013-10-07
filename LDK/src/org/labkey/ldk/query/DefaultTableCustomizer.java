@@ -25,6 +25,7 @@ import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.gwt.client.AuditBehaviorType;
 import org.labkey.api.gwt.client.util.StringUtils;
+import org.labkey.api.ldk.LDKService;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
@@ -100,6 +101,12 @@ public class DefaultTableCustomizer implements TableCustomizer
         //only attempt to do this for strings
         if (!String.class.equals(col.getJavaClass()))
             throw new IllegalArgumentException("Natural sorting only supported on string columns");
+
+        if (!LDKService.get().isNaturalizeInstalled())
+        {
+            _log.warn("Attempt to add natural sorting to a column when naturalize() has not been installed on this server");
+            return;
+        }
 
         //first add the sort col
         String name = colName + "_sortValue";
