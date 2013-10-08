@@ -103,6 +103,19 @@ public class LookupValidationHelper
         return allowable.get(value);
     }
 
+    public String validateRequiredField(String fieldName, Object value)
+    {
+        ColumnInfo ci = _table.getColumn(FieldKey.fromString(fieldName));
+        if (ci == null)
+            return null;
+
+        //NOTE: some required fields are auto-completed, like LSID or rowIds, so skip them here
+        if (!ci.isNullable() && ci.isUserEditable() && (value == null || StringUtils.isEmpty(String.valueOf(value))))
+            return "The field: " + ci.getLabel() + " is required";
+
+        return null;
+    }
+
     private Map<String, String> getAllowableValues(ColumnInfo ci)
     {
         String name = ci.getName();
