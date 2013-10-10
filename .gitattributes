@@ -27,6 +27,7 @@ labModules/LDK/lib/api-all-1.0.0-M14.jar -text
 labModules/LDK/lib/mina-core-2.0.7.jar -text
 labModules/LDK/lib/quartz-2.1.6.jar -text
 labModules/LDK/module.properties -text
+labModules/LDK/resources/credits/jars.txt -text
 labModules/LDK/resources/module.xml -text
 labModules/LDK/resources/queries/core/DistinctUsersByMonth.sql -text
 labModules/LDK/resources/queries/core/DistinctUsersByMonth/.qview.xml -text
@@ -177,7 +178,6 @@ labModules/LDK/resources/web/LDK/ux/DateTimeField.js -text
 labModules/LDK/resources/web/LDK/ux/ItemSelector.css -text
 labModules/LDK/resources/web/LDK/ux/ItemSelector.js -text
 labModules/LDK/resources/web/LDK/ux/MultiSelect.js -text
-labModules/LDK/src/META-INF/ldk/jars.txt -text
 labModules/LDK/src/org/labkey/ldk/LDKController.java -text
 labModules/LDK/src/org/labkey/ldk/LDKManager.java -text
 labModules/LDK/src/org/labkey/ldk/LDKModule.java -text
