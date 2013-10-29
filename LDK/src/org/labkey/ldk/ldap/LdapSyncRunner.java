@@ -267,8 +267,10 @@ public class LdapSyncRunner implements Job
         User existing = UserManager.getUser(ldapEntry.getValidEmail());
         if (existing != null)
         {
+            //NOTE: we disable users in LK if not active in LDAP, but not the reverse since a user could be disabled in LK intentionally.
+            //there can often be a lag between a person leaving and actually having their account disabled in LDAP
             boolean isEnabled = ldapEntry.isEnabled();
-            if (isEnabled != existing.isActive())
+            if (!isEnabled && isEnabled != existing.isActive())
             {
                 setUserActive(existing, isEnabled);
                 _usersInactivated++;

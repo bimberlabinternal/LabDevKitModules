@@ -786,7 +786,15 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         var token = [];
         for (var i in filters){
             if (filters[i]){
-                token.push(i + ':' + filters[i]);
+                // NOTE: requests will fail if the URL is too long.  when trying to filter on a long list of discrete IDs, it can be fairly easy to hit this limit
+                // this solution isnt perfect, but if we simply omit those IDs from the return URL it should succeed.  this will
+                // mean we cannot
+                if (filters[i].length > 200){
+                    console.log('param is too long for URL: ' + i + '/' + filters[i].length);
+                }
+                else {
+                    token.push(i + ':' + filters[i]);
+                }
             }
         }
         Ext4.History.add(token.join('&'));

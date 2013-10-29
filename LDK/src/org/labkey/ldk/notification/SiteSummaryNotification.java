@@ -337,11 +337,11 @@ public class SiteSummaryNotification implements Notification
     private void getPipelineJobCount(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
     {
         TableInfo jobs = PipelineService.get().getJobsTable(u, c);
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("created"), "-1d", CompareType.DATE_GTE);
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("modified"), "-1d", CompareType.DATE_GTE);
         TableSelector ts = new TableSelector(jobs, filter, null);
         long count = ts.getRowCount();
 
-        msg.append("Pipeline jobs created in the past 24 hours: " + count + "<br>");
+        msg.append("Pipeline jobs created/modified in the past 24 hours: " + count + "<br>");
     }
 
     private void getFileRootSizes(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)

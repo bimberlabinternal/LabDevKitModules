@@ -23,7 +23,7 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
                 if(selectedRecords && selectedRecords.length && selectedRecords.length == 1)
                     val = selectedRecords[0].get(this.displayField);
 
-                if(val == 'Other'){
+                if(this.userEditablePlugin.allowChooseOther && val == 'Other'){
                     this.getPicker().getSelectionModel().deselectAll(true); //note: we need to clear selection in case other is clicked twice in a row
                     this.userEditablePlugin.onClickOther();
                     this.collapse();
@@ -147,7 +147,8 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
 
     createWindow: function(){
         return Ext4.MessageBox.prompt('Enter Value', 'Enter value:', function(btn, val){
-            this.onWindowClose(val);
+            if (btn == 'ok')
+                this.onWindowClose(val);
         }, this);
     },
 
