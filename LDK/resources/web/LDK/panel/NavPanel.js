@@ -240,8 +240,7 @@ Ext4.define('LDK.panel.NavPanel', {
                                         urlParams: btn.urlConfig.params,
                                         controller: btn.urlConfig.controller,
                                         action: btn.urlConfig.action,
-                                        title: btn.importTitle,
-                                        workbookFolderType: 'Expt Workbook'
+                                        title: btn.importTitle
                                     }).show(el);
                                 }
                             },{
@@ -261,8 +260,7 @@ Ext4.define('LDK.panel.NavPanel', {
                                         controller: btn.urlConfig.controller,
                                         action: btn.urlConfig.action,
                                         urlParams: btn.urlConfig.params,
-                                        title: btn.importTitle,
-                                        workbookFolderType: 'Expt Workbook'
+                                        title: btn.importTitle
                                     }).show(el);
                                 }
                             }]
@@ -425,7 +423,6 @@ Ext4.define('LDK.panel.NavPanel', {
                         controller: config.urlConfig.controller,
                         action: config.urlConfig.action,
                         urlParams: config.urlConfig.params,
-                        workbookFolderType: 'Expt Workbook',
                         title: config.importTitle || 'Import Data'
                     }, config.importWizardConfig);
                     Ext4.create('Laboratory.window.WorkbookCreationWindow', wizardCfg).show(btn);
