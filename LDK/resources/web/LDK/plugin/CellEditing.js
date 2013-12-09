@@ -63,6 +63,12 @@ Ext4.define('LDK.grid.plugin.CellEditing', {
         return editor;
     },
 
+    startEdit: function(record, columnHeader){
+        //NOTE: this was added to allow editors to be conditionally created, based on the data of that row.  See ClinicalObservations in EHR
+        this.editors.clear();
+        this.callParent(arguments);
+    },
+
     getEditingContext: function(record, columnHeader){
         //NOTE: this exists to prevent editing on calculated columns or others not bound to a field
         if (Ext4.isObject(columnHeader) && !columnHeader.dataIndex){

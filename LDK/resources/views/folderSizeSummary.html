@@ -88,7 +88,15 @@
                     },
                     scope: this,
                     success: LABKEY.Utils.getCallbackWrapper(this.onLoad, this),
-                    failure: LDK.Utils.getErrorCallback()
+                    failure: LABKEY.Utils.getCallbackWrapper(function(request, response, obj){
+                        if (response && response.status == 404){
+                            Ext4.Msg.hide();
+                            Ext4.Msg.alert('Error', 'Folder not found');
+                        }
+                        else {
+                            LDK.Utils.getErrorCallback().call(this, response, obj);
+                        }
+                    }, this)
                 });
             },
 
