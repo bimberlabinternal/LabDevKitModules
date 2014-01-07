@@ -18,7 +18,7 @@ Ext4.define('LDK.button.LinkButton', {
     renderTpl: [
         '<span id="{id}-wrap">',
         '<tpl if="linkPrefix">{linkPrefix}</tpl>',
-        '<a id="{id}-linkEl "',
+        '<a id="{id}-linkEl"',
         '<tpl if="href"> href="{href} " </tpl>',
         '<tpl if="linkTarget"> target="{linkTarget}" </tpl>',
         '<tpl if="tooltip"> data-qtip="{tooltip}"</tpl>' +
@@ -30,6 +30,8 @@ Ext4.define('LDK.button.LinkButton', {
     renderSelectors: {
         linkEl: 'a'
     },
+
+    childEls: ['linkEl'],
 
     initComponent: function() {
         if (this.menu) {
@@ -91,7 +93,7 @@ Ext4.define('LDK.button.LinkButton', {
 
         if (me.rendered) {
             if (me.tooltip && Ext4.quickTipsActive) {
-                Ext4.tip.QuickTipManager.getQuickTip().cancelShow(me.el);
+                Ext4.tip.QuickTipManager.getQuickTip().cancelShow(me.linkEl);
             }
 
             if (menu.isVisible()) {
@@ -99,7 +101,7 @@ Ext4.define('LDK.button.LinkButton', {
             }
 
             if (!fromEvent || me.showEmptyMenu || menu.items.getCount() > 0) {
-                menu.showBy(me.el, me.menuAlign);
+                menu.showBy(me.linkEl, me.menuAlign);
             }
         }
         return me;
@@ -134,6 +136,6 @@ Ext4.define('LDK.button.LinkButton', {
         this.callParent(arguments);
 
         // Add whatever button listeners we need
-        this.mon(this.el, 'click', this.onClick, this);
+        this.mon(this.linkEl, 'click', this.onClick, this);
     }
 });

@@ -441,6 +441,45 @@ LDK.Utils = new function(){
 
         isSharedProject: function(){
             return LABKEY.Security.currentContainer.path == ('/' + LABKEY.Security.getSharedContainer())
+        },
+
+        textToArray: function(text){
+            if (Ext4.isEmpty(text))
+                return [];
+
+            text = Ext4.String.trim(text);
+            text = text.replace(/[\s,;]+/g, ';');
+            text = text.replace(/(^;|;$)/g, '');
+            text = text.toLowerCase();
+
+            if (text){
+                text = text.split(';');
+            }
+
+            return text;
+        },
+
+        // returns a naturalized string often used for sorting.
+        // adapted from: http://my.opera.com/GreyWyvern/blog/show.dml/1671288
+        naturalize: function(t) {
+            var tz = [], x = 0, y = -1, n, i, j;
+
+            while (i = (j = t.charAt(x++)).charCodeAt(0)) {
+                var m = (i == 46 || (i >=48 && i <= 57));
+                if (m !== n) {
+                    tz[++y] = "";
+                    n = m;
+                }
+                tz[y] += j;
+            }
+
+            for (var k=0;k<tz.length;k++){
+                if (Ext4.isNumeric(tz[k])){
+                    tz[k] = Ext4.String.leftPad(tz[k], 26, '0');
+                }
+            }
+
+            return tz.join('');
         }
     }
 }

@@ -52,9 +52,9 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                     width: 350,
                     html: ['Schedule: ' + notification.schedule,
                         'Last Run: ' + (notification.lastRun == 0 ? 'Never' : new Date(notification.lastRun).format('Y-m-d H:i')),
-                        'Next Fire Time: ' + notification.nextFireTime,
-                        'Time Since: ' + notification.durationString,
-                        'Description: ' + notification.description,
+                        'Next Fire Time: ' + (notification.nextFireTime ? new Date(notification.nextFireTime).format('Y-m-d H:i') : ''),
+                        'Time Since: ' + (notification.durationString ? notification.durationString : ''),
+                        'Description: ' + (notification.description ? notification.description: ''),
                         'You are ' + (notification.subscriptions.length ? '' : 'not ') +  'subscribed to this notification'
                     ].join('<br>')
                 },{

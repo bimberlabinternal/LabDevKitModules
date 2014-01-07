@@ -33,7 +33,6 @@
         <script path="LDK/panel/MultiSubjectFilterType.js"/>
         <script path="LDK/panel/NoFiltersFilterType.js"/>
         <script path="LDK/panel/TabbedReportPanel.js"/>
-        <script path="LDK/plugin/SelfCenteringWindow.js"/>
         <script path="LDK/data/CaseInsensitiveModel.js"/>
         <script path="LDK/data/LabKeyStore.js"/>
     </library>

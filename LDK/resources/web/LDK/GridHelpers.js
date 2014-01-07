@@ -198,9 +198,9 @@ Ext4.define('LDK.ext.StoreSorterWindow', {
 
                 //pre-create store if it does not exist
                 if (meta.lookup){
-                    var store = Ext4.StoreMgr.get(LABKEY.ext.Ext4Helper.getLookupStoreId(meta));
+                    var store = Ext4.StoreMgr.get(LABKEY.ext4.Util.getLookupStoreId(meta));
                     if (!store){
-                        store = LABKEY.ext.Ext4Helper.getLookupStore(meta);
+                        store = LABKEY.ext4.Util.getLookupStore(meta);
                     }
                     stores.push(store);
                 }

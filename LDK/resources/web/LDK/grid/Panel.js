@@ -20,12 +20,9 @@ Ext4.define('LDK.grid.Panel', {
     onMenuCreate: function(headerCt, menu){
         menu.items.each(function(item){
             if (item.text == 'Columns'){
-                console.log('remove');
                 menu.remove(item);
             }
         }, this);
-
-        console.log(arguments);
     },
 
     getEditingPlugin: function(){
@@ -34,19 +31,6 @@ Ext4.define('LDK.grid.Panel', {
             clicksToEdit: this.clicksToEdit
         });
     }
-
-//    onColumnHide: function(ct, column){
-//        console.log('hide');
-//        console.log(column);
-//        column.tdCls = null;
-//    },
-//
-//    onColumnShow: function(ct, column){
-//        console.log('show');
-//        column.tdCls = 'newClass';
-//        console.log(column);
-//
-//    }
 });
 
 Ext4.apply(LABKEY.ext4.GRIDBUTTONS, {
@@ -172,42 +156,7 @@ Ext4.define('LDK.grid.panel.RowSelectionModel', {
 
     lastId:null,
 
-    onEditorTab: function(ep, e) {
-        var me = this,
-                view = me.view,
-                record = ep.getActiveRecord(),
-                header = ep.getActiveColumn(),
-                position = view.getPosition(record, header),
-                direction = e.shiftKey ? 'left' : 'right',
-                newPosition = view.walkCells(position, direction, e, false),
-                newId = newPosition.row,
-                grid = view.up('gridpanel');
-
-        //NOTE: x-scrolling is distracting, so disable for now
-//        var deltaX;
-//        if (me.lastId != newId && me.lastId!=null){
-//            deltaX = me.lastId < newId ? -Infinity : Infinity;
-//            header = grid.headerCt.getHeaderAtIndex(newPosition.column);
-//            if(header){
-//                while (!header.getEditor()){
-//                    newPosition= view.walkCells(newPosition,direction, e, false);
-//                    header=grid.headerCt.getHeaderAtIndex(newPosition.column);
-//                }
-//            }
-//        }
-//        else {
-//            deltaX = ep.context.column.width * (direction == 'right' ? 1 : -1);
-//        }
-//
-//        grid.scrollByDeltaX(deltaX);
-        me.lastId = newPosition.row;
-        if (newPosition)
-            ep.startEditByPosition(newPosition);
-        else
-            ep.completeEdit();
-    },
-
-    onEditorEnter:function(ep,e){
+    onEditorEnter: function(ep,e){
         var me = this,
                 view = me.view,
                 record = ep.getActiveRecord(),

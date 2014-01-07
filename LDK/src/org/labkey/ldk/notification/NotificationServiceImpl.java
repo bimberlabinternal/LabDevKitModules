@@ -360,7 +360,7 @@ public class NotificationServiceImpl extends NotificationService
     }
 
     @NotNull
-    private List<Address> getEmailsForPrincipal(UserPrincipal user) throws ValidEmail.InvalidEmailException
+    public List<Address> getEmailsForPrincipal(UserPrincipal user) throws ValidEmail.InvalidEmailException
     {
         if (user instanceof User)
         {

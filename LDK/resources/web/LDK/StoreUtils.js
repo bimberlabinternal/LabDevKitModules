@@ -26,7 +26,7 @@ LDK.StoreUtils = new function(){
             var models = [];
             Ext4.each(header, function(fieldName){
                 cannonicalNames[fieldName] = LDK.StoreUtils.getCanonicalFieldName(config.store, fieldName);
-                metadataMap[fieldName] = LABKEY.ext.Ext4Helper.findFieldMetadata(config.store, cannonicalNames[fieldName]);
+                metadataMap[fieldName] = LABKEY.ext4.Util.findFieldMetadata(config.store, cannonicalNames[fieldName]);
             }, this);
 
             for (var i=0;i<data.length;i++){
@@ -110,7 +110,7 @@ LDK.StoreUtils = new function(){
                     val = data[field.name];
                     var type = Ext4.data.Types[field.extType];
                     if (type && type.convert){
-                        if (field.extType == LABKEY.ext.Ext4Helper.EXT_TYPE_MAP.date)
+                        if (field.extType == LABKEY.ext4.Util.EXT_TYPE_MAP.date)
                             val = LDK.ConvertUtils.parseDate(val);
                         else
                             val = type.convert(val);
@@ -239,7 +239,7 @@ LDK.StoreUtils = new function(){
         sortStoreByFieldNames: function(store, fieldNames){
             var fields = [];
             Ext4.each(fieldNames, function(fn){
-                var meta = LABKEY.ext.Ext4Helper.findFieldMetadata(store, fn);
+                var meta = LABKEY.ext4.Util.findFieldMetadata(store, fn);
                 if (meta)
                     fields.push(meta);
             }, this);
@@ -261,14 +261,14 @@ LDK.StoreUtils = new function(){
                 var obj = {term: meta.dataIndex || meta.name};
                 if(meta.lookup){
                     Ext4.apply(obj, {
-                        storeId: LABKEY.ext.Ext4Helper.getLookupStoreId(meta),
+                        storeId: LABKEY.ext4.Util.getLookupStoreId(meta),
                         displayField: meta.lookup.displayColumn,
                         valueField: meta.lookup.keyColumn
                     });
 
                     //pre-create store if it does not exist
                     if (!Ext4.StoreMgr.get(obj.storeId)){
-                        LABKEY.ext.Ext4Helper.getLookupStore(meta);
+                        LABKEY.ext4.Util.getLookupStore(meta);
                     }
                 }
                 fieldList.push(obj);
@@ -331,9 +331,9 @@ LDK.StoreUtils = new function(){
             col.editable = field.userEditable!==false;
 
             if(col.editable && !col.editor)
-                col.editor = LABKEY.ext.Ext4Helper.getGridEditorConfig(field);
+                col.editor = LABKEY.ext4.Util.getGridEditorConfig(field);
 
-            col.renderer = LABKEY.ext.Ext4Helper.getDefaultRenderer(col, field);
+            col.renderer = LABKEY.ext4.Util.getDefaultRenderer(col, field);
 
             //HTML-encode the column header
             col.text = Ext4.util.Format.htmlEncode(col.header);

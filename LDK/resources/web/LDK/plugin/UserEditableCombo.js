@@ -83,7 +83,7 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
         combo.store.on('beforerender', combo.ensureValueInStore, combo);
 
         if (this.allowChooseOther){
-            if (LABKEY.ext.Ext4Helper.hasStoreLoaded(combo.store)){
+            if (LABKEY.ext4.Util.hasStoreLoaded(combo.store)){
                 this.addOtherRecord();
             }
             else {
@@ -202,7 +202,7 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
         if(!data || LABKEY.Utils.isEmptyObj(data))
             return;
 
-        if (!this.combo.store || !LABKEY.ext.Ext4Helper.hasStoreLoaded(this.combo.store)){
+        if (!this.combo.store || !LABKEY.ext4.Util.hasStoreLoaded(this.combo.store)){
             this.combo.store.on('load', function(store){
                 this.addRecord(data, idx);
             }, this, {single: true});
