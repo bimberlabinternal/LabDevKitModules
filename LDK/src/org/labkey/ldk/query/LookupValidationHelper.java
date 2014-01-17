@@ -64,7 +64,7 @@ public class LookupValidationHelper
         if (_table == null)
             throw new IllegalArgumentException("Unknown table: " + schemaName + "." + queryName);
 
-        assert MemTracker.put(this);
+        MemTracker.getInstance().put(this);
     }
 
     public static LookupValidationHelper create(String containerId, int userId, String schemaName, String queryName)
