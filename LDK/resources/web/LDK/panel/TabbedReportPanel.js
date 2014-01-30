@@ -70,6 +70,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 scope: this,
                 style:'margin-left:200px;margin-top: 10px;'
             },{
+                xtype: 'container',
+                items: this.getIEWarning()
+            },{
                 tag: 'span',
                 style: 'padding: 10px'
             },{
@@ -85,6 +88,20 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         this.callParent(arguments);
 
         this.on('afterrender', this.onAfterRender);
+    },
+
+    getIEWarning: function(){
+        var toAdd = [];
+
+        if (Ext4.isIE){
+            toAdd.push({
+                border: false,
+                html: '<span>NOTE: You are currently using Internet Explorer.  While this page will work on any browser, it may it should perform better on any other major browser, such as Chrome or Firefox.  For the best experience, we recommend using one of these browsers.</span>',
+                style: 'padding-top: 20px;'
+            });
+        }
+
+        return toAdd;
     },
 
     onAfterRender: function(panel){

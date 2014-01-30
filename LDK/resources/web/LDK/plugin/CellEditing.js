@@ -5,6 +5,15 @@
 Ext4.define('LDK.grid.plugin.CellEditing', {
     extend: 'Ext.grid.plugin.CellEditing',
 
+    onCellClick: function(view, cell, colIdx, record, row, rowIdx, e) {
+        //NOTE: if holding shift or ctrl, dont allow editing ot start
+        if (e && (e.shiftKey || e.ctrlKey)){
+            return;
+        }
+
+        this.callParent(arguments);
+    },
+
     onSpecialKey: function(ed, field, e) {
         if (e.getKey() === e.ENTER){
             var grid = this.grid, sm;

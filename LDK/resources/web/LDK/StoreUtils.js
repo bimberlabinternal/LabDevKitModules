@@ -287,12 +287,12 @@ LDK.StoreUtils = new function(){
                         var store = Ext4.StoreMgr.get(item.storeId);
                         var rec1;
                         var rec2;
-                        rec1 = store.find(item.valueField, a.get(item.term));
+                        rec1 = store.findExact(item.valueField, a.get(item.term));
                         if(rec1 != -1){
                             rec1 = store.getAt(rec1);
                             val1 = rec1.get(item.displayField) || '';
                         }
-                        rec2 = store.find(item.valueField, b.get(item.term));
+                        rec2 = store.findExact(item.valueField, b.get(item.term));
                         if(rec2 != -1){
                             rec2 = store.getAt(rec2);
                             val2 = rec2.get(item.displayField) || '';

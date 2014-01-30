@@ -38,7 +38,7 @@ LDK.SelectRowsRow = function(row){
             if (!val)
                 return null;
 
-            return Ext4.isEmpty(val.displayValue) ? val.value : val.displayValue;
+            return Ext4.isEmpty(val.displayValue) ? (Ext4.isEmpty(val.value) ? null : val.value) : val.displayValue;
         },
 
         normalizeFieldName: function(name){

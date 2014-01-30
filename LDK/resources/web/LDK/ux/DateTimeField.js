@@ -24,6 +24,8 @@ Ext.define('Ext.ux.form.field.DateTime', {
     msgTarget: 'under',
     layout: 'hbox',
     readOnly: false,
+    defaultHour: null,
+    defaultMinutes: null,
 
     /**
      * @cfg {String} dateFormat
@@ -85,6 +87,24 @@ Ext.define('Ext.ux.form.field.DateTime', {
             flex:1,
             isFormField:false, //exclude from field query's
             submitValue:false,
+            listeners: {
+                scope: this,
+                change: function(field, val){
+                    if (val && !this.timeField.getValue()){
+                        var date = Ext.Date.clone(val);
+
+                        if (!Ext.isEmpty(this.defaultHour)){
+                            date.setHours(this.defaultHour);
+                        }
+
+                        if (!Ext.isEmpty(this.defaultMinutes)){
+                            date.setMinutes(this.defaultMinutes);
+                        }
+
+                        this.timeField.setValue(date);
+                    }
+                }
+            },
             getErrors: function(value){
                 var errors = Ext.form.field.Date.prototype.getErrors.apply(this, arguments);
                 if (this.ownerCt && this.ownerCt.getErrors)
@@ -107,9 +127,9 @@ Ext.define('Ext.ux.form.field.DateTime', {
             submitValue:false,
             listeners: {
                 scope: this,
-                change: function(field){
+                change: function(field, val){
                     if (!this.dateField.getValue()){
-                        this.dateField.setValue(new Date());
+                        this.dateField.setValue(val);
                     }
                 }
             },
@@ -130,10 +150,8 @@ Ext.define('Ext.ux.form.field.DateTime', {
             me.items[i].on('focus', Ext.bind(me.onItemFocus, me));
             me.items[i].on('blur', Ext.bind(me.onItemBlur, me));
             me.items[i].on('specialkey', function(field, event){
-                key = event.getKey();
-                tab = key == event.TAB;
-
-                if (tab && me.focussedItem == me.dateField) {
+                //NOTE: important when used in a grid, to prevent blur when tabbing
+                if (event.getKey() == event.TAB && !event.shiftKey && me.focussedItem == me.dateField) {
                     event.stopEvent();
                     me.timeField.focus();
                     return;

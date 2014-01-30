@@ -17,10 +17,12 @@
         <script path="LDK/plugin/CellEditing.js"/>
         <script path="LDK/button/LinkButton.js"/>
         <script path="LDK/field/EditInPlaceElement.js"/>
+        <script path="LDK/field/NumberField.js"/>
         <script path="LDK/form/Panel.js"/>
         <script path="LDK/panel/NavPanel.js"/>
         <script path="LDK/panel/BulkEditPanel.js"/>
         <script path="LDK/panel/ContentResizingPanel.js"/>
+        <script path="LDK/panel/QueryTabPanel.js"/>
         <script path="LDK/panel/WebpartPanel.js"/>
         <script path="LDK/panel/QueryPanel.js"/>
         <script path="LDK/panel/DetailsPanel.js"/>

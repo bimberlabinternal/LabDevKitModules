@@ -72,6 +72,14 @@ Ext4.define('LDK.data.CaseInsensitiveModel', {
             newData[this.resolveField(name)] = data[name];
         }
 
+        //this is unrelated to case insensitivity.  we need to clear cached display values on these fields
+        for (var field  in newData){
+            if (this.raw && this.raw[field]){
+                delete this.raw[field].displayValue;
+                delete this.raw[field].mvValue;
+            }
+        }
+
         this.callParent([newData]);
     }
 });

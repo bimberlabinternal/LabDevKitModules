@@ -42,8 +42,15 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
                 if (Ext4.isEmpty(val))
                     return;
 
-                if (val instanceof Ext4.data.Model){
+                if (val instanceof Ext4.data.Model || Ext4.isArray(val)){
                     return;  //if setting value using a record, it is probably in the store
+                }
+
+                if (this.store.isLoading()){
+                    this.store.on('load', function(){
+                        this.addValueIfNeeded(val);
+                    }, this, {single: true});
+                    return;
                 }
 
                 if (Ext4.isObject(val)){
@@ -61,7 +68,7 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
                     return;
                 }
 
-                var recIdx = this.store.find(this.valueField, val);
+                var recIdx = this.store.findExact(this.valueField, val);
                 if (recIdx != -1)
                     return;
 

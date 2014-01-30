@@ -114,4 +114,25 @@
             <ns:column columnName="name"/>
         </ns:columns>
     </ns:table>
+    <ns:table tableName="months" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Months</ns:tableTitle>
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="monthName">
+                <ns:columnTitle>Month</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="monthNum">
+                <ns:columnTitle>Month Number</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
 </ns:tables>

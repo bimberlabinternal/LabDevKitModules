@@ -4,6 +4,7 @@
  * a message will be logged to the server's error log.
  */
 var console = require("console");
+var LABKEY = require("labkey");
 
 var LDK = {};
 exports.LDK = LDK;

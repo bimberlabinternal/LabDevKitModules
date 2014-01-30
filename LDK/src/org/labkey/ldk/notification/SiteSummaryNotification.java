@@ -20,6 +20,8 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.labkey.api.audit.AuditLogService;
+import org.labkey.api.audit.AuditTypeProvider;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
@@ -204,23 +206,31 @@ public class SiteSummaryNotification implements Notification
      */
     private void siteUsage(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
     {
-        DbSchema auditSchema = DbSchema.get("audit");
+        //different behavior depending on whether audit data has migrated
+        String tableName = "auditlog";
+        if (AuditLogService.get().hasEventTypeMigrated("UserAuditEvent"))
+        {
+            AuditTypeProvider ap = AuditLogService.get().getAuditProvider("UserAuditEvent");
+            tableName = ap.getDomain().getStorageTableName();
+        }
 
+        DbSchema auditSchema = DbSchema.get("audit");
         String sql = "SELECT\n" +
+            (auditSchema.getSqlDialect().isSqlServer() ? "TOP 7\n" : "") +
             "cast(a.created as date) as date,\n" +
             "count(*) AS Logins,\n" +
             "count(distinct a.createdby) AS DistinctUsers\n" +
-            "FROM audit.auditlog a\n" +
+            "FROM audit." + tableName + " a\n" +
             "WHERE a.EventType = 'UserAuditEvent'\n" +
             "AND a.Comment LIKE '%logged in%'\n" +
-            "AND a.created >= ?" +
-            "GROUP BY cast(a.created as date)";
+            "AND a.created >= ?\n" +
+            "GROUP BY cast(a.created as date)\n" +
+            "ORDER BY cast(a.created as date)";
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DATE, -7);
         SqlSelector ss = new SqlSelector(auditSchema, sql, cal.getTime());
-
         if (ss.getRowCount() > 0)
         {
             final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -431,41 +441,27 @@ public class SiteSummaryNotification implements Notification
 
     private void getTableSizeStats(Container c, User u, final StringBuilder msg, final StringBuilder alerts, final Map<String, String> saved, Map<String, String> toSave)
     {
-        msg.append("<br>The following items are designed to give an overview of the amount of data stored in this site:<br><br>");
-        String tableSizes = "tableSizes";
-
+        SQLFragment sql = null;
         if (DbScope.getLabkeyScope().getSqlDialect().isPostgreSQL())
         {
-            msg.append("<br><b>Row number of several key tables:</b><br><br>");
-            msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'><td>Table</td><td># of Rows</td></tr>");
-
-            DbSchema schema = DbSchema.get("exp");
-            TableInfo objectPropTable = schema.getTable("objectProperty");
-            TableSelector ts2 = new TableSelector(objectPropTable);
-            Long objectPropCount = ts2.getRowCount();
-            msg.append("<tr><td>exp.objectproperty</td><td>" + NumberFormat.getInstance().format(objectPropCount) + "</td></tr>");
-
-            TableInfo objectTable = schema.getTable("object");
-            TableSelector ts1 = new TableSelector(objectTable);
-            Long objectCount = ts1.getRowCount();
-            msg.append("<tr><td>exp.object</td><td>" + NumberFormat.getInstance().format(objectCount) + "</td></tr>");
-
-            DbSchema auditSchema = DbSchema.get("audit");
-            TableInfo auditTable = auditSchema.getTable("auditlog");
-            TableSelector ts3 = new TableSelector(auditTable);
-            Long count = ts3.getRowCount();
-            msg.append("<tr><td>audit.auditlog</td><td>" + NumberFormat.getInstance().format(count) + "</td></tr>");
-            msg.append("</table><br>");
+            sql = new SQLFragment("SELECT nspname as schemaName, relname as tableName, reltuples as rowcnt FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN ('pg_catalog', 'information_schema') AND relkind='r' ORDER BY reltuples DESC limit 20");
         }
-        else
+        else if (DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
         {
-            msg.append("<br><b>The top 20 largest tables, by row count:</b><br><br>");
-            msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'><td>Table</td><td># of Rows</td><td>Previous Value</td><td>% Change</td></tr>");
+            sql = new SQLFragment("SELECT top 20 OBJECT_SCHEMA_NAME(o.id) as schemaName, o.name as tableName, i.rowcnt FROM sysindexes AS i INNER JOIN sysobjects AS o ON i.id = o.id WHERE i.indid < 2  AND OBJECTPROPERTY(o.id, 'IsMSShipped') = 0 ORDER BY i.rowcnt desc");
+        }
 
-            SQLFragment sql = new SQLFragment("SELECT top 20 o.*, o.name, i.rowcnt FROM sysindexes AS i INNER JOIN sysobjects AS o ON i.id = o.id WHERE i.indid < 2  AND OBJECTPROPERTY(o.id, 'IsMSShipped') = 0 ORDER BY i.rowcnt desc");
+        if (sql != null)
+        {
+            msg.append("<br>The following items are designed to give an overview of the amount of data stored in this site:<br><br>");
+            String tableSizes = "tableSizes";
+
+            msg.append("<br><b>The top 20 largest tables, by row count:</b><br><br>");
+            msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'><td>Schema</td><td>Table</td><td># of Rows</td><td>Previous Value</td><td>% Change</td></tr>");
+
             SqlSelector ss = new SqlSelector(DbScope.getLabkeyScope(), sql);
 
-            final Map<String, String> newValueMap = new HashMap<String, String>();
+            final Map<String, String> newValueMap = new HashMap<>();
             final JSONObject oldValueMap = saved.containsKey(tableSizes) ? new JSONObject(saved.get(tableSizes)) : null;
 
             ss.forEach(new Selector.ForEachBlock<ResultSet>()
@@ -474,7 +470,9 @@ public class SiteSummaryNotification implements Notification
                 public void exec(ResultSet object) throws SQLException
                 {
                     Long total = object.getLong("rowcnt");
-                    String key = object.getString("name");
+                    String schema = object.getString("schemaName");
+                    String table = object.getString("tableName");
+                    String key = schema + "." + table;
 
                     newValueMap.put(key, total.toString());
                     Long previousValue = null;
@@ -484,7 +482,7 @@ public class SiteSummaryNotification implements Notification
                     }
 
                     String pctChange = getPctChange(previousValue, total, 0.05, "The number of rows in the table " +  key + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
-                    msg.append("<tr><td>" + object.getString("name") + "</td><td>" + (total == null ? "" : NumberFormat.getInstance().format(total)) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
+                    msg.append("<tr><td>" + (schema == null ? "" : schema) + "</td><td>" + (table == null ? "" : table) + "</td><td>" + (total == null ? "" : NumberFormat.getInstance().format(total)) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
                 }
             });
 

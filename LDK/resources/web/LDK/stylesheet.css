@@ -36,4 +36,5 @@ div.ldk-wp table.labkey-wp {
 
 .ldk-clickable:hover {
     text-decoration: underline;
+    cursor: pointer;
 }
