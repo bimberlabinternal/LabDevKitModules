@@ -10,6 +10,7 @@
         <script path="LDK/ConvertUtils.js"/>
         <script path="LDK/QueryHelper.js"/>
         <script path="LDK/plugin/UserEditableCombo.js"/>
+        <script path="LDK/plugin/MenuQuickTips.js"/>
         <script path="LDK/DateRangePanel.js"/>
         <script path="LDK/ux/DateTimeField.js"/>
         <script path="LDK/StoreUtils.js"/>

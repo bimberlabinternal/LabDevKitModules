@@ -169,16 +169,21 @@ LDK.Utils = new function(){
          * @param config The config object.  It supports the following properties:
          * <li>category: An arbitrary category name of this metric.</li>
          * <li>metricName: The name of the metric.  required.</li>
-         * <li>floatvalue1: A numeric value.</li>
-         * <li>floatvalue2: A numeric value.</li>
-         * <li>floatvalue3: A numeric value.</li>
-         * <li>stringvalue1: A string value.</li>
-         * <li>stringvalue2: A string value.</li>
-         * <li>stringvalue3: A string value.</li>
+         * <li>numericValue1: A numeric value.</li>
+         * <li>numericValue2: A numeric value.</li>
+         * <li>numericValue3: A numeric value.</li>
+         * <li>stringValue1: A string value.</li>
+         * <li>stringValue2: A string value.</li>
+         * <li>stringValue3: A string value.</li>
          */
         logMetric: function(config){
             if(!config || !config.metricName){
                 alert('ERROR: No metric name provided');
+                return;
+            }
+
+            if (LABKEY.Security.currentUser.isGuest){
+                console.log('Guests cannot write to the server log');
                 return;
             }
 

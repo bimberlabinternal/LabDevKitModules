@@ -13,6 +13,12 @@ Ext4.define('LDK.grid.Panel', {
             cls: 'ldk-grid'
         });
 
+        //loadmask doesnt work well in IE8 and can cause poor rendering
+        this.viewConfig = this.viewConfig || {};
+        Ext4.apply(this.viewConfig, {
+            loadMask: !(Ext4.isIE && Ext4.ieVersion <= 8)
+        });
+
         this.callParent(arguments);
 
     },

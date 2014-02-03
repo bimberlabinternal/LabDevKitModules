@@ -8,8 +8,11 @@ import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.CoreSchema;
+import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SqlExecutor;
+import org.labkey.api.data.Table;
 import org.labkey.api.data.TableCustomizer;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.files.FileContentService;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationSection;
@@ -20,7 +23,10 @@ import org.labkey.ldk.query.ColumnOrderCustomizer;
 import org.labkey.ldk.query.DefaultTableCustomizer;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -134,9 +140,9 @@ public class LDKServiceImpl extends LDKService
         DefaultTableCustomizer.applyNaturalSort(ti, colName);
     }
 
-    public void appendEnddateColumns(AbstractTableInfo ti)
+    public void appendCalculatedDateColumns(AbstractTableInfo ti, String dateColName, String enddateColName)
     {
-        DefaultTableCustomizer.appendEnddateColumns(ti);
+        DefaultTableCustomizer.appendCalculatedDateColumns(ti, dateColName, enddateColName);
     }
 
     public void registerSiteSummaryNotification(NotificationSection ns)
@@ -171,6 +177,184 @@ public class LDKServiceImpl extends LDKService
             }
 
             return _isNaturalizeInstalled;
+        }
+    }
+
+    public void logPerfMetric(Container c, User u, String metricName, String comment, Double value)
+    {
+        PerfMetricModel model = new PerfMetricModel();
+        model.setMetricName(metricName);
+        model.setStringValue1(comment);
+        model.setNumericValue1(value);
+
+        logPerfMetric(c, u, model);
+    }
+
+    public void logPerfMetric(Container c, User u, PerfMetricModel model)
+    {
+        Map<String, Object> result = new HashMap<>();
+        TableInfo t = LDKSchema.getInstance().getSchema().getTable(LDKSchema.TABLE_METRICS);
+
+        if(model.getMetricName() == null)
+        {
+            throw new IllegalArgumentException("No metric name provided");
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("container", c.getId());
+        map.put("created", new Date());
+        map.put("createdby", u.getUserId());
+
+        map.put("category", model.getCategory());
+        map.put("metric_name", model.getMetricName());
+        map.put("floatvalue1", model.getNumericValue1());
+        map.put("floatvalue2", model.getNumericValue2());
+        map.put("floatvalue3", model.getNumericValue3());
+        map.put("stringvalue1", model.getStringValue1());
+        map.put("stringvalue2", model.getStringValue2());
+        map.put("stringvalue3", model.getStringValue3());
+
+        map.put("referrerURL", model.getReferrerURL());
+        map.put("browser", model.getBrowser());
+        map.put("platform", model.getPlatform());
+
+        try
+        {
+            Table.insert(u, t, map);
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeSQLException(e);
+        }
+    }
+
+    public static class PerfMetricModel
+    {
+        String _category;
+        String _metricName;
+        String _stringValue1;
+        String _stringValue2;
+        String _stringValue3;
+        Double _numericValue1;
+        Double _numericValue2;
+        Double _numericValue3;
+        String _referrerURL;
+        String _platform;
+        String _browser;
+
+        public PerfMetricModel()
+        {
+
+        }
+
+        public String getCategory()
+        {
+            return _category;
+        }
+
+        public void setCategory(String category)
+        {
+            _category = category;
+        }
+
+        public String getMetricName()
+        {
+            return _metricName;
+        }
+
+        public void setMetricName(String metricName)
+        {
+            _metricName = metricName;
+        }
+
+        public String getStringValue1()
+        {
+            return _stringValue1;
+        }
+
+        public void setStringValue1(String stringValue1)
+        {
+            _stringValue1 = stringValue1;
+        }
+
+        public String getStringValue2()
+        {
+            return _stringValue2;
+        }
+
+        public void setStringValue2(String stringValue2)
+        {
+            _stringValue2 = stringValue2;
+        }
+
+        public String getStringValue3()
+        {
+            return _stringValue3;
+        }
+
+        public void setStringValue3(String stringValue3)
+        {
+            _stringValue3 = stringValue3;
+        }
+
+        public Double getNumericValue1()
+        {
+            return _numericValue1;
+        }
+
+        public void setNumericValue1(Double numericValue1)
+        {
+            _numericValue1 = numericValue1;
+        }
+
+        public Double getNumericValue2()
+        {
+            return _numericValue2;
+        }
+
+        public void setNumericValue2(Double numericValue2)
+        {
+            _numericValue2 = numericValue2;
+        }
+
+        public Double getNumericValue3()
+        {
+            return _numericValue3;
+        }
+
+        public void setNumericValue3(Double numericValue3)
+        {
+            _numericValue3 = numericValue3;
+        }
+
+        public String getReferrerURL()
+        {
+            return _referrerURL;
+        }
+
+        public void setReferrerURL(String referrerURL)
+        {
+            _referrerURL = referrerURL;
+        }
+
+        public String getPlatform()
+        {
+            return _platform;
+        }
+
+        public void setPlatform(String platform)
+        {
+            _platform = platform;
+        }
+
+        public String getBrowser()
+        {
+            return _browser;
+        }
+
+        public void setBrowser(String browser)
+        {
+            _browser = browser;
         }
     }
 }

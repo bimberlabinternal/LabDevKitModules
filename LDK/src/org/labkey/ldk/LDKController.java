@@ -1079,9 +1079,6 @@ public class LDKController extends SpringActionController
         public ApiResponse execute(LogMetricForm form, BindException errors) throws Exception
         {
             Map<String, Object> result = new HashMap<>();
-            Container c = getContainer();
-            User u = getUser();
-            TableInfo t = LDKSchema.getInstance().getSchema().getTable(LDKSchema.TABLE_METRICS);
 
             if(form.getMetricName() == null)
             {
@@ -1089,160 +1086,148 @@ public class LDKController extends SpringActionController
                 return null;
             }
 
-            Map<String, Object> map = new HashMap<>();
-            map.put("container", c.getId());
-            map.put("created", new Date());
-            map.put("createdby", u.getUserId());
+            LDKServiceImpl.PerfMetricModel model = new LDKServiceImpl.PerfMetricModel();
+            model.setCategory(form.getCategory());
+            model.setMetricName(form.getMetricName());
+            model.setNumericValue1(form.getNumericValue2());
+            model.setNumericValue2(form.getNumericValue2());
+            model.setNumericValue3(form.getNumericValue3());
+            model.setStringValue1(form.getStringValue1());
+            model.setStringValue2(form.getStringValue2());
+            model.setStringValue3(form.getStringValue3());
+            model.setReferrerURL(form.getReferrerURL());
+            model.setBrowser(form.getBrowser());
+            model.setPlatform(form.getPlatform());
 
-            map.put("category", form.getCategory());
-            map.put("metric_name", form.getMetricName());
-            map.put("floatvalue1", form.getFloatvalue1());
-            map.put("floatvalue2", form.getFloatvalue2());
-            map.put("floatvalue3", form.getFloatvalue3());
-            map.put("stringvalue1", form.getStringvalue1());
-            map.put("stringvalue2", form.getStringvalue2());
-            map.put("stringvalue3", form.getStringvalue3());
-
-            map.put("referrerURL", form.getReferrerURL());
-            map.put("browser", form.getBrowser());
-            map.put("platform", form.getPlatform());
+            ((LDKServiceImpl)LDKServiceImpl.get()).logPerfMetric(getContainer(), getUser(), model);
 
             result.put("success", true);
-
-            try
-            {
-                Table.insert(u, t, map);
-            }
-            catch (SQLException e)
-            {
-                result.put("success", false);
-            }
             return new ApiSimpleResponse(result);
         }
     }
 
     public static class LogMetricForm
     {
-        String category;
-        String metricName;
-        String stringvalue1;
-        String stringvalue2;
-        String stringvalue3;
-        float floatvalue1;
-        float floatvalue2;
-        float floatvalue3;
-        String referrerURL;
-        String platform;
-        String browser;
+        String _category;
+        String _metricName;
+        String _stringValue1;
+        String _stringValue2;
+        String _stringValue3;
+        Double _numericValue1;
+        Double _numericValue2;
+        Double _numericValue3;
+        String _referrerURL;
+        String _platform;
+        String _browser;
 
         public String getCategory()
         {
-            return category;
+            return _category;
         }
 
         public void setCategory(String category)
         {
-            this.category = category;
+            _category = category;
         }
 
         public String getMetricName()
         {
-            return metricName;
+            return _metricName;
         }
 
         public void setMetricName(String metricName)
         {
-            this.metricName = metricName;
+            _metricName = metricName;
         }
 
-        public String getStringvalue1()
+        public String getStringValue1()
         {
-            return stringvalue1;
+            return _stringValue1;
         }
 
-        public void setStringvalue1(String stringvalue1)
+        public void setStringValue1(String stringValue1)
         {
-            this.stringvalue1 = stringvalue1;
+            _stringValue1 = stringValue1;
         }
 
-        public String getStringvalue2()
+        public String getStringValue2()
         {
-            return stringvalue2;
+            return _stringValue2;
         }
 
-        public void setStringvalue2(String stringvalue2)
+        public void setStringValue2(String stringValue2)
         {
-            this.stringvalue2 = stringvalue2;
+            _stringValue2 = stringValue2;
         }
 
-        public String getStringvalue3()
+        public String getStringValue3()
         {
-            return stringvalue3;
+            return _stringValue3;
         }
 
-        public void setStringvalue3(String stringvalue3)
+        public void setStringValue3(String stringValue3)
         {
-            this.stringvalue3 = stringvalue3;
+            _stringValue3 = stringValue3;
         }
 
-        public float getFloatvalue1()
+        public Double getNumericValue1()
         {
-            return floatvalue1;
+            return _numericValue1;
         }
 
-        public void setFloatvalue1(float floatvalue1)
+        public void setNumericValue1(Double numericValue1)
         {
-            this.floatvalue1 = floatvalue1;
+            _numericValue1 = numericValue1;
         }
 
-        public float getFloatvalue2()
+        public Double getNumericValue2()
         {
-            return floatvalue2;
+            return _numericValue2;
         }
 
-        public void setFloatvalue2(float floatvalue2)
+        public void setNumericValue2(Double numericValue2)
         {
-            this.floatvalue2 = floatvalue2;
+            _numericValue2 = numericValue2;
         }
 
-        public float getFloatvalue3()
+        public Double getNumericValue3()
         {
-            return floatvalue3;
+            return _numericValue3;
         }
 
-        public void setFloatvalue3(float floatvalue3)
+        public void setNumericValue3(Double numericValue3)
         {
-            this.floatvalue3 = floatvalue3;
+            _numericValue3 = numericValue3;
         }
 
         public String getReferrerURL()
         {
-            return referrerURL;
+            return _referrerURL;
         }
 
         public void setReferrerURL(String referrerURL)
         {
-            this.referrerURL = referrerURL;
+            _referrerURL = referrerURL;
         }
 
         public String getPlatform()
         {
-            return platform;
+            return _platform;
         }
 
         public void setPlatform(String platform)
         {
-            this.platform = platform;
+            _platform = platform;
         }
 
         public String getBrowser()
         {
-            return browser;
+            return _browser;
         }
 
         public void setBrowser(String browser)
         {
-            this.browser = browser;
+            _browser = browser;
         }
     }
 

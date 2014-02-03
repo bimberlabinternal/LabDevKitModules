@@ -16,6 +16,7 @@
 package org.labkey.ldk.query;
 
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.JdbcType;
@@ -143,55 +144,76 @@ public class DefaultTableCustomizer implements TableCustomizer
         _auditMode = auditMode;
     }
 
-    public static void appendEnddateColumns(AbstractTableInfo ti)
+    public static void appendCalculatedDateColumns(AbstractTableInfo ti, @Nullable String dateColName, @Nullable String enddateColName)
     {
-        appendEnddate(ti);
-        appendDateOnly(ti);
+        if (enddateColName != null)
+        {
+            appendEnddate(ti, enddateColName);
+        }
+
+        if (dateColName != null)
+        {
+            appendDateOnly(ti, dateColName);
+        }
     }
 
-    private static void appendEnddate(AbstractTableInfo ti)
+    private static void appendEnddate(AbstractTableInfo ti, String sourceColName)
     {
-        ColumnInfo enddate = ti.getColumn("enddate");
-        if (enddate != null && ti.getColumn("enddateCoalesced") == null)
+        ColumnInfo sourceCol = ti.getColumn(sourceColName);
+        if (sourceCol == null)
         {
-            SQLFragment sql = new SQLFragment("CAST(COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + ", {fn curdate()}) as date)");
-            ExprColumn col = new ExprColumn(ti, "enddateCoalesced", sql, JdbcType.DATE);
+            _log.error("Unable to find column: " + sourceColName + " on table " + ti.getSelectName());
+            return;
+        }
+
+        String name = sourceCol.getName();
+        if (ti.getColumn(name + "Coalesced") == null)
+        {
+            SQLFragment sql = new SQLFragment("CAST(COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + sourceCol.getSelectName() + ", {fn curdate()}) as date)");
+            ExprColumn col = new ExprColumn(ti, name + "Coalesced", sql, JdbcType.DATE);
             col.setCalculated(true);
             col.setUserEditable(false);
             col.setHidden(true);
-            col.setLabel("Enddate, Coalesced");
+            col.setLabel(col.getLabel() + ", Coalesced");
 
-            if (enddate.getFormat() != null)
-                col.setFormat(enddate.getFormat());
+            if (sourceCol.getFormat() != null)
+                col.setFormat(sourceCol.getFormat());
 
             ti.addColumn(col);
         }
 
-        if (enddate != null && ti.getColumn("enddatetimeCoalesced") == null)
+        if (ti.getColumn(name + "timeCoalesced") == null)
         {
-            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + ", {fn now()})");
-            ExprColumn col = new ExprColumn(ti, "enddatetimeCoalesced", sql, JdbcType.DATE);
+            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + sourceCol.getSelectName() + ", {fn now()})");
+            ExprColumn col = new ExprColumn(ti, name + "timeCoalesced", sql, JdbcType.DATE);
             col.setCalculated(true);
             col.setUserEditable(false);
             col.setHidden(true);
-            col.setLabel("End Time, Coalesced");
+            col.setLabel(col.getLabel() + " - DateTime, Coalesced");
             col.setFormat("yyyy-MM-dd HH:mm");
 
             ti.addColumn(col);
         }
     }
 
-    private static void appendDateOnly(AbstractTableInfo ti)
+    private static void appendDateOnly(AbstractTableInfo ti, String sourceColName)
     {
-        ColumnInfo date = ti.getColumn("date");
-        if (date != null && ti.getColumn("dateOnly") == null)
+        ColumnInfo sourceCol = ti.getColumn(sourceColName);
+        if (sourceCol == null)
         {
-            SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDateTimeToDateCast(ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName()));
-            ExprColumn col = new ExprColumn(ti, "dateOnly", sql, JdbcType.DATE);
+            _log.error("Unable to find column: " + sourceColName + " on table " + ti.getName());
+            return;
+        }
+
+        String name = sourceCol.getName().equals("date") ? "dateOnly" : sourceCol.getName() + "DatePart";
+        if (ti.getColumn(name) == null)
+        {
+            SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDateTimeToDateCast(ExprColumn.STR_TABLE_ALIAS + "." + sourceCol.getSelectName()));
+            ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.DATE);
             col.setCalculated(true);
             col.setUserEditable(false);
             col.setHidden(true);
-            col.setLabel("Date Only");
+            col.setLabel(col.getLabel() + " - Date Only");
             ti.addColumn(col);
         }
     }

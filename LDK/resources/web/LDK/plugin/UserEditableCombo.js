@@ -42,8 +42,19 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
                 if (Ext4.isEmpty(val))
                     return;
 
+                //only applies if display/value are the same.  otherwise we cannot accurately do this
+                if (this.valueField != this.displayField)
+                    return;
+
                 if (val instanceof Ext4.data.Model || Ext4.isArray(val)){
                     return;  //if setting value using a record, it is probably in the store
+                }
+
+                if (!this.store){
+                    LDK.Utils.logToServer({
+                        message: 'Unable to find store in usereditable combo'
+                    });
+                    return;
                 }
 
                 if (this.store.isLoading()){
@@ -58,16 +69,6 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
                     return;
                 }
 
-                if (this.valueField != this.displayField)
-                    return;
-
-                if (!this.store){
-                    LDK.Utils.logToServer({
-                        message: 'Unable to find store in usereditable combo'
-                    });
-                    return;
-                }
-
                 var recIdx = this.store.findExact(this.valueField, val);
                 if (recIdx != -1)
                     return;
@@ -78,7 +79,6 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
             },
 
             setValue: function(val){
-                //TODO: need to allow for setting of custom value prior to load
                 this.addValueIfNeeded(val);
 
                 this.callOverridden(arguments);
