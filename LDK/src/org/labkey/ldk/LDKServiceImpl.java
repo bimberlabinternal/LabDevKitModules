@@ -8,8 +8,12 @@ import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.CoreSchema;
+import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.RuntimeSQLException;
+import org.labkey.api.data.SQLFragment;
+import org.labkey.api.data.Selector;
 import org.labkey.api.data.SqlExecutor;
+import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
@@ -23,11 +27,15 @@ import org.labkey.ldk.query.ColumnOrderCustomizer;
 import org.labkey.ldk.query.DefaultTableCustomizer;
 
 import java.io.File;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,6 +48,7 @@ import java.util.Set;
 public class LDKServiceImpl extends LDKService
 {
     private Set<NotificationSection> _summaryNotificationSections = new HashSet<>();
+    private List<List<String>> _containerScopedTables = new ArrayList<>();
     private Boolean _isNaturalizeInstalled = null;
 
     public LDKServiceImpl()
@@ -178,6 +187,67 @@ public class LDKServiceImpl extends LDKService
 
             return _isNaturalizeInstalled;
         }
+    }
+
+    public void registerContainerScopedTable(String dbSchemaName, String tableName, String pseudoPk)
+    {
+        _containerScopedTables.add(Arrays.asList(dbSchemaName, tableName, pseudoPk));
+    }
+
+    public List<String> validateContainerScopedTables(boolean onlyReportErrors)
+    {
+        final List<String> messages = new ArrayList<>();
+
+        for (List<String> values : _containerScopedTables)
+        {
+            DbSchema schema = DbSchema.get(values.get(0));
+            if (schema == null)
+            {
+                messages.add("Unknown schema: " + values.get(0));
+                continue;
+            }
+
+            TableInfo ti = schema.getTable(values.get(1));
+            if (ti == null)
+            {
+                messages.add("Unknown table: " + values.get(0) + "." + values.get(1));
+                continue;
+            }
+
+            final ColumnInfo pseudoPk = ti.getColumn(values.get(2));
+            if (pseudoPk == null)
+            {
+                messages.add("Unable to find column " + values.get(2) + " in table " + values.get(0) + "." + values.get(1));
+                continue;
+            }
+
+            // group data based on pseudoPK and effective container (ie. workbooks go with parent) and return duplicates
+            SQLFragment sql = new SQLFragment("SELECT " + pseudoPk.getValueSql("t") + " as keyField, count(*) as total FROM " + ti.getSelectName() + " t " +
+            " LEFT JOIN core.containers c ON t.container = c.entityid " +
+            " GROUP BY " + pseudoPk.getValueSql("t") + ", CASE WHEN c.type = 'workbook' THEN c.parent ELSE c.entityid END " +
+            " HAVING count(*) > 1");
+
+            SqlSelector ss = new SqlSelector(schema.getScope(), sql);
+            if (ss.exists())
+            {
+                messages.add("ERROR: duplicates found in: " + values.get(0) + "." + values.get(1));
+                ss.forEach(new Selector.ForEachBlock<ResultSet>()
+                {
+                    @Override
+                    public void exec(ResultSet rs) throws SQLException
+                    {
+                        messages.add(pseudoPk.getName() + ": " + rs.getString("keyField") + ", total: " + rs.getInt("totle"));
+                    }
+                });
+            }
+            else
+            {
+                if (!onlyReportErrors)
+                    messages.add("No duplicates: " + values.get(0) + "." + values.get(1));
+            }
+        }
+
+        return messages;
     }
 
     public void logPerfMetric(Container c, User u, String metricName, String comment, Double value)

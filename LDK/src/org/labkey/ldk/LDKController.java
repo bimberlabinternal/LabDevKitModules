@@ -422,6 +422,27 @@ public class LDKController extends SpringActionController
         }
     }
 
+    @RequiresPermissionClass(ReadPermission.class)
+    public class ValidateContainerScopedTablesAction extends SimpleViewAction<Object>
+    {
+        public ModelAndView getView(Object form, BindException errors) throws Exception
+        {
+            LDKServiceImpl service = (LDKServiceImpl)LDKServiceImpl.get();
+            List<String> messages = service.validateContainerScopedTables(false);
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("This page is designed to inspect all registered container scoped tables and report any tables with duplicate keys in the same container.  This should be enforced by the user schema; however, direct DB inserts will bypass this check.<p>");
+            sb.append(StringUtils.join(messages, "<br>"));
+
+            return new HtmlView(sb.toString());
+        }
+
+        public NavTree appendNavTrail(NavTree root)
+        {
+            return root.addChild("Validate Container Scoped Tables");
+        }
+    }
+
     @RequiresPermissionClass(AdminPermission.class)
     public class GetNotificationSubscriptionsAction extends ApiAction<RunNotificationForm>
     {

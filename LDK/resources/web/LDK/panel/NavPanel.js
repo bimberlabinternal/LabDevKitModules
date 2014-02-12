@@ -127,7 +127,7 @@ Ext4.define('LDK.panel.NavPanel', {
                         renderer = this.renderer;
 
                     if(!renderer)
-                        renderer = this.renderers.defaultRenderer;
+                        renderer = this.renderers.linkWithoutLabel;
 
                     if(Ext4.isString(renderer))
                         renderer = this.renderers[renderer];
@@ -144,7 +144,7 @@ Ext4.define('LDK.panel.NavPanel', {
     },
 
     renderers: {
-        defaultRenderer: function(item, section){
+        linkWithoutLabel: function(item, section){
             if (LABKEY.ExtAdapter.isObject(item.url)){
                 item.urlConfig = item.url;
                 delete item.url;
@@ -165,7 +165,7 @@ Ext4.define('LDK.panel.NavPanel', {
              }
         },
 
-        singleItemRenderer: function(item){
+        linkWithLabel: function(item){
             var cfg = {
                 layout: 'hbox',
                 bodyStyle: 'background-color: transparent;',
@@ -187,7 +187,7 @@ Ext4.define('LDK.panel.NavPanel', {
             return cfg;
         },
 
-        queryNavItemRenderer: function(item){
+        importingNavItem: function(item){
             var cfg = {
                 layout: 'hbox',
                 bodyStyle: 'background-color: transparent;',
@@ -310,14 +310,6 @@ Ext4.define('LDK.panel.NavPanel', {
                 defaults: LDK.panel.NavPanel.ITEM_DEFAULTS,
                 items: [
                     this.getLabelItemCfg(item)
-//                ,
-//                    this.getSearchItemCfg(item, {
-//                        urlConfig: {
-//                            controller: 'query',
-//                            action: 'searchPanel',
-//                            params: {'schemaName': 'laboratory', 'queryName': 'workbooks'}
-//                        }
-//                    })
                 ,
                     this.getSpacer()
                 ,

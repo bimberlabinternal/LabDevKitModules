@@ -16,6 +16,7 @@
 package org.labkey.ldk.notification;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -174,6 +175,8 @@ public class SiteSummaryNotification implements Notification
         getTableSizeStats(c, u, msg, alerts, saved, newValues);
 
         getFileRootSizes(c, u, msg, alerts, saved, newValues);
+
+        validateContainerScopedTables(c, u, msg, alerts);
 
         //allow registering of additional sections
         Set<NotificationSection> sections = ((LDKServiceImpl)LDKServiceImpl.get()).getSiteSummaryNotificationSections();
@@ -352,6 +355,21 @@ public class SiteSummaryNotification implements Notification
         long count = ts.getRowCount();
 
         msg.append("Pipeline jobs created/modified in the past 24 hours: " + count + "<br>");
+    }
+
+    private void validateContainerScopedTables(Container c, User u, final StringBuilder msg, final StringBuilder alerts)
+    {
+        LDKServiceImpl service = (LDKServiceImpl)LDKServiceImpl.get();
+        List<String> errors = service.validateContainerScopedTables(true);
+
+        if (!errors.isEmpty())
+        {
+            msg.append("There were errors with container scoped tables.  This means there are inappropriate duplicate values in the underlying data<p>");
+            msg.append(StringUtils.join(errors, "<br>"));
+            msg.append("<br><hr>");
+
+            alerts.append("There are errors with container scoped tables.  See below for more information<br>");
+        }
     }
 
     private void getFileRootSizes(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
