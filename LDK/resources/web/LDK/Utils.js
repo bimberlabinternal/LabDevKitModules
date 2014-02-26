@@ -485,6 +485,23 @@ LDK.Utils = new function(){
             }
 
             return tz.join('');
+        },
+
+        editUIButtonHandler: function(schemaName, queryName, paramMap){
+            var params = {
+                schemaName: schemaName,
+                'query.queryName': queryName
+            };
+
+            if (paramMap != null){
+                for (var param in paramMap){
+                    if (LABKEY.ActionURL.getParameter(param)){
+                        params[paramMap[param]] = LABKEY.ActionURL.getParameter(param);
+                    }
+                }
+            }
+
+            window.location = LABKEY.ActionURL.buildURL('ldk', 'updateQuery', null, params);
         }
     }
 }
