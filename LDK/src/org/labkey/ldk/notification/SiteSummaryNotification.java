@@ -626,8 +626,7 @@ public class SiteSummaryNotification implements Notification
         Map<String, Map<ExpProtocol, Long[]>> providerMap = new TreeMap<>();
         String assayResultSize = "assayResultSize";
 
-        ExpProtocol[] protocols = ExperimentService.get().getAllExpProtocols();
-        for (ExpProtocol p : protocols)
+        for (ExpProtocol p : ExperimentService.get().getAllExpProtocols())
         {
             AssayProvider ap = AssayService.get().getProvider(p);
             if (ap == null)
