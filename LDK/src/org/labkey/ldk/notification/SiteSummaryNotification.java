@@ -290,9 +290,9 @@ public class SiteSummaryNotification implements Notification
 
     private void getStudySizeSummary(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
     {
-        Study[] studies = StudyService.get().getAllStudies(ContainerManager.getRoot(), u);
+        List<? extends Study> studies = StudyService.get().getAllStudies(ContainerManager.getRoot(), u);
         String studySize = "studySize";
-        if (studies.length > 0)
+        if (!studies.isEmpty())
         {
             Map<String, String> newValueMap = new HashMap<String, String>();
             JSONObject oldValueMap = null;
