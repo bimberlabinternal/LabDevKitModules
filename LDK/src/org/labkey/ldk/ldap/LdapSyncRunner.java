@@ -440,7 +440,7 @@ public class LdapSyncRunner implements Job
                 }
             }
         }
-        catch (SQLException e)
+        catch (RuntimeSQLException e)
         {
             throw new LdapException(e);
         }

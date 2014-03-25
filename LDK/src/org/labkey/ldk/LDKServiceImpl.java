@@ -7,9 +7,7 @@ import org.json.JSONObject;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SqlExecutor;
@@ -288,14 +286,7 @@ public class LDKServiceImpl extends LDKService
         map.put("browser", model.getBrowser());
         map.put("platform", model.getPlatform());
 
-        try
-        {
-            Table.insert(u, t, map);
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeSQLException(e);
-        }
+        Table.insert(u, t, map);
     }
 
     public static class PerfMetricModel

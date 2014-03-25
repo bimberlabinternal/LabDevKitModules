@@ -24,7 +24,6 @@ import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
-import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
@@ -485,47 +484,40 @@ public class NotificationServiceImpl extends NotificationService
 
     public void updateSubscriptions(Container c, User u, Notification n, @Nullable List<UserPrincipal> toAdd, @Nullable List<UserPrincipal> toRemove)
     {
-        try
-        {
-            TableInfo ti = LDKSchema.getTable(LDKSchema.TABLE_NOTIFICATION_RECIPIENTS);
+        TableInfo ti = LDKSchema.getTable(LDKSchema.TABLE_NOTIFICATION_RECIPIENTS);
 
-            if (toAdd != null)
+        if (toAdd != null)
+        {
+            for (UserPrincipal up : toAdd)
             {
-                for (UserPrincipal up : toAdd)
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("container"), c.getId(), CompareType.EQUAL);
+                filter.addCondition(FieldKey.fromString("recipient"), up.getUserId());
+                filter.addCondition(FieldKey.fromString("notificationtype"), n.getName());
+
+                TableSelector ts = new TableSelector(ti, filter, null);
+                if (ts.getRowCount() == 0)
+                {
+                    Map<String, Object> row = new HashMap<>();
+                    row.put("container", c.getId());
+                    row.put("recipient", up.getUserId());
+                    row.put("notificationtype", n.getName());
+                    row.put("createdby", u.getUserId());
+                    row.put("created", new Date());
+                    Table.insert(u, ti, row);
+                }
+            }
+
+            if (toRemove != null)
+            {
+                for (UserPrincipal up : toRemove)
                 {
                     SimpleFilter filter = new SimpleFilter(FieldKey.fromString("container"), c.getId(), CompareType.EQUAL);
                     filter.addCondition(FieldKey.fromString("recipient"), up.getUserId());
                     filter.addCondition(FieldKey.fromString("notificationtype"), n.getName());
 
-                    TableSelector ts = new TableSelector(ti, filter, null);
-                    if (ts.getRowCount() == 0)
-                    {
-                        Map<String, Object> row = new HashMap<>();
-                        row.put("container", c.getId());
-                        row.put("recipient", up.getUserId());
-                        row.put("notificationtype", n.getName());
-                        row.put("createdby", u.getUserId());
-                        row.put("created", new Date());
-                        Table.insert(u, ti, row);
-                    }
-                }
-
-                if (toRemove != null)
-                {
-                    for (UserPrincipal up : toRemove)
-                    {
-                        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("container"), c.getId(), CompareType.EQUAL);
-                        filter.addCondition(FieldKey.fromString("recipient"), up.getUserId());
-                        filter.addCondition(FieldKey.fromString("notificationtype"), n.getName());
-
-                        Table.delete(ti, filter);
-                    }
+                    Table.delete(ti, filter);
                 }
             }
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeSQLException(e);
         }
     }
 
