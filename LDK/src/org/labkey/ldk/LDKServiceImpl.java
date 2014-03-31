@@ -234,7 +234,7 @@ public class LDKServiceImpl extends LDKService
                     @Override
                     public void exec(ResultSet rs) throws SQLException
                     {
-                        messages.add(pseudoPk.getName() + ": " + rs.getString("keyField") + ", total: " + rs.getInt("totle"));
+                        messages.add(pseudoPk.getName() + ": " + rs.getString("keyField") + ", total: " + rs.getInt("total"));
                     }
                 });
             }

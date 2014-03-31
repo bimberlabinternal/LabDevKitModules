@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.labkey.api.audit.AuditLogService;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
@@ -34,6 +35,7 @@ import org.labkey.ldk.ldap.LdapSyncAuditProvider;
 import org.labkey.ldk.ldap.LdapSyncAuditViewFactory;
 import org.labkey.ldk.notification.NotificationServiceImpl;
 import org.labkey.ldk.notification.SiteSummaryNotification;
+import org.labkey.ldk.query.MssqlUtilsUserSchema;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -86,6 +88,11 @@ public class LDKModule extends ExtendedSimpleModule
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "ldap sync admin", DetailsURL.fromString("/ldk/ldapSettings.view").getActionURL());
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "file root usage summary", DetailsURL.fromString("/ldk/folderSizeSummary.view").getActionURL());
 
+        if (DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
+        {
+            AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "sql server DB index usage", DetailsURL.fromString("/query/executeQuery.view?schemaName=mssqlutils&query.queryName=index_stats").getActionURL());
+        }
+
         LdapScheduler.get().schedule();
 
         NotificationService.get().registerNotification(new SiteSummaryNotification());
@@ -109,5 +116,16 @@ public class LDKModule extends ExtendedSimpleModule
     public UpgradeCode getUpgradeCode()
     {
         return new LDKUpgradeCode();
+    }
+
+    @Override
+    protected void registerSchemas()
+    {
+        super.registerSchemas();
+
+        if (DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
+        {
+            MssqlUtilsUserSchema.register(this);
+        }
     }
 }

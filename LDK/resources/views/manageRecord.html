@@ -12,7 +12,7 @@ Ext4.onReady(function(){
             viewName: LABKEY.ActionURL.getParameter('viewName') || LABKEY.ActionURL.getParameter('query.viewName') || '~~UPDATE~~',
             columns: LABKEY.ActionURL.getParameter('columns') || LABKEY.ActionURL.getParameter('query.columns') || '*',
             filterArray: [
-                LABKEY.Filter.create(LABKEY.ActionURL.getParameter('keyField'), LABKEY.ActionURL.getParameter('key'), LABKEY.Filter.Types.EQUALS)
+                LABKEY.Filter.create(LABKEY.ActionURL.getParameter('keyField'), LABKEY.ActionURL.getParameter('key'), LABKEY.Filter.Types.EQUAL)
             ],
             listeners: {
                 load: function(store){

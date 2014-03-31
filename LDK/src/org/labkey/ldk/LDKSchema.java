@@ -28,7 +28,7 @@ import org.labkey.api.data.dialect.SqlDialect;
 public class LDKSchema
 {
     private static final LDKSchema _instance = new LDKSchema();
-    private static final String SCHEMA_NAME = "ldk";
+    public static final String SCHEMA_NAME = "ldk";
 
     public static final String TABLE_METRICS = "metrics";
     public static final String TABLE_NOTIFICATION_RECIPIENTS = "notificationrecipients";

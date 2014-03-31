@@ -119,7 +119,7 @@ public class DefaultTableCustomizer implements TableCustomizer
                 throw new UnsupportedOperationException("naturalize() is only supported on Postgres and SqlServer");
             }
 
-            SQLFragment sql = new SQLFragment("ldk.naturalize(" + ExprColumn.STR_TABLE_ALIAS + "." + col.getSelectName() + ")");
+            SQLFragment sql = new SQLFragment("ldk.naturalize(" + col.getValueSql(ExprColumn.STR_TABLE_ALIAS) + ")");
             sortCol = new ExprColumn(ti, name, sql, JdbcType.VARCHAR, col);
             sortCol.setHidden(true);
             sortCol.setLabel(col.getLabel() + " - Sort Field");

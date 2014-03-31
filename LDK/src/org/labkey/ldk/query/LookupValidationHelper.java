@@ -2,6 +2,7 @@ package org.labkey.ldk.query;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.ColumnInfo;
@@ -194,7 +195,22 @@ public class LookupValidationHelper
 
     public boolean verifyNotUsed(String targetSchema, String targetTable, String targetField, Object val) throws SQLException
     {
-        UserSchema us = QueryService.get().getUserSchema(_user, _container, targetSchema);
+        return verifyNotUsed(targetSchema, targetTable, targetField, val, null);
+    }
+
+    public boolean verifyNotUsed(String targetSchema, String targetTable, String targetField, Object val, @Nullable String containerPath) throws SQLException
+    {
+        Container c = _container;
+        if (containerPath != null)
+        {
+            c = ContainerManager.getForPath(containerPath);
+            if (c == null)
+            {
+                throw new IllegalArgumentException("Unknown container: " + containerPath);
+            }
+        }
+
+        UserSchema us = QueryService.get().getUserSchema(_user, c, targetSchema);
         if (us == null)
             throw new IllegalArgumentException("Unknown schema: " + targetSchema);
 

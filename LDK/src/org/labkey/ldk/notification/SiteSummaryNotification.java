@@ -651,7 +651,7 @@ public class SiteSummaryNotification implements Notification
         }
 
         msg.append("<br><b>Assay Summary:</b><br><br>");
-        msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'><td>Provider</td><td>Protocol</td><td>Container Path</td><td># Runs</td><td># Results</td><td>Previous Value</td><td>% Change</td><tr>");
+        msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'><td>Provider</td><td>Protocol</td><td>Container Path</td><td># Runs</td><td># Results</td><td>Previous Value</td><td>% Change</td></tr>");
 
         Map<String, String> newValueMap = new HashMap<String, String>();
         JSONObject oldValueMap = saved.containsKey(assayResultSize) ? new JSONObject(saved.get(assayResultSize)) : null;
