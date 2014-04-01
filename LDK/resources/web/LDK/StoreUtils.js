@@ -364,8 +364,9 @@ LDK.StoreUtils = new function(){
             return false;
         },
 
-        isMissingRequiredFields: function(store, fields){
+        getMissingRequiredFields: function(store, fields){
             var recs = store.getRange();
+            var missing = [];
 
             if (!fields){
                 fields = [];
@@ -377,12 +378,12 @@ LDK.StoreUtils = new function(){
 
             for (var i=0;i<recs.length;i++){
                 for (var j=0;j<fields.length;j++){
-                    if(Ext4.isEmpty(recs[i].get(fields[j]))) {
-                        return true;
+                    if (Ext4.isEmpty(recs[i].get(fields[j]))) {
+                        missing.push(fields[j]);
                     }
                 }
             }
-            return false;
+            return missing;
         },
 
         /**
