@@ -383,6 +383,7 @@ LDK.StoreUtils = new function(){
                     }
                 }
             }
+            missing = Ext4.unique(missing);
             return missing;
         },
 
