@@ -1267,7 +1267,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(UpdatePermission.class)
+    @RequiresPermissionClass(ReadPermission.class)
     public class UpdateQueryAction extends SimpleViewAction<QueryForm>
     {
         private QueryForm _form;
