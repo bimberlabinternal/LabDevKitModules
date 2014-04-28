@@ -32,7 +32,7 @@ Ext4.define('LDK.panel.LdapSettingsPanel', {
 
         this.callParent();
 
-        LABKEY.Ajax.request({
+        Ext4.Ajax.request({
             url : LABKEY.ActionURL.buildURL('ldk', 'getLdapSettings'),
             method : 'GET',
             success: LABKEY.Utils.getCallbackWrapper(this.onLoad, this),
@@ -84,7 +84,7 @@ Ext4.define('LDK.panel.LdapSettingsPanel', {
                 handler: function(btn){
                     Ext4.Msg.wait('Testing Connection...');
 
-                    LABKEY.Ajax.request({
+                    Ext4.Ajax.request({
                         url : LABKEY.ActionURL.buildURL('ldk', 'testLdapConnection'),
                         method : 'GET',
                         success: LABKEY.Utils.getCallbackWrapper(function(response){
@@ -380,7 +380,7 @@ Ext4.define('LDK.panel.LdapSettingsPanel', {
     doSync: function(forPreview){
         Ext4.Msg.wait('Performing sync using last saved settings');
 
-        LABKEY.Ajax.request({
+        Ext4.Ajax.request({
             url : LABKEY.ActionURL.buildURL('ldk', 'initiateLdapSync'),
             method : 'POST',
             params: {
@@ -495,7 +495,7 @@ Ext4.define('LDK.panel.LdapSettingsPanel', {
     loadGroups: function(callback, scope){
         Ext4.Msg.wait('Loading groups using last saved config...');
 
-        LABKEY.Ajax.request({
+        Ext4.Ajax.request({
             url : LABKEY.ActionURL.buildURL('ldk', 'listLdapGroups'),
             method : 'POST',
             scope: this,
@@ -556,7 +556,7 @@ Ext4.define('LDK.panel.LdapSettingsPanel', {
         var vals = this.getForm().getFieldValues();
         Ext4.Msg.wait('Saving...');
 
-        LABKEY.Ajax.request({
+        Ext4.Ajax.request({
             url : LABKEY.ActionURL.buildURL('ldk', 'setLdapSettings'),
             method : 'POST',
             params: vals,

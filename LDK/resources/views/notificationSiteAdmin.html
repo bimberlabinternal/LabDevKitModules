@@ -1,6 +1,6 @@
 <script type="text/javascript">
     Ext4.onReady(function(){
-        LABKEY.Ajax.request({
+        Ext4.Ajax.request({
             url : LABKEY.ActionURL.buildURL('ldk', 'getSiteNotificationDetails', '/'),
             method : 'POST',
             failure: LDK.Utils.getErrorCallback(),
@@ -34,7 +34,7 @@
                         handler: function(btn){
                             var val = btn.up('panel').down('combo').getValue();
 
-                            LABKEY.Ajax.request({
+                            Ext4.Ajax.request({
                                 url: LABKEY.ActionURL.buildURL('ldk', 'setNotificationSettings', '/', {enabled: val}),
                                 scope: this,
                                 failure: LDK.Utils.getErrorCallback(),
