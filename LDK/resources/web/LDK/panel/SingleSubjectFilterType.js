@@ -29,7 +29,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
                 xtype: 'textfield',
                 width: 165,
                 itemId: 'subjArea',
-                value: LABKEY.ExtAdapter.isArray(ctx.subjects) ? ctx.subjects.join(';') : ctx.subjects,
+                value: Ext4.isArray(ctx.subjects) ? ctx.subjects.join(';') : ctx.subjects,
                 listeners: {
                     scope: this,
                     render: function(field){

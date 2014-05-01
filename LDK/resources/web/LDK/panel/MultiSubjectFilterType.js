@@ -42,7 +42,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
                     width: 180,
                     height: 100,
                     itemId: 'subjArea',
-                    value: LABKEY.ExtAdapter.isArray(ctx.subjects) ? ctx.subjects.join(';') : ctx.subjects
+                    value: Ext4.isArray(ctx.subjects) ? ctx.subjects.join(';') : ctx.subjects
                 }]
             },{
                 xtype: 'panel',

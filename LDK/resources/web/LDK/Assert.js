@@ -47,7 +47,7 @@ LDK.Assert = new function(){
          * @param {object} value The value to be tested
          */
         assertNotEmpty: function(msg, value){
-            if (LABKEY.ExtAdapter.isEmpty(value)){
+            if (Ext4.isEmpty(value)){
                 var message = 'Assert failed: ' + msg + '.  Value was empty: "' + value + '"';
                 console.error(message);
                 LDK.Utils.logToServer({
@@ -64,7 +64,7 @@ LDK.Assert = new function(){
          * @param {object} value The value to be tested
          */
         assertEmpty: function(msg, value){
-            if (!LABKEY.ExtAdapter.isEmpty(value)){
+            if (!Ext4.isEmpty(value)){
                 var message = 'Assert failed: ' + msg + '.  Value was not empty: "' + value + '"';
                 console.error(message);
                 LDK.Utils.logToServer({

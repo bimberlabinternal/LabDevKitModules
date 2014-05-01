@@ -145,7 +145,7 @@ Ext4.define('LDK.panel.NavPanel', {
 
     renderers: {
         linkWithoutLabel: function(item, section){
-            if (LABKEY.ExtAdapter.isObject(item.url)){
+            if (Ext4.isObject(item.url)){
                 item.urlConfig = item.url;
                 delete item.url;
             }

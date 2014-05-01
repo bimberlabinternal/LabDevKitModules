@@ -402,7 +402,7 @@ LDK.Utils = new function(){
                 if(response && response.getResponseHeader && response.getResponseHeader('Content-Type')
                         && response.getResponseHeader('Content-Type').indexOf('application/json') >= 0){
                     try {
-                        json = LABKEY.ExtAdapter.decode(response.responseText);
+                        json = Ext4.decode(response.responseText);
                     }
                     catch (error){
                         //we still want to proceed even if we cannot decode the JSON
@@ -423,8 +423,8 @@ LDK.Utils = new function(){
          */
         sortByProperty: function(arr, propName, caseSensitive){
             return arr.sort(function(a, b){
-                var a1 = !LABKEY.ExtAdapter.isString(a[propName]) ? a[propName] : (caseSensitive ? a[propName] : a[propName].toLowerCase());
-                var b1 = !LABKEY.ExtAdapter.isString(b[propName]) ? b[propName] : (caseSensitive ? b[propName] : b[propName].toLowerCase());
+                var a1 = !Ext4.isString(a[propName]) ? a[propName] : (caseSensitive ? a[propName] : a[propName].toLowerCase());
+                var b1 = !Ext4.isString(b[propName]) ? b[propName] : (caseSensitive ? b[propName] : b[propName].toLowerCase());
 
                 return a1 > b1 ? 1 :
                         a1 < b1 ? -1 : 0;
