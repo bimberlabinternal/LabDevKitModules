@@ -575,6 +575,10 @@ public class SiteSummaryNotification implements Notification
     {
         msg.append("<br><b>Lists Summary:</b><br><br>");
 
+        String listSizes = "listSizes";
+        final Map<String, String> newValueMap = new HashMap<>();
+        final JSONObject oldValueMap = saved.containsKey(listSizes) ? new JSONObject(saved.get(listSizes)) : null;
+
         DbSchema schema = DbSchema.get("list");
         int listCount = schema.getTableNames().size();
         msg.append("Total # of Lists: " + NumberFormat.getInstance().format(listCount) + "<br><br>");
@@ -606,7 +610,7 @@ public class SiteSummaryNotification implements Notification
         });
 
         msg.append("<table border=1 style='border-collapse: collapse;'>");
-        msg.append("<tr style='font-weight:bold;'><td>Table Name</td><td>Container Path</td><td># of Rows</td></tr>");
+        msg.append("<tr style='font-weight:bold;'><td>Table Name</td><td>Container Path</td><td># of Rows</td><td>Previous Value</td><td>% Change</td></tr>");
 
         for (Map.Entry<String, Long> entry : list.subList(0, Math.min(maxLists, list.size())))
         {
@@ -614,8 +618,23 @@ public class SiteSummaryNotification implements Notification
             Container listContainer = ContainerManager.getForRowId(rowId);
             String listName = entry.getKey().split("_")[1];
             ListDefinition ld = ListService.get().getList(listContainer, listName);
+
+            String key = entry.getKey().toString();
+
+            newValueMap.put(key, entry.getValue().toString());
+            Long previousValue = null;
+            if (oldValueMap != null && oldValueMap.containsKey(key))
+            {
+                previousValue = oldValueMap.getLong(key);
+            }
+
+            String pctChange = getPctChange(previousValue, entry.getValue(), 0.05, "The size of the list " +  listName + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
+
             if (ld != null)
-                msg.append("<tr><td>" + ld.getName() + "</td><td>" + listContainer.getPath() + "</td><td>" + NumberFormat.getInstance().format(entry.getValue()) + "</td></tr>");
+                msg.append("<tr><td>" + ld.getName() + "</td><td>" + listContainer.getPath() + "</td><td>" + NumberFormat.getInstance().format(entry.getValue()) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
+
+            if (newValueMap.size() > 0)
+                toSave.put(listSizes, new JSONObject(newValueMap).toString());
         }
 
         msg.append("</table><br>");
