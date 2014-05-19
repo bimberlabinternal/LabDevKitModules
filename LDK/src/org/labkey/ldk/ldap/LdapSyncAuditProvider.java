@@ -7,7 +7,6 @@ import org.labkey.api.audit.AuditTypeProvider;
 import org.labkey.api.audit.query.AbstractAuditDomainKind;
 import org.labkey.api.audit.query.DefaultAuditTypeTable;
 import org.labkey.api.data.ColumnInfo;
-import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.PropertyDescriptor;
 import org.labkey.api.exp.PropertyType;
@@ -67,9 +66,8 @@ public class LdapSyncAuditProvider extends AbstractAuditTypeProvider implements 
     public TableInfo createTableInfo(UserSchema userSchema)
     {
         Domain domain = getDomain();
-        DbSchema dbSchema =  DbSchema.get(SCHEMA_NAME);
 
-        DefaultAuditTypeTable table = new DefaultAuditTypeTable(this, domain, dbSchema, userSchema)
+        DefaultAuditTypeTable table = new DefaultAuditTypeTable(this, domain, getSchema(), userSchema)
         {
             @Override
             protected void initColumn(ColumnInfo col)
