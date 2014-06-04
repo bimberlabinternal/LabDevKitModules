@@ -34,7 +34,13 @@ public class IndexStatsTable extends VirtualTable
             "USER_SEEKS, " +
             "USER_SCANS, " +
             "USER_LOOKUPS, " +
-            "USER_UPDATES " +
+            "USER_UPDATES, " +
+            "CASE " +
+            "WHEN USER_SEEKS >= USER_SCANS AND USER_SEEKS >= USER_LOOKUPS THEN USER_SEEKS " +
+            "WHEN USER_SCANS >= USER_SEEKS AND USER_SCANS >= USER_LOOKUPS THEN USER_SCANS " +
+            "WHEN USER_LOOKUPS >= USER_SEEKS AND USER_LOOKUPS >= USER_SCANS THEN USER_LOOKUPS " +
+            "ELSE USER_SEEKS " +
+            "END AS MAX_VALUE " +
         "FROM SYS.DM_DB_INDEX_USAGE_STATS S " +
         "INNER JOIN SYS.INDEXES I ON (I.OBJECT_ID = S.OBJECT_ID AND I.INDEX_ID = S.INDEX_ID) " +
         "WHERE OBJECTPROPERTY(S.OBJECT_ID, 'IsUserTable') = 1");
@@ -51,10 +57,11 @@ public class IndexStatsTable extends VirtualTable
     protected void setupColumns()
     {
         addColumn(new ExprColumn(this, "objectName", new SQLFragment(ExprColumn.STR_TABLE_ALIAS + ".OBJECT_NAME"), JdbcType.VARCHAR));
-        addColumn(new ExprColumn(this, "indexName", new SQLFragment(ExprColumn.STR_TABLE_ALIAS + ".INDEX_NAME"), JdbcType.INTEGER));
+        addColumn(new ExprColumn(this, "indexName", new SQLFragment(ExprColumn.STR_TABLE_ALIAS + ".INDEX_NAME"), JdbcType.VARCHAR));
         addColumn(new ExprColumn(this, "userSeeks", new SQLFragment(ExprColumn.STR_TABLE_ALIAS + ".USER_SEEKS"), JdbcType.INTEGER));
         addColumn(new ExprColumn(this, "userScans", new SQLFragment(ExprColumn.STR_TABLE_ALIAS + ".USER_SCANS"), JdbcType.INTEGER));
         addColumn(new ExprColumn(this, "userLookups", new SQLFragment(ExprColumn.STR_TABLE_ALIAS + ".USER_LOOKUPS"), JdbcType.INTEGER));
+        addColumn(new ExprColumn(this, "maxValue", new SQLFragment(ExprColumn.STR_TABLE_ALIAS + ".MAX_VALUE"), JdbcType.INTEGER));
         addColumn(new ExprColumn(this, "userUpdates", new SQLFragment(ExprColumn.STR_TABLE_ALIAS + ".USER_UPDATES"), JdbcType.INTEGER));
     }
 }

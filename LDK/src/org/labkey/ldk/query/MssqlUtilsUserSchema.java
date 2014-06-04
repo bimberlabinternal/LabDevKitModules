@@ -24,7 +24,7 @@ public class MssqlUtilsUserSchema extends SimpleUserSchema
 
     public MssqlUtilsUserSchema(User user, Container container)
     {
-        super(NAME, "This schema exposes tables of information from SQL Server", user, container, null);
+        super(NAME, "This schema exposes tables of information from SQL Server", user, container, DbSchema.get("SYS"));
     }
 
     public static void register(Module m)
@@ -48,7 +48,7 @@ public class MssqlUtilsUserSchema extends SimpleUserSchema
     @Override
     public boolean isHidden()
     {
-        return true;
+        return false;
     }
 
     @Override

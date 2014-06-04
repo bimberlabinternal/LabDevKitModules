@@ -15,6 +15,7 @@
 Ext4.define('LDK.panel.TabbedReportPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ldk-tabbedreportpanel',
+    allowEditing: true,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -316,10 +317,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             suppressRenderErrors: true,
             allowChooseQuery: false,
             allowChooseView: true,
-            showInsertNewButton: false,
-            showDeleteButton: false,
+            showInsertNewButton: !!this.allowEditing,
+            showDeleteButton: !!this.allowEditing,
             showDetailsColumn: true,
-            showUpdateColumn: false,
+            showUpdateColumn: !!this.allowEditing,
             showRecordSelectors: true,
             showReports: false,
             allowHeaderLock: false, //added b/c locking does not work well inside Ext4 panels
@@ -382,13 +383,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     getQWPConfig: function(config){
-        return Ext4.apply({
+        var ret = {
             allowChooseQuery: false,
             allowChooseView: true,
-            showInsertNewButton: false,
-            showDeleteButton: false,
-            showDetailsColumn: true,
-            showUpdateColumn: false,
             showRecordSelectors: true,
             suppressRenderErrors: true,
             allowHeaderLock: false, //added b/c locking does not work well inside Ext4 panels
@@ -399,8 +396,24 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             timeout: 0,
             success: this.onDataRegionLoad,
             failure: LDK.Utils.getErrorCallback(),
-            scope: this
-        }, config);
+            scope: this,
+            showInsertNewButton: false,
+            showDeleteButton: false,
+            showDetailsColumn: true,
+            showUpdateColumn: false
+        };
+
+        if (this.allowEditing){
+            Ext4.apply(ret, {
+                showInsertNewButton: true,
+                showDeleteButton: true,
+                showUpdateColumn: true
+            });
+        }
+
+        Ext4.apply(ret, config);
+
+        return ret;
     },
 
     loadReport: function(tab){

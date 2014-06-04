@@ -74,7 +74,7 @@ Ext4.onReady(function(){
                             });
                         },
                         failure: function(error){
-                            grid.body.update('');
+                            grid.removeAll();
                             console.log(error);
                             alert(error.exception || error.message);
                         }

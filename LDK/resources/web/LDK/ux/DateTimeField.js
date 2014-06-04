@@ -1,7 +1,3 @@
-
-
-(function(Ext){
-
 /**
  * @class Ext.ux.form.field.DateTime
  * @extends Ext.form.FieldContainer
@@ -11,7 +7,7 @@
  * @author jakob.ketterl (http://www.sencha.com/forum/member.php?25102-jakob.ketterl)
  * @link http://www.sencha.com/forum/showthread.php?134345-Ext.ux.form.field.DateTime
  */
-Ext.define('Ext.ux.form.field.DateTime', {
+Ext4.define('Ext.ux.form.field.DateTime', {
     extend:'Ext.form.FieldContainer',
     mixins:{
         field:'Ext.form.field.Field'
@@ -81,7 +77,7 @@ Ext.define('Ext.ux.form.field.DateTime', {
 
         me.items = me.items || [];
 
-        me.dateField = Ext.create('Ext.form.field.Date', Ext.apply({
+        me.dateField = Ext4.create('Ext.form.field.Date', Ext4.apply({
             format:me.dateFormat,
             bubbleEvents: ['change'],
             flex:1,
@@ -91,13 +87,13 @@ Ext.define('Ext.ux.form.field.DateTime', {
                 scope: this,
                 change: function(field, val){
                     if (val && !this.timeField.getValue()){
-                        var date = Ext.Date.clone(val);
+                        var date = new Date(val.getTime());
 
-                        if (!Ext.isEmpty(this.defaultHour)){
+                        if (!Ext4.isEmpty(this.defaultHour)){
                             date.setHours(this.defaultHour);
                         }
 
-                        if (!Ext.isEmpty(this.defaultMinutes)){
+                        if (!Ext4.isEmpty(this.defaultMinutes)){
                             date.setMinutes(this.defaultMinutes);
                         }
 
@@ -106,7 +102,7 @@ Ext.define('Ext.ux.form.field.DateTime', {
                 }
             },
             getErrors: function(value){
-                var errors = Ext.form.field.Date.prototype.getErrors.apply(this, arguments);
+                var errors = Ext4.form.field.Date.prototype.getErrors.apply(this, arguments);
                 if (this.ownerCt && this.ownerCt.getErrors)
                     errors = errors.concat(this.ownerCt.getErrors());
 
@@ -119,7 +115,7 @@ Ext.define('Ext.ux.form.field.DateTime', {
             xtype: 'splitter'
         });
 
-        me.timeField = Ext.create('Ext.form.field.Time', Ext.apply({
+        me.timeField = Ext4.create('Ext.form.field.Time', Ext4.apply({
             format:me.timeFormat,
             bubbleEvents: ['change'],
             flex:1,
@@ -134,7 +130,7 @@ Ext.define('Ext.ux.form.field.DateTime', {
                 }
             },
             getErrors: function(value){
-                var errors = Ext.form.field.Time.prototype.getErrors.apply(this, arguments);
+                var errors = Ext4.form.field.Time.prototype.getErrors.apply(this, arguments);
                 if (this.ownerCt && this.ownerCt.getErrors)
                     errors = errors.concat(this.ownerCt.getErrors());
 
@@ -147,8 +143,8 @@ Ext.define('Ext.ux.form.field.DateTime', {
             if(me.items[i].xtype == 'splitter')
                 continue;
 
-            me.items[i].on('focus', Ext.bind(me.onItemFocus, me));
-            me.items[i].on('blur', Ext.bind(me.onItemBlur, me));
+            me.items[i].on('focus', Ext4.bind(me.onItemFocus, me));
+            me.items[i].on('blur', Ext4.bind(me.onItemBlur, me));
             me.items[i].on('specialkey', function(field, event){
                 //NOTE: important when used in a grid, to prevent blur when tabbing
                 if (event.getKey() == event.TAB && !event.shiftKey && me.focussedItem == me.dateField) {
@@ -181,7 +177,7 @@ Ext.define('Ext.ux.form.field.DateTime', {
         var me = this;
         if (item != me.focussedItem){ return; }
         // 100ms to focus a new item that belongs to us, otherwise we will assume the user left the field
-        me.blurTask = new Ext.util.DelayedTask(function(){
+        me.blurTask = new Ext4.util.DelayedTask(function(){
             me.fireEvent('blur', me, e);
         });
         me.blurTask.delay(100);
@@ -196,7 +192,7 @@ Ext.define('Ext.ux.form.field.DateTime', {
         if (date){
             if (time){
                 format = this.getFormat();
-                value = Ext.Date.parse(date + ' ' + time, format);
+                value = Ext4.Date.parse(date + ' ' + time, format);
             } else {
                 value = this.dateField.getValue();
             }
@@ -206,18 +202,18 @@ Ext.define('Ext.ux.form.field.DateTime', {
 
     getSubmitValue: function(){
 //        var value = this.getValue();
-//        return value ? Ext.Date.format(value, this.dateTimeFormat) : null;
+//        return value ? Ext4.Date.format(value, this.dateTimeFormat) : null;
 
         var me = this
             ,format = me.getFormat()
             ,value = me.getValue();
 
-        return value ? Ext.Date.format(value, format) : null;
+        return value ? Ext4.Date.format(value, format) : null;
     },
 
     setValue: function(value){
-        if (Ext.isString(value)){
-            value = Ext.Date.parse(value, this.getFormat()); //this.dateTimeFormat
+        if (Ext4.isString(value)){
+            value = Ext4.Date.parse(value, this.getFormat()); //this.dateTimeFormat
         }
         this.dateField.setValue(value);
         this.timeField.setValue(value);
@@ -252,5 +248,3 @@ Ext.define('Ext.ux.form.field.DateTime', {
         this.callParent(arguments);
     }
 });
-
-})(Ext4)
