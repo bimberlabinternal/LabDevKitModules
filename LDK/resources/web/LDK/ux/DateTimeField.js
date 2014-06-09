@@ -86,18 +86,31 @@ Ext4.define('Ext.ux.form.field.DateTime', {
             listeners: {
                 scope: this,
                 change: function(field, val){
+                    if (this.isDestroyed || field.isDestroyed){
+                        return;
+                    }
+
                     if (val && !this.timeField.getValue()){
-                        var date = new Date(val.getTime());
+                        var date = LDK.ConvertUtils.parseDate(val);
+                        LDK.Assert.assertNotEmpty('Unable to parse date: [' + val + '], ' + (typeof val), date);
+                        if (date)
+                        {
+                            if (!Ext4.isEmpty(this.defaultHour))
+                            {
+                                date.setHours(this.defaultHour);
+                            }
 
-                        if (!Ext4.isEmpty(this.defaultHour)){
-                            date.setHours(this.defaultHour);
+                            if (!Ext4.isEmpty(this.defaultMinutes))
+                            {
+                                date.setMinutes(this.defaultMinutes);
+                            }
+
+                            this.timeField.setValue(date);
                         }
-
-                        if (!Ext4.isEmpty(this.defaultMinutes)){
-                            date.setMinutes(this.defaultMinutes);
+                        else {
+                            //try to set anyway
+                            this.timeField.setValue(val);
                         }
-
-                        this.timeField.setValue(date);
                     }
                 }
             },
@@ -124,6 +137,10 @@ Ext4.define('Ext.ux.form.field.DateTime', {
             listeners: {
                 scope: this,
                 change: function(field, val){
+                    if (this.isDestroyed || field.isDestroyed){
+                        return;
+                    }
+
                     if (!this.dateField.getValue()){
                         this.dateField.setValue(val);
                     }
