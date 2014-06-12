@@ -92,7 +92,9 @@ Ext4.define('Ext.ux.form.field.DateTime', {
 
                     if (val && !this.timeField.getValue()){
                         var date = LDK.ConvertUtils.parseDate(val);
-                        LDK.Assert.assertNotEmpty('Unable to parse date: [' + val + '], ' + (typeof val), date);
+                        // NOTE: this field does let the user type any string, so this is a possible state.
+                        // The bad value will get rejected downstrem
+                        //LDK.Assert.assertNotEmpty('Unable to parse date: [' + val + '], ' + (typeof val), date);
                         if (date)
                         {
                             if (!Ext4.isEmpty(this.defaultHour))
