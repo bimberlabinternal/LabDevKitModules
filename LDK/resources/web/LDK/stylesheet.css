@@ -38,3 +38,19 @@ div.ldk-wp table.labkey-wp {
     text-decoration: underline;
     cursor: pointer;
 }
+
+/* NOTE: intended to fix width cropping problem with tooltips.  See below:
+  http://stackoverflow.com/questions/15834689/extjs-4-2-tooltips-not-wide-enough-to-see-contents
+*/
+.x4-tip {
+    width: auto !important;
+    max-width: 800px;
+}
+.x4-tip-body {
+    width: auto !important;
+    max-width: 800px;
+}
+.x4-tip-body span {
+    width: auto !important;
+    max-width: 800px;
+}

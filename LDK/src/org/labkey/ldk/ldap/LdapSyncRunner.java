@@ -215,18 +215,18 @@ public class LdapSyncRunner implements Job
                     }
                     else
                     {
-                        setUserActive(toRemove, false);
+                        setUserActive(toRemove, false, "the user is not a member of synced LDAP groups");
                     }
                 }
             }
         }
     }
 
-    private void setUserActive(User u, boolean active)
+    private void setUserActive(User u, boolean active, String reason)
     {
         try
         {
-            log("Changing active state of user: " + u.getEmail() + " to " + active);
+            log("Changing active state of user: " + u.getEmail() + " to " + active + (reason == null ? "" : ", reason: " + reason));
             _usersInactivated++;
 
             if (!_previewOnly)
@@ -272,7 +272,7 @@ public class LdapSyncRunner implements Job
             boolean isEnabled = ldapEntry.isEnabled();
             if (!isEnabled && isEnabled != existing.isActive())
             {
-                setUserActive(existing, isEnabled);
+                setUserActive(existing, isEnabled, "copied from the LDAP entry");
                 _usersInactivated++;
             }
 
