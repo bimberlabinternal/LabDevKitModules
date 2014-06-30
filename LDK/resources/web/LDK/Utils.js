@@ -105,7 +105,7 @@ LDK.Utils = new function(){
             }
 
             Ext4.Ajax.request({
-                url: LABKEY.ActionURL.buildURL('admin', 'logMothershipError', null, params),
+                url: LABKEY.ActionURL.buildURL('admin', 'logClientException', null, params),
                 method : 'GET',
                 scope: this,
                 failure: function(response){
