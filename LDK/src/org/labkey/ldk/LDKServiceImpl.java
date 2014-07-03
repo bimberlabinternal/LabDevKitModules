@@ -172,7 +172,7 @@ public class LDKServiceImpl extends LDKService
         {
             try
             {
-                // Attempt to use the core.GROUP_CONCAT() aggregate function. If this succeeds, we'll skip the install step.
+                // Attempt to use the ldk.naturalize function. If this succeeds, we'll skip the install step.
                 SqlExecutor executor = new SqlExecutor(LDKSchema.getInstance().getSchema());
                 executor.setLogLevel(Level.OFF);
                 executor.execute("SELECT ldk.naturalize('Foo') FROM (SELECT 1 AS G) x");
