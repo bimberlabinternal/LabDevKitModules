@@ -365,7 +365,7 @@ public class NotificationServiceImpl extends NotificationService
         {
             if (!((User) user).isActive())
             {
-                _log.error("an inactive user is a notification recipient: " + user.getName());
+                //_log.error("an inactive user is a notification recipient: " + user.getName());
                 return Collections.emptyList();
             }
 

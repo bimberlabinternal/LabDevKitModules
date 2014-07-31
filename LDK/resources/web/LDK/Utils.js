@@ -28,6 +28,9 @@ LDK.Utils = new function(){
                      responseObj = arguments[0];
                  }
 
+                 if (config.hideMsg !== false && Ext4.Msg.isVisible())
+                     Ext4.Msg.hide();
+
                  if (!responseObj || !responseObj.status || responseObj.status == 0){
                      console.log('ignoring error');
                      console.log(arguments);
@@ -64,9 +67,6 @@ LDK.Utils = new function(){
                         includeContext: true
                     });
                  }
-
-                 if (config.hideMsg !== false && Ext4.Msg.isVisible())
-                    Ext4.Msg.hide();
 
                  if(config.callback)
                      config.callback.call(config.scope || this, responseObj);

@@ -35,8 +35,7 @@ Ext4.define('LDK.field.EditInPlaceElement', {
                         return;
 
                     item.getEl().on('click', this.enterEditMode, this);
-
-                    this.appendEditIcon();
+                    this.appendEditIcon.defer(100, this);
                 }
             }
         }
@@ -48,7 +47,7 @@ Ext4.define('LDK.field.EditInPlaceElement', {
             cls: 'labkey-edit-in-place-icon',
             title: 'Click to Edit'
         });
-        this.editIcon.anchorTo(this.el, 'tr-tr');
+        this.editIcon.anchorTo(this.getEl(), 'tr-tr');
         this.editIcon.on("mouseover", function(){
             this.editIcon.addCls("labkey-edit-in-place-icon-hover");
         }, this);

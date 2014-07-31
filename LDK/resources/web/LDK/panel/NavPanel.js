@@ -380,6 +380,7 @@ Ext4.define('LDK.panel.NavPanel', {
 
         return {
             xtype: 'ldk-linkbutton',
+            hidden: config.showSearch===false,
             tooltip: config.searchTooltip || 'Click to display a search panel',
             href: config.url ? config.url : config.urlConfig ? LABKEY.ActionURL.buildURL(config.urlConfig.controller, config.urlConfig.action, null, config.urlConfig.params) : null,
             text: 'Search'
