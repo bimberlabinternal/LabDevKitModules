@@ -19,7 +19,7 @@
         </ant>
     </target>
 
-    <target name="jsdoc" depends="init" unless="devMode">
+    <target name="jsdoc" depends="init" if="${doBuildClientApiDocs}">
         <uptodate targetfile="${moduleDir}/web/docs/files.html" property="jsdoc_uptodate" >
             <srcfiles dir="${moduleDir}${file.separator}web${file.separator}clientapi" />
         </uptodate>
