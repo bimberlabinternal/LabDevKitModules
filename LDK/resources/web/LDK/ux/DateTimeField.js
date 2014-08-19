@@ -138,13 +138,20 @@ Ext4.define('Ext.ux.form.field.DateTime', {
             submitValue:false,
             listeners: {
                 scope: this,
-                change: function(field, val){
+                change: function(field, val, oldVal){
                     if (this.isDestroyed || field.isDestroyed){
                         return;
                     }
 
-                    if (!this.dateField.getValue()){
-                        this.dateField.setValue(val);
+                    var date = LDK.ConvertUtils.parseDate(val);
+                    if (date && !oldVal){
+                        var defaultDate = this.getDefaultDate();
+                        date = new Date(defaultDate.getFullYear(), defaultDate.getMonth(), defaultDate.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
+                        field.value = date;
+                    }
+
+                    if (date && !this.dateField.getValue()){
+                        this.dateField.setValue(date);
                     }
                 }
             },
@@ -178,6 +185,10 @@ Ext4.define('Ext.ux.form.field.DateTime', {
 
         me.callParent();
         me.initField();
+    },
+
+    getDefaultDate: function(){
+        return new Date();
     },
 
     focus:function(){

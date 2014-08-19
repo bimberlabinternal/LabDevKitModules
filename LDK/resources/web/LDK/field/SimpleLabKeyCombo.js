@@ -1,6 +1,8 @@
 /**
+ * @cfg containerPath
  * @cfg schemaName
  * @cfg queryName
+ * @cfg sortField
  */
 Ext4.define('LDK.form.field.SimpleLabKeyCombo', {
     extend: 'LABKEY.ext4.ComboBox',
@@ -17,6 +19,7 @@ Ext4.define('LDK.form.field.SimpleLabKeyCombo', {
                 containerPath: this.containerPath,
                 schemaName: this.schemaName,
                 queryName: this.queryName,
+                sort: this.sortField,
                 autoLoad: true
             }
         });
