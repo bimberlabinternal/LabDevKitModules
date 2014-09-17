@@ -2,6 +2,7 @@ package org.labkey.ldk;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.data.AbstractTableInfo;
@@ -45,6 +46,7 @@ import java.util.Set;
  */
 public class LDKServiceImpl extends LDKService
 {
+    private static final Logger _log = Logger.getLogger(LDKServiceImpl.class);
     private Set<NotificationSection> _summaryNotificationSections = new HashSet<>();
     private List<List<String>> _containerScopedTables = new ArrayList<>();
     private Boolean _isNaturalizeInstalled = null;
@@ -111,16 +113,26 @@ public class LDKServiceImpl extends LDKService
 
     private JSONObject getJSONForRoot(File fileRoot, String name, boolean includeFileCount)
     {
-        JSONObject obj = new JSONObject();
-        obj.put("name", name);
-        obj.put("rootPath", fileRoot.getPath());
-        long size = FileUtils.sizeOfDirectory(fileRoot);
-        obj.put("rootSizeInt", size);
-        obj.put("rootSize", FileUtils.byteCountToDisplaySize(size));
-        if (includeFileCount)
-            obj.put("totalFiles", getFileCount(fileRoot));
+        try
+        {
+            JSONObject obj = new JSONObject();
+            obj.put("name", name);
+            obj.put("rootPath", fileRoot.getPath());
+            long size = FileUtils.sizeOfDirectory(fileRoot);
+            obj.put("rootSizeInt", size);
+            obj.put("rootSize", FileUtils.byteCountToDisplaySize(size));
+            if (includeFileCount)
+                obj.put("totalFiles", getFileCount(fileRoot));
 
-        return obj;
+            return obj;
+        }
+        catch (IllegalArgumentException e)
+        {
+            //NOTE: this has been hit when there are bad symlinks under a file root
+            _log.error(e.getMessage(), e);
+        }
+
+        return new JSONObject();
     }
 
     private int getFileCount(File file)

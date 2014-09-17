@@ -40,6 +40,7 @@
         <script path="LDK/panel/TabbedReportPanel.js"/>
         <script path="LDK/data/CaseInsensitiveModel.js"/>
         <script path="LDK/data/LabKeyStore.js"/>
+        <script path="LDK/window/GridBulkEditWindow.js"/>
     </library>
     <dependencies>
         <dependency path="Ext4ClientApi"/>

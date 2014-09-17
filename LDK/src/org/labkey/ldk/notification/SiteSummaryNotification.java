@@ -616,6 +616,12 @@ public class SiteSummaryNotification implements Notification
         {
             Integer rowId = Integer.parseInt(entry.getKey().substring(1, entry.getKey().indexOf('d')));
             Container listContainer = ContainerManager.getForRowId(rowId);
+            if (listContainer == null)
+            {
+                log.error("unable to find list container corresponding to: " + entry.getKey());
+                continue;
+            }
+
             String listName = entry.getKey().split("_")[1];
             ListDefinition ld = ListService.get().getList(listContainer, listName);
 

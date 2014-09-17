@@ -25,5 +25,26 @@ Ext4.define('LDK.form.field.SimpleLabKeyCombo', {
         });
 
         this.callParent(arguments);
+    },
+
+    setValue: function(val){
+        if (this.store && this.store.isLoading()){
+            var me = this, args = arguments;
+            me.store.on('load', function(){
+                me.setValue.apply(me, args);
+            }, this, {defer: 100});
+        }
+
+        if (this.store && this.valueField && Ext4.isPrimitive(val)){
+            var field = this.store.getFields().get(this.valueField);
+            if (field){
+                val = field.convert(val);
+                if (Ext4.isDefined(val)) {
+                    arguments[0] = val;
+                }
+            }
+        }
+
+        this.callParent(arguments);
     }
 });

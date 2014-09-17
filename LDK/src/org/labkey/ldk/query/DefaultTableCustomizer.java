@@ -79,9 +79,14 @@ public class DefaultTableCustomizer implements TableCustomizer
         if (schemaName != null && queryName != null && keyFields.size() > 0)
         {
             String keyField = keyFields.get(0);
-            ti.setImportURL(DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField));
+            if (!AbstractTableInfo.LINK_DISABLER_ACTION_URL.equals(ti.getImportDataURL(ti.getUserSchema().getContainer())))
+                ti.setImportURL(DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField));
+
             ti.setInsertURL(AbstractTableInfo.LINK_DISABLER);
-            ti.setUpdateURL(DetailsURL.fromString("/ldk/manageRecord.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
+
+            if (!AbstractTableInfo.LINK_DISABLER.equals(ti.getUpdateURL(null, ti.getUserSchema().getContainer())))
+                ti.setUpdateURL(DetailsURL.fromString("/ldk/manageRecord.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
+
             ti.setDetailsURL(DetailsURL.fromString("/query/recordDetails.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
         }
 

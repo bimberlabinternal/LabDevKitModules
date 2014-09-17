@@ -405,6 +405,7 @@ labModules/LDK/resources/web/LDK/ux/DateTimeField.js -text
 labModules/LDK/resources/web/LDK/ux/ItemSelector.css -text
 labModules/LDK/resources/web/LDK/ux/ItemSelector.js -text
 labModules/LDK/resources/web/LDK/ux/MultiSelect.js -text
+labModules/LDK/resources/web/LDK/window/GridBulkEditWindow.js -text
 labModules/LDK/src/org/labkey/ldk/LDKController.java -text
 labModules/LDK/src/org/labkey/ldk/LDKManager.java -text
 labModules/LDK/src/org/labkey/ldk/LDKModule.java -text
