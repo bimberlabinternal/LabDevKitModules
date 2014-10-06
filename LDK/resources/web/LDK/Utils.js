@@ -104,7 +104,7 @@ LDK.Utils = new function(){
                 platform:  navigator && navigator.platform  || "Unknown"
             }
 
-            Ext4.Ajax.request({
+            LABKEY.Ajax.request({
                 url: LABKEY.ActionURL.buildURL('admin', 'logClientException', null, params),
                 method : 'GET',
                 scope: this,
@@ -143,7 +143,7 @@ LDK.Utils = new function(){
                 ].join('\n');
             }
 
-            Ext4.Ajax.request({
+            LABKEY.Ajax.request({
                 url: LABKEY.ActionURL.buildURL('admin', 'log'),
                 params: {
                     message: config.message,
@@ -193,7 +193,7 @@ LDK.Utils = new function(){
                 platform:  navigator && navigator.platform  || "Unknown"
             });
 
-            Ext4.Ajax.request({
+            LABKEY.Ajax.request({
                 url: LABKEY.ActionURL.buildURL('ldk', 'logMetric'),
                 params: config,
                 method : 'POST',
@@ -432,7 +432,7 @@ LDK.Utils = new function(){
         },
 
         getNotificationDetails: function(config){
-            return Ext4.Ajax.request({
+            return LABKEY.Ajax.request({
                 url : LABKEY.ActionURL.buildURL('ldk', 'getNotifications', config.containerPath),
                 method : 'POST',
                 scope: config.scope,

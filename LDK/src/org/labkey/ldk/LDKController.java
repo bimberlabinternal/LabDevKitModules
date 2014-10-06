@@ -42,6 +42,7 @@ import org.labkey.api.query.QueryForm;
 import org.labkey.api.query.QueryParseException;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.QueryWebPart;
+import org.labkey.api.security.CSRF;
 import org.labkey.api.security.PrincipalType;
 import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.SecurityManager;
@@ -96,6 +97,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(ReadPermission.class)
+    @CSRF
     public class GetNotificationsAction extends ApiAction<Object>
     {
         @Override
@@ -120,6 +122,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(ReadPermission.class)
+    @CSRF
     public class GetFileRootSizesAction extends ApiAction<FileRootSizeForm>
     {
         @Override
@@ -196,6 +199,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(ReadPermission.class)
+    @CSRF
     public class GetSiteNotificationDetailsAction extends ApiAction<Object>
     {
         @Override
@@ -231,6 +235,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(UpdatePermission.class)
+    @CSRF
     public class UpdateNotificationSubscriptionsAction extends ApiAction<UpdateNotificationSubscriptionsForm>
     {
         @Override
@@ -390,6 +395,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(AdminPermission.class)
+    @CSRF
     public class SendNotificationAction extends ApiAction<RunNotificationForm>
     {
         public ApiResponse execute(RunNotificationForm form, BindException errors) throws Exception
@@ -444,6 +450,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(AdminPermission.class)
+    @CSRF
     public class GetNotificationSubscriptionsAction extends ApiAction<RunNotificationForm>
     {
         public ApiResponse execute(RunNotificationForm form, BindException errors) throws Exception
@@ -500,6 +507,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(AdminPermission.class)
+    @CSRF
     public class InitiateLdapSyncAction extends ApiAction<InitiateLdapSyncForm>
     {
         public ApiResponse execute(InitiateLdapSyncForm form, BindException errors) throws Exception
@@ -547,6 +555,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(AdminPermission.class)
+    @CSRF
     public class ListLdapGroupsAction extends ApiAction<LdapForm>
     {
         public ApiResponse execute(LdapForm form, BindException errors) throws Exception
@@ -820,6 +829,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(AdminPermission.class)
+    @CSRF
     public class TestLdapConnectionAction extends ApiAction<Object>
     {
         public ApiResponse execute(Object form, BindException errors) throws Exception
@@ -854,6 +864,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(AdminPermission.class)
+    @CSRF
     public class GetLdapSettingsAction extends ApiAction<Object>
     {
         public ApiResponse execute(Object form, BindException errors)
@@ -873,6 +884,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(AdminPermission.class)
+    @CSRF
     public class SetLdapSettingsAction extends ApiAction<LdapForm>
     {
         public ApiResponse execute(LdapForm form, BindException errors)
@@ -963,6 +975,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(AdminPermission.class)
+    @CSRF
     public class SetNotificationSettingsAction extends ApiAction<NotificationSettingsForm>
     {
         public ApiResponse execute(NotificationSettingsForm form, BindException errors)
@@ -1094,6 +1107,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermissionClass(ReadPermission.class)
+    @CSRF
     public class LogMetricAction extends ApiAction<LogMetricForm>
     {
         @Override
