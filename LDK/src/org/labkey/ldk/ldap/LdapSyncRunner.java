@@ -534,7 +534,7 @@ public class LdapSyncRunner implements Job
 
             if (!_previewOnly)
             {
-                SecurityManager.NewUserStatus newUserStatus = SecurityManager.addUser(email);
+                SecurityManager.NewUserStatus newUserStatus = SecurityManager.addUser(email, null);
                 User newUser = newUserStatus.getUser();
 
                 String firstName = ldapEntry.getFirstName();
