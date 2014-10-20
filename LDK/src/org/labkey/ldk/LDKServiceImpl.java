@@ -5,6 +5,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
@@ -19,6 +20,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.files.FileContentService;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationSection;
+import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.security.User;
 import org.labkey.api.services.ServiceRegistry;
 import org.labkey.ldk.query.BuiltInColumnsCustomizer;
@@ -50,6 +52,7 @@ public class LDKServiceImpl extends LDKService
     private Set<NotificationSection> _summaryNotificationSections = new HashSet<>();
     private List<List<String>> _containerScopedTables = new ArrayList<>();
     private Boolean _isNaturalizeInstalled = null;
+    private Map<String, Map<String, List<ButtonConfigFactory>>> _queryButtons = new CaseInsensitiveHashMap<Map<String, List<ButtonConfigFactory>>>();
 
     public LDKServiceImpl()
     {
@@ -299,6 +302,50 @@ public class LDKServiceImpl extends LDKService
         map.put("platform", model.getPlatform());
 
         Table.insert(u, t, map);
+    }
+
+    public void registerQueryButton(ButtonConfigFactory btn, String schema, String query)
+    {
+        Map<String, List<ButtonConfigFactory>> schemaMap = _queryButtons.get(schema);
+        if (schemaMap == null)
+            schemaMap = new CaseInsensitiveHashMap<List<ButtonConfigFactory>>();
+
+        List<ButtonConfigFactory> list = schemaMap.get(query);
+        if (list == null)
+            list = new ArrayList<ButtonConfigFactory>();
+
+        list.add(btn);
+
+        schemaMap.put(query, list);
+        _queryButtons.put(schema, schemaMap);
+    }
+
+    @Override
+    public List<ButtonConfigFactory> getQueryButtons(TableInfo ti)
+    {
+        List<ButtonConfigFactory> buttons = new ArrayList<ButtonConfigFactory>();
+
+        Map<String, List<ButtonConfigFactory>> factories = _queryButtons.get(ti.getPublicSchemaName());
+        if (factories == null)
+            return buttons;
+
+        List<ButtonConfigFactory> list = factories.get(ti.getPublicName());
+        if (list == null)
+            return  buttons;
+
+        for (ButtonConfigFactory fact : list)
+        {
+            if (fact.isAvailable(ti))
+                buttons.add(fact);
+        }
+
+        return Collections.unmodifiableList(buttons);
+    }
+
+    @Override
+    public void customizeButtonBar(AbstractTableInfo ti, List<ButtonConfigFactory> buttons)
+    {
+        DefaultTableCustomizer.customizeButtonBar(ti, buttons);
     }
 
     public static class PerfMetricModel

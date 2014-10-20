@@ -17,22 +17,35 @@ package org.labkey.ldk.query;
 
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONObject;
 import org.labkey.api.data.AbstractTableInfo;
+import org.labkey.api.data.ButtonBarConfig;
+import org.labkey.api.data.ButtonConfig;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.UserDefinedButtonConfig;
 import org.labkey.api.gwt.client.AuditBehaviorType;
 import org.labkey.api.gwt.client.util.StringUtils;
 import org.labkey.api.ldk.LDKService;
+import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.UserSchema;
+import org.labkey.api.view.NavTree;
+import org.labkey.api.view.template.ClientDependency;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -43,6 +56,8 @@ import java.util.List;
  */
 public class DefaultTableCustomizer implements TableCustomizer
 {
+    private static final String MORE_ACTIONS = "More Actions";
+
     private static final Logger _log = Logger.getLogger(TableCustomizer.class);
     private boolean _disableFacetingForNumericCols = true;
     private AuditBehaviorType _auditMode = AuditBehaviorType.DETAILED;
@@ -91,6 +106,9 @@ public class DefaultTableCustomizer implements TableCustomizer
         }
 
         ti.setAuditBehavior(_auditMode);
+
+        List<ButtonConfigFactory> buttons = LDKService.get().getQueryButtons(ti);
+        customizeButtonBar(ti, buttons);
 
         //customize builtin columns
         BuiltInColumnsCustomizer colCustomizer = new BuiltInColumnsCustomizer();
@@ -221,5 +239,104 @@ public class DefaultTableCustomizer implements TableCustomizer
             col.setLabel(col.getLabel() + " - Date Only");
             ti.addColumn(col);
         }
+    }
+
+    public static void customizeButtonBar(AbstractTableInfo ti, List<ButtonConfigFactory> buttons)
+    {
+        UserSchema us = ti.getUserSchema();
+        if (us == null)
+            return;
+
+        ButtonBarConfig cfg = ti.getButtonBarConfig();
+        if (cfg == null)
+        {
+            cfg = new ButtonBarConfig(new JSONObject());
+            cfg.setIncludeStandardButtons(true);
+        }
+
+        //ensure client dependencies
+        Set<String> scripts = new LinkedHashSet<String>();
+        String[] existingScripts = cfg.getScriptIncludes();
+        if (existingScripts != null)
+        {
+            for (String s : existingScripts)
+            {
+                scripts.add(s);
+            }
+        }
+
+        configureMoreActionsBtn(ti, buttons, cfg, scripts);
+
+        cfg.setScriptIncludes(scripts.toArray(new String[scripts.size()]));
+        cfg.setAlwaysShowRecordSelectors(true);
+
+        ti.setButtonBarConfig(cfg);
+    }
+
+    private static void configureMoreActionsBtn(TableInfo ti, List<ButtonConfigFactory> buttons, ButtonBarConfig cfg, Set<String> scripts)
+    {
+        if (buttons == null || buttons.isEmpty())
+        {
+            return;
+        }
+
+        List<ButtonConfig> existingBtns = cfg.getItems();
+        UserDefinedButtonConfig moreActionsBtn = null;
+        if (existingBtns != null)
+        {
+            for (ButtonConfig btn : existingBtns)
+            {
+                if (btn instanceof UserDefinedButtonConfig)
+                {
+                    UserDefinedButtonConfig ub = (UserDefinedButtonConfig)btn;
+                    if (MORE_ACTIONS.equals(ub.getText()))
+                    {
+                        moreActionsBtn = ub;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (moreActionsBtn == null)
+        {
+            //abort if there are no custom buttons
+            if (buttons.size() == 0)
+                return;
+
+            moreActionsBtn = new UserDefinedButtonConfig();
+            moreActionsBtn.setText(MORE_ACTIONS);
+            moreActionsBtn.setInsertPosition(-1);
+            existingBtns.add(moreActionsBtn);
+            cfg.setItems(existingBtns);
+        }
+
+        List<NavTree> menuItems = new ArrayList<NavTree>();
+        if (moreActionsBtn.getMenuItems() != null)
+            menuItems.addAll(moreActionsBtn.getMenuItems());
+
+        //create map of existing item names
+        Map<String, NavTree> btnNameMap = new HashMap<String, NavTree>();
+        for (NavTree item : menuItems)
+        {
+            btnNameMap.put(item.getText(), item);
+        }
+
+        for (ButtonConfigFactory fact : buttons)
+        {
+            NavTree newButton = fact.create(ti);
+            if (!btnNameMap.containsKey(newButton.getText()))
+            {
+                btnNameMap.put(newButton.getText(), newButton);
+                menuItems.add(newButton);
+
+                for (ClientDependency cd : fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser()))
+                {
+                    scripts.add(cd.getScriptString());
+                }
+            }
+        }
+
+        moreActionsBtn.setMenuItems(menuItems);
     }
 }
