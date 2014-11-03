@@ -135,6 +135,11 @@ public class DefaultTableCustomizer implements TableCustomizer
         //first add the sort col
         String name = colName + "_sortValue";
         ColumnInfo sortCol = ti.getColumn(name);
+        if (sortCol != null)
+        {
+            // We need to swap out the placeholder version
+            ti.removeColumn(sortCol);
+        }
         if (sortCol == null)
         {
             if (!ti.getSqlDialect().isPostgreSQL() && !ti.getSqlDialect().isSqlServer())
