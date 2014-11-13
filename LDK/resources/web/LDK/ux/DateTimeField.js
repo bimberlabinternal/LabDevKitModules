@@ -191,19 +191,19 @@ Ext4.define('Ext.ux.form.field.DateTime', {
         return new Date();
     },
 
-    focus:function(){
+    focus: function(){
         this.callParent(arguments);
         this.dateField.focus();
     },
 
-    onItemFocus:function(item){
+    onItemFocus: function(item){
         if (this.blurTask){
             this.blurTask.cancel();
         }
         this.focussedItem = item;
     },
 
-    onItemBlur:function(item, e){
+    onItemBlur: function(item, e){
         var me = this;
         if (item != me.focussedItem){ return; }
         // 100ms to focus a new item that belongs to us, otherwise we will assume the user left the field
@@ -243,7 +243,14 @@ Ext4.define('Ext.ux.form.field.DateTime', {
 
     setValue: function(value){
         if (Ext4.isString(value)){
-            value = Ext4.Date.parse(value, this.getFormat()); //this.dateTimeFormat
+            var orig = value;
+            value = Ext4.Date.parse(value, this.getFormat());  //preferentially use format of this field
+            if (orig && !value) {
+                value = LDK.ConvertUtils.parseDate(orig);
+                if (!value){
+                    LDK.Utils.logError('Unable to parse string in DateTimeField: [' + orig + ']');
+                }
+            }
         }
         this.dateField.setValue(value);
         this.timeField.setValue(value);

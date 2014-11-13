@@ -6,6 +6,8 @@ Ext4.ns('LDK');
 LDK.ConvertUtils = new function(){
     var DATEFORMATS = LABKEY.Utils.getDateAltFormats().split('|');
     DATEFORMATS.push('Y/m/d H:i:s');
+    DATEFORMATS.push('n-j-Y');
+    DATEFORMATS.push('m-d-Y');
     DATEFORMATS.push('m/d/Y');
     DATEFORMATS.push('m/j/Y');
     DATEFORMATS.push('m/d/y');

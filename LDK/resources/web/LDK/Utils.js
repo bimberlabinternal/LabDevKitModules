@@ -80,6 +80,18 @@ LDK.Utils = new function(){
         },
 
         /**
+         * A shortcut to log an error message to the server's error log.  It will automatically include context about the page.
+         * @param msg
+         */
+        logError: function(msg){
+            LDK.Utils.logToServer({
+                message: msg,
+                level: 'ERROR',
+                includeContext: true
+            });
+        },
+
+        /**
          * Experimental. A helper to log errors to mothership, LABKEY's central reporting mechanism.  This should not be used
          * unless you are familiar with mothership.
          * @param config An object with the information to be logged.  Can contain the following properties:
