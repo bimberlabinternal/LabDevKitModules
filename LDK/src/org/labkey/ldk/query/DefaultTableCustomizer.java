@@ -140,19 +140,17 @@ public class DefaultTableCustomizer implements TableCustomizer
             // We need to swap out the placeholder version
             ti.removeColumn(sortCol);
         }
-        if (sortCol == null)
-        {
-            if (!ti.getSqlDialect().isPostgreSQL() && !ti.getSqlDialect().isSqlServer())
-            {
-                throw new UnsupportedOperationException("naturalize() is only supported on Postgres and SqlServer");
-            }
 
-            SQLFragment sql = new SQLFragment("ldk.naturalize(" + col.getValueSql(ExprColumn.STR_TABLE_ALIAS) + ")");
-            sortCol = new ExprColumn(ti, name, sql, JdbcType.VARCHAR, col);
-            sortCol.setHidden(true);
-            sortCol.setLabel(col.getLabel() + " - Sort Field");
-            ti.addColumn(sortCol);
+        if (!ti.getSqlDialect().isPostgreSQL() && !ti.getSqlDialect().isSqlServer())
+        {
+            throw new UnsupportedOperationException("naturalize() is only supported on Postgres and SqlServer");
         }
+
+        SQLFragment sql = new SQLFragment("ldk.naturalize(" + col.getValueSql(ExprColumn.STR_TABLE_ALIAS) + ")");
+        sortCol = new ExprColumn(ti, name, sql, JdbcType.VARCHAR, col);
+        sortCol.setHidden(true);
+        sortCol.setLabel(col.getLabel() + " - Sort Field");
+        ti.addColumn(sortCol);
 
         col.setSortFieldKeys(Arrays.asList(sortCol.getFieldKey()));
     }
