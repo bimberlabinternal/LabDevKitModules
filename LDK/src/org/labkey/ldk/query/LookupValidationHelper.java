@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
-import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -190,7 +189,7 @@ public class LookupValidationHelper
         }
 
         QueryUpdateService qus = ti.getUpdateService();
-        qus.updateRows(_user, _container, toUpdate, oldPKs, new HashMap<String, Object>());
+        qus.updateRows(_user, _container, toUpdate, oldPKs, null, new HashMap<String, Object>());
     }
 
     public boolean verifyNotUsed(String targetSchema, String targetTable, String targetField, Object val) throws SQLException
