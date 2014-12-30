@@ -479,7 +479,7 @@ public class NotificationServiceImpl extends NotificationService
         if (trigger == null)
             return null;
 
-        return trigger.getNextFireTime();
+        return trigger.getFireTimeAfter(new Date());
     }
 
     public void updateSubscriptions(Container c, User u, Notification n, @Nullable List<UserPrincipal> toAdd, @Nullable List<UserPrincipal> toRemove)

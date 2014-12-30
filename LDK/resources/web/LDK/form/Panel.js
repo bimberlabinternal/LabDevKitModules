@@ -1,5 +1,6 @@
 Ext4.define('LDK.form.Panel', {
     extend: 'LABKEY.ext4.FormPanel',
+    alias: 'widget.ldk-formpanel',
     defaultFieldWidth: 450,
     defaultFieldLabelWidth: 180,
 

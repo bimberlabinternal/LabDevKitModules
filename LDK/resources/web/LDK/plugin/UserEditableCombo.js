@@ -106,6 +106,10 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
 
     customRecords: {},
 
+    destroy: function(){
+        this.isDestroyed = true;
+    },
+
     onStoreAdd: function(store, recs){
         Ext4.Array.forEach(recs, function(r){
             var pk = r.get(this.combo.valueField);
@@ -116,6 +120,10 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
     },
 
     addOtherRecord: function(){
+        if (this.isDestroyed){
+            return;
+        }
+
         var rec = this.combo.findRecord(this.combo.displayField, 'Other');
         if (rec){
             return;
@@ -128,6 +136,10 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
     },
 
     onClickOther: function(){
+        if (this.isDestroyed){
+            return;
+        }
+
         this.windowIsVisible = true;
         this.addEditorListeners();
 
@@ -206,8 +218,13 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
     },
 
     addRecord: function(data, idx){
-        if(!data || LABKEY.Utils.isEmptyObj(data))
+        if (!data || LABKEY.Utils.isEmptyObj(data)) {
             return;
+        }
+
+        if (this.isDestroyed){
+            return;
+        }
 
         if (!this.combo.store || !LABKEY.ext4.Util.hasStoreLoaded(this.combo.store)){
             this.combo.store.on('load', function(store){
