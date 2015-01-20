@@ -2,14 +2,13 @@ package org.labkey.ldk.query;
 
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
-import org.labkey.api.query.QueryService;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.User;
-import org.labkey.ldk.LDKModule;
 import org.labkey.ldk.LDKSchema;
 
 import java.util.Collections;
@@ -24,7 +23,7 @@ public class MssqlUtilsUserSchema extends SimpleUserSchema
 
     public MssqlUtilsUserSchema(User user, Container container)
     {
-        super(NAME, "This schema exposes tables of information from SQL Server", user, container, DbSchema.get("SYS"));
+        super(NAME, "This schema exposes tables of information from SQL Server", user, container, DbSchema.get("SYS", DbSchemaType.Bare));
     }
 
     public static void register(Module m)
