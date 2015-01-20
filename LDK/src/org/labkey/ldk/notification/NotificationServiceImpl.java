@@ -165,7 +165,7 @@ public class NotificationServiceImpl extends NotificationService
     {
         PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(ContainerManager.getRoot(), NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
         pm.put(ENABLED_PROP, status.toString());
-        PropertyManager.saveProperties(pm);
+        pm.save();
     }
 
     public Set<Notification> getNotifications(Container c, boolean includeAll)
@@ -219,7 +219,7 @@ public class NotificationServiceImpl extends NotificationService
 
                 PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
                 pm.put(RETURN_EMAIL, email.getEmailAddress());
-                PropertyManager.saveProperties(pm);
+                pm.save();
             }
         }
         catch (ValidEmail.InvalidEmailException e)
@@ -243,7 +243,7 @@ public class NotificationServiceImpl extends NotificationService
         {
             PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
             pm.put(USER_PROP, String.valueOf(userId));
-            PropertyManager.saveProperties(pm);
+            pm.save();
         }
     }
 
@@ -337,7 +337,7 @@ public class NotificationServiceImpl extends NotificationService
     {
         PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(NotificationServiceImpl.TIMESTAMP_PROPERTY_DOMAIN, true);
         pm.put(getKey(n), lastRun.toString());
-        PropertyManager.saveProperties(pm);
+        pm.save();
     }
 
     public boolean isActive(Notification n, Container c)
@@ -355,7 +355,7 @@ public class NotificationServiceImpl extends NotificationService
     {
         PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.STATUS_PROPERTY_DOMAIN, true);
         pm.put(getKey(n), active ? String.valueOf(active) : null);
-        PropertyManager.saveProperties(pm);
+        pm.save();
     }
 
     @NotNull

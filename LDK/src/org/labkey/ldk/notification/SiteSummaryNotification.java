@@ -156,7 +156,7 @@ public class SiteSummaryNotification implements Notification
         newValues.put(lastSave, String.valueOf(new Date().getTime()));
         map.putAll(newValues);
 
-        PropertyManager.saveProperties(map);
+        map.save();
     }
 
     public String getMessage(Container c, User u)

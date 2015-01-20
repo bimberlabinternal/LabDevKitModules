@@ -95,7 +95,7 @@ public class LdapSettings
         writableProps.clear();
 
         writableProps.putAll(props);
-        PropertyManager.saveProperties(writableProps);
+        writableProps.save();
 
         LdapScheduler.get().onSettingsChange();
     }
