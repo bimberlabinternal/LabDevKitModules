@@ -298,6 +298,10 @@ Ext4.define('LDK.window.ManageNotificationWindow', {
     },
 
     onLoad: function(response){
+        if (this.isDestroyed){
+            return;
+        }
+
         var toAdd = [{
             xtype: 'labkey-principalcombo',
             fieldLabel: 'Add User Or Group',
@@ -329,6 +333,11 @@ Ext4.define('LDK.window.ManageNotificationWindow', {
                             this.doLoad();
                         }, this)
                     });
+                },
+                destroy: function(field){
+                    if (field.typeAheadTask){
+                        field.typeAheadTask.cancel();
+                    }
                 }
             }
         }];

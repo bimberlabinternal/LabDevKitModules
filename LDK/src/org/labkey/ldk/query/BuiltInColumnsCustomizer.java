@@ -35,6 +35,8 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
                 col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             }
         }
+
+        table.setDefaultVisibleColumns(null);
     }
 
     private enum COL_ENUM
@@ -44,6 +46,8 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             {
                 setNonEditable(col);
                 col.setHidden(true);
+                col.setShownInDetailsView(false);
+                col.setLabel("Created");
             }
         },
         createdby(Integer.class){
@@ -51,6 +55,8 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             {
                 setNonEditable(col);
                 col.setHidden(true);
+                col.setShownInDetailsView(false);
+                col.setLabel("Created By");
             }
         },
         modified(Timestamp.class){
@@ -58,6 +64,8 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             {
                 setNonEditable(col);
                 col.setHidden(true);
+                col.setShownInDetailsView(false);
+                col.setLabel("Modified");
             }
         },
         modifiedby(Integer.class){
@@ -65,6 +73,8 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             {
                 setNonEditable(col);
                 col.setHidden(true);
+                col.setShownInDetailsView(false);
+                col.setLabel("Modified By");
             }
         },
         container(String.class){
@@ -85,6 +95,15 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             public void customizeColumn(ColumnInfo col)
             {
                 setNonEditable(col);
+                col.setShownInDetailsView(false);
+                col.setHidden(true);
+            }
+        },
+        objectid(String.class){
+            public void customizeColumn(ColumnInfo col)
+            {
+                setNonEditable(col);
+                col.setShownInDetailsView(false);
                 col.setHidden(true);
             }
         };

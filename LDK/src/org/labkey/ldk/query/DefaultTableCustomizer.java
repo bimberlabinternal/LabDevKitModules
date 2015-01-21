@@ -36,6 +36,7 @@ import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.util.StringExpression;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
 
@@ -102,7 +103,11 @@ public class DefaultTableCustomizer implements TableCustomizer
             if (!AbstractTableInfo.LINK_DISABLER.equals(ti.getUpdateURL(null, ti.getUserSchema().getContainer())))
                 ti.setUpdateURL(DetailsURL.fromString("/ldk/manageRecord.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
 
-            ti.setDetailsURL(DetailsURL.fromString("/query/recordDetails.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
+            StringExpression se = ti.getDetailsURL(null, ti.getUserSchema().getContainer());
+            if (se == null || se.toString().contains("detailsQueryRow"))
+            {
+                ti.setDetailsURL(DetailsURL.fromString("/query/recordDetails.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
+            }
         }
 
         ti.setAuditBehavior(_auditMode);
