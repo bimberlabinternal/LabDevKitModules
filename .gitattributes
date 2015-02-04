@@ -450,6 +450,7 @@ labModules/laboratory/src/org/labkey/laboratory/query/DefaultAssayCustomizer.jav
 labModules/laboratory/src/org/labkey/laboratory/query/EnterResultsDisplayColumn.java -text
 labModules/laboratory/src/org/labkey/laboratory/query/FreezerTriggerHelper.java -text
 labModules/laboratory/src/org/labkey/laboratory/query/FreezersCustomizer.java -text
+labModules/laboratory/src/org/labkey/laboratory/query/LaboratoryEditingTableCustomizer.java -text
 labModules/laboratory/src/org/labkey/laboratory/query/LaboratoryTableCustomizer.java -text
 labModules/laboratory/src/org/labkey/laboratory/query/LaboratoryWorkbooksTable.java -text
 labModules/laboratory/src/org/labkey/laboratory/query/ReagentTableCustomizer.java -text
