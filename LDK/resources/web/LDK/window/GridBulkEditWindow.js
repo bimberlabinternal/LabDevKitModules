@@ -6,7 +6,7 @@ Ext4.define('LDK.window.GridBulkEditWindow', {
 
     initComponent: function() {
         Ext4.apply(this, {
-            width: 400,
+            width: 500,
             bodyStyle: 'padding: 5px;',
             closeAction: 'destroy',
             modal: true,
@@ -18,6 +18,11 @@ Ext4.define('LDK.window.GridBulkEditWindow', {
                 },
                 border: false,
                 items: [{
+                    html: 'This helper allows you to bulk edit the selected rows.  To use it, first pick a first using the drop-down below.  Selecting a field will add the editor for that field.  You can repeat this as many times as you want in order to change multiple fields at once.  When finished, hit submit to apply your changes.',
+                    border: false,
+                    width: null,
+                    style: 'padding-bottom: 10px;'
+                },{
                     emptyText: '',
                     fieldLabel: 'Select Field',
                     itemId: 'fieldName',
