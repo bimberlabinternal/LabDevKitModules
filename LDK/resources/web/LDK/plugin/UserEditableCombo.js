@@ -15,6 +15,8 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
 
     init: function(combo) {
         this.combo = combo;
+        //NOTE: if this is true, when we have a zero record store we always select the 'other' record, triggering a popup
+        combo.selectOnTab = false;
         combo.userEditablePlugin = this;
 
         Ext4.override(combo, {
@@ -23,7 +25,7 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
                 if(selectedRecords && selectedRecords.length && selectedRecords.length == 1)
                     val = selectedRecords[0].get(this.displayField);
 
-                if(this.userEditablePlugin.allowChooseOther && val == 'Other'){
+                if (this.userEditablePlugin.allowChooseOther && val == 'Other'){
                     this.getPicker().getSelectionModel().deselectAll(true); //note: we need to clear selection in case other is clicked twice in a row
                     this.userEditablePlugin.onClickOther();
                     this.collapse();
@@ -140,63 +142,40 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
             return;
         }
 
-        this.windowIsVisible = true;
         this.addEditorListeners();
-
-        this.window = this.createWindow();
-
-        if (this.window){
-            this.mon(this.window, 'close', function(win){
-                this.windowIsVisible = false;
-                this.window = null;
-                this.endEdit();
-            }, this, {single: true});
-        }
+        this.createWindow();
     },
 
-    endEdit: function(){
+    createWindow: function(){
+        Ext4.MessageBox.prompt('Enter Value', 'Enter value:', this.onPrompt, this);
+    },
+
+    onPrompt: function(btn, val){
+        if (btn == 'ok') {
+            this.addNewValue(val);
+        }
+
         var editor = this.combo.up('editor');
         if (editor){
-            editor.completeEdit();
+            this.mun(editor, 'beforecomplete', this.onBeforeComplete, this);
+            this.combo.getPicker().refresh();
+            this.combo.expand();
+            this.combo.focus.defer(20, this.combo);
         }
         else {
             this.combo.fireEvent('blur', this.combo);
         }
     },
 
-    createWindow: function(){
-        return Ext4.MessageBox.prompt('Enter Value', 'Enter value:', function(btn, val){
-            if (btn == 'ok')
-                this.onWindowClose(val);
-        }, this);
-    },
-
-    onWindowClose: function(val){
-        this.windowIsVisible = false;
-        this.window = null;
-        this.addNewValue(val);
-
-        this.endEdit();
-    },
-
     addEditorListeners: function(){
         var editor = this.combo.up('editor');
         if (editor){
-            var plugin = this;
-            Ext4.override(editor, {
-                completeEdit : function(remainVisible) {
-                    if (plugin && plugin.isWindowIsVisible()){
-                        return false;
-                    }
-
-                    this.callOverridden(arguments);
-                }
-            });
+            this.mon(editor, 'beforecomplete', this.onBeforeComplete, this);
         }
     },
 
-    isWindowIsVisible: function(){
-        return this.windowIsVisible;
+    onBeforeComplete: function(){
+        return !Ext4.Msg.isVisible();
     },
 
     addNewValue: function(val){
@@ -211,10 +190,7 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
         }
 
 
-        this.addRecord(data);
-        var oldVal = this.combo.getValue();
-        this.combo.setValue(data[this.combo.valueField]);
-        this.combo.fireEvent('change', this.combo, data[this.combo.valueField], oldVal);
+        this.combo.setValue(this.addRecord(data));
     },
 
     addRecord: function(data, idx){
@@ -237,7 +213,9 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
             return;
         }
 
-        idx = idx || this.combo.store.getCount() - 1;
-        this.combo.store.insert(idx, this.combo.store.createModel(data));
+        idx = idx || (this.combo.store.getCount() == 0 ? 0 : this.combo.store.getCount() - 1);
+        this.combo.store.insert(idx, [this.combo.store.createModel(data)]);
+
+        return this.combo.store.getAt(idx);
     }
 });

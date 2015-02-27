@@ -379,10 +379,10 @@ public class SiteSummaryNotification implements Notification
         String fileRootSizes = "fileRootSizes";
         String fileRootCounts = "fileRootCounts";
 
-        Map<String, String> newValueMap = new HashMap<String, String>();
+        Map<String, String> newValueMap = new HashMap<>();
         JSONObject oldValueMap = saved.containsKey(fileRootSizes) ? new JSONObject(saved.get(fileRootSizes)) : null;
 
-        Map<String, String> newValueMapCounts = new HashMap<String, String>();
+        Map<String, String> newValueMapCounts = new HashMap<>();
         JSONObject oldValueMapCounts = saved.containsKey(fileRootCounts) ? new JSONObject(saved.get(fileRootCounts)) : null;
 
         JSONArray ret = new JSONArray();
@@ -407,7 +407,7 @@ public class SiteSummaryNotification implements Notification
                     String key = json.getString("path");
                     Long size = fr.containsKey("rootSizeInt") ? fr.getLong("rootSizeInt") : null;
 
-                    newValueMap.put(key, size.toString());
+                    newValueMap.put(key, String.valueOf(size));
                     Long previousSize = null;
                     if (oldValueMap != null && oldValueMap.containsKey(key))
                     {

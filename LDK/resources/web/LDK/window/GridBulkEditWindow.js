@@ -18,7 +18,7 @@ Ext4.define('LDK.window.GridBulkEditWindow', {
                 },
                 border: false,
                 items: [{
-                    html: 'This helper allows you to bulk edit the selected rows.  To use it, first pick a first using the drop-down below.  Selecting a field will add the editor for that field.  You can repeat this as many times as you want in order to change multiple fields at once.  When finished, hit submit to apply your changes.',
+                    html: 'This helper allows you to bulk edit the selected rows.  To use it, first pick the desired fields using the drop-down below.  Selecting a field will add the editor for that field.  You can repeat this as many times as you want in order to change multiple fields at once.  When finished, hit submit to apply your changes.',
                     border: false,
                     width: null,
                     style: 'padding-bottom: 10px;'
@@ -26,7 +26,8 @@ Ext4.define('LDK.window.GridBulkEditWindow', {
                     emptyText: '',
                     fieldLabel: 'Select Field',
                     itemId: 'fieldName',
-                    xtype: 'labkey-combo',
+                    xtype: 'checkcombo',
+                    multiSelect: true,
                     displayField: 'name',
                     valueField: 'value',
                     typeAhead: true,
@@ -37,14 +38,24 @@ Ext4.define('LDK.window.GridBulkEditWindow', {
                     isFormField: false,
                     listeners: {
                         scope: this,
-                        change: function(field, val, oldVal){
-                            if (val) {
-                                var idx = field.store.find('value', val);
-                                if (idx > -1) {
-                                    var rec = field.store.getAt(idx);
-                                    this.addEditor(rec.get('column'));
-                                    field.reset();
-                                }
+                        change: function(field, values, oldVal){
+                            if (values && values.length) {
+                                Ext4.Array.forEach(values, function(val){
+                                    var idx = field.store.find('value', val);
+                                    if (idx > -1) {
+                                        var rec = field.store.getAt(idx);
+                                        this.addEditor(rec.get('column'));
+                                    }
+                                }, this);
+
+                                var form = this.down('form');
+                                form.items.each(function(field){
+                                    if (field.dataIndex){
+                                        if (values.indexOf(field.name) == -1){
+                                            form.remove(field);
+                                        }
+                                    }
+                                })
                             }
                         }
                     }
@@ -103,13 +114,13 @@ Ext4.define('LDK.window.GridBulkEditWindow', {
             var ed = column.getEditor();
             if (ed) {
                 if (this.down('field[name=' + column.dataIndex + ']')){
-                    console.log('already found');
                     return;
                 }
 
                 var field = ed.cloneConfig({
                     fieldLabel: column.text,
-                    name: column.dataIndex
+                    name: column.dataIndex,
+                    dataIndex: column.dataIndex
                 });
 
                 delete field.width;

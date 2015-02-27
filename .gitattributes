@@ -193,6 +193,7 @@ labModules/LDK/src/org/labkey/ldk/query/UniqueConstraintHelper.java -text
 labModules/LDK/tools/naturalize/naturalize.cs -text
 labModules/LDK/tools/server/tomcat_log_cleanup.sh -text
 labModules/laboratory/Laboratory.iml -text
+labModules/laboratory/distributions/discvr.xml -text
 labModules/laboratory/module.properties -text
 labModules/laboratory/resources/folderTypes/Expt[!!-~]Workbook.folderType.xml -text
 labModules/laboratory/resources/folderTypes/Laboratory.folderType.xml -text

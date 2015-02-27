@@ -4,6 +4,7 @@
  */
 Ext4.define('LDK.grid.plugin.CellEditing', {
     extend: 'Ext.grid.plugin.CellEditing',
+    alias: 'plugin.ldk-cellediting',
 
     onCellClick: function(view, cell, colIdx, record, row, rowIdx, e) {
         //NOTE: if holding shift or ctrl, dont allow editing ot start
@@ -17,7 +18,7 @@ Ext4.define('LDK.grid.plugin.CellEditing', {
     onSpecialKey: function(ed, field, e) {
         if (e.getKey() === e.ENTER){
             var grid = this.grid, sm;
-            e.stopEvent();
+            //e.stopEvent();
             sm = grid.getSelectionModel();
 
             if (sm.onEditorEnter)

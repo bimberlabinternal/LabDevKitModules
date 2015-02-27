@@ -7,6 +7,7 @@ Ext4.define('LDK.grid.Panel', {
     alias: 'widget.ldk-gridpanel',
 
     selType: 'ldk-rowmodel',
+    editingPluginId: 'cellediting',
 
     initComponent: function(){
         Ext4.apply(this, {
