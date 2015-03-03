@@ -16,7 +16,6 @@
 
 package org.labkey.ldk;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.log4j.Logger;
@@ -29,9 +28,7 @@ import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
-import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.files.FileContentService;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.Notification;
 import org.labkey.api.ldk.notification.NotificationService;
@@ -53,7 +50,6 @@ import org.labkey.api.security.ValidEmail;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
-import org.labkey.api.services.ServiceRegistry;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
@@ -71,15 +67,12 @@ import org.labkey.ldk.notification.NotificationServiceImpl;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.File;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -841,10 +834,11 @@ public class LDKController extends SpringActionController
 
             ApiSimpleResponse resp = new ApiSimpleResponse();
 
-            LdapConnectionWrapper wrapper = new LdapConnectionWrapper();
+            LdapConnectionWrapper wrapper = null;
 
             try
             {
+                wrapper = new LdapConnectionWrapper();
                 wrapper.connect();
                 resp.put("success", true);
             }
@@ -856,7 +850,10 @@ public class LDKController extends SpringActionController
             }
             finally
             {
-                wrapper.disconnect();
+                if (wrapper != null)
+                {
+                    wrapper.disconnect();
+                }
             }
 
             return resp;
