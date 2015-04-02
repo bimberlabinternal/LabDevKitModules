@@ -66,7 +66,7 @@ public class LDKUpgradeCode implements UpgradeCode
             // upgrading. Not having NATURALIZE is not a disaster; admin can install the function manually later.
 
             // Wrap the exception to provide an explanation to the admin
-            Exception wrap = new Exception("Failure installing NATURALIZE function. This function is required for optimal operation of this server. Contact LabKey if you need assistance installing this function.", t);
+            Exception wrap = new Exception("Failure installing NATURALIZE function. This function is required for optimal operation of this server. Contact LabKey Software if you need assistance installing this function.", t);
             ExceptionUtil.logExceptionToMothership(null, wrap);
             ModuleLoader.getInstance().addModuleFailure(LDKModule.NAME, wrap);
         }
