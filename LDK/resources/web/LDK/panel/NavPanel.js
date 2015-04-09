@@ -382,7 +382,7 @@ Ext4.define('LDK.panel.NavPanel', {
             xtype: 'ldk-linkbutton',
             hidden: config.showSearch===false,
             tooltip: config.searchTooltip || 'Click to display a search panel',
-            href: config.url ? config.url : config.urlConfig ? LABKEY.ActionURL.buildURL(config.urlConfig.controller, config.urlConfig.action, null, config.urlConfig.params) : null,
+            href: config.url ? config.url : !Ext4.Object.isEmpty(config.urlConfig) ? LABKEY.ActionURL.buildURL(config.urlConfig.controller, config.urlConfig.action, null, config.urlConfig.params) : null,
             text: 'Search'
         }
     },
@@ -394,7 +394,7 @@ Ext4.define('LDK.panel.NavPanel', {
             xtype: 'ldk-linkbutton',
             text: config.browseTooltip || 'Browse All',
             tooltip: 'Click to display a table of all records',
-            href: config.url ? config.url : config.urlConfig ? LABKEY.ActionURL.buildURL(config.urlConfig.controller, config.urlConfig.action, null, config.urlConfig.params) : null
+            href: config.url ? config.url : !Ext4.Object.isEmpty(config.urlConfig) ? LABKEY.ActionURL.buildURL(config.urlConfig.controller, config.urlConfig.action, null, config.urlConfig.params) : null
         }
     },
 

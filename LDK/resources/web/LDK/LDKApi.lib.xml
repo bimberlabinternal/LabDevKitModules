@@ -21,6 +21,7 @@
         <script path="LDK/field/EditInPlaceElement.js"/>
         <script path="LDK/field/NumberField.js"/>
         <script path="LDK/field/IntegerField.js"/>
+        <script path="LDK/field/ExpDataField.js"/>
         <script path="LDK/form/Panel.js"/>
         <script path="LDK/panel/NavPanel.js"/>
         <script path="LDK/panel/BulkEditPanel.js"/>
