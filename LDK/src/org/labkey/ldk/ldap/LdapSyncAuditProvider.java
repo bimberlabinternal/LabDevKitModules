@@ -65,9 +65,7 @@ public class LdapSyncAuditProvider extends AbstractAuditTypeProvider implements 
     @Override
     public TableInfo createTableInfo(UserSchema userSchema)
     {
-        Domain domain = getDomain();
-
-        DefaultAuditTypeTable table = new DefaultAuditTypeTable(this, domain, userSchema)
+        DefaultAuditTypeTable table = new DefaultAuditTypeTable(this, createStorageTableInfo(), userSchema, defaultVisibleColumns)
         {
             @Override
             protected void initColumn(ColumnInfo col)
@@ -85,14 +83,14 @@ public class LdapSyncAuditProvider extends AbstractAuditTypeProvider implements 
                     col.setLabel("Total Group Members Added or Removed");
                 }
             }
-
-            @Override
-            public List<FieldKey> getDefaultVisibleColumns()
-            {
-                return defaultVisibleColumns;
-            }
         };
         return table;
+    }
+
+    @Override
+    public List<FieldKey> getDefaultVisibleColumns()
+    {
+        return defaultVisibleColumns;
     }
 
     @Override
