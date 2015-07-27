@@ -87,7 +87,7 @@ public class LDKModule extends ExtendedSimpleModule
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "ldap sync admin", DetailsURL.fromString("/ldk/ldapSettings.view").getActionURL());
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "file root usage summary", DetailsURL.fromString("/ldk/folderSizeSummary.view").getActionURL());
 
-        if (DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
+        if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
         {
             AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "sql server DB index usage", DetailsURL.fromString("/query/executeQuery.view?schemaName=mssqlutils&query.queryName=index_stats").getActionURL());
         }
@@ -122,7 +122,7 @@ public class LDKModule extends ExtendedSimpleModule
     {
         super.registerSchemas();
 
-        if (DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
+        if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
         {
             MssqlUtilsUserSchema.register(this);
         }

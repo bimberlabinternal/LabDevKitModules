@@ -460,11 +460,11 @@ public class SiteSummaryNotification implements Notification
     private void getTableSizeStats(Container c, User u, final StringBuilder msg, final StringBuilder alerts, final Map<String, String> saved, Map<String, String> toSave)
     {
         SQLFragment sql = null;
-        if (DbScope.getLabkeyScope().getSqlDialect().isPostgreSQL())
+        if (DbScope.getLabKeyScope().getSqlDialect().isPostgreSQL())
         {
             sql = new SQLFragment("SELECT nspname as schemaName, relname as tableName, reltuples as rowcnt FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN ('pg_catalog', 'information_schema') AND relkind='r' ORDER BY reltuples DESC limit 20");
         }
-        else if (DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
+        else if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
         {
             sql = new SQLFragment("SELECT top 20 OBJECT_SCHEMA_NAME(o.id) as schemaName, o.name as tableName, i.rowcnt FROM sysindexes AS i INNER JOIN sysobjects AS o ON i.id = o.id WHERE i.indid < 2  AND OBJECTPROPERTY(o.id, 'IsMSShipped') = 0 ORDER BY i.rowcnt desc");
         }
@@ -477,7 +477,7 @@ public class SiteSummaryNotification implements Notification
             msg.append("<br><b>The top 20 largest tables, by row count:</b><br><br>");
             msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'><td>Schema</td><td>Table</td><td># of Rows</td><td>Previous Value</td><td>% Change</td></tr>");
 
-            SqlSelector ss = new SqlSelector(DbScope.getLabkeyScope(), sql);
+            SqlSelector ss = new SqlSelector(DbScope.getLabKeyScope(), sql);
 
             final Map<String, String> newValueMap = new HashMap<>();
             final JSONObject oldValueMap = saved.containsKey(tableSizes) ? new JSONObject(saved.get(tableSizes)) : null;
@@ -526,9 +526,9 @@ public class SiteSummaryNotification implements Notification
         final Map<String, String> newValueMap = new HashMap<String, String>();
         final JSONObject oldValueMap = saved.containsKey(dbSizes) ? new JSONObject(saved.get(dbSizes)) : null;
 
-        if (DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
+        if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
         {
-            ss = new SqlSelector(DbScope.getLabkeyScope(), new SQLFragment("SELECT " +
+            ss = new SqlSelector(DbScope.getLabKeyScope(), new SQLFragment("SELECT " +
                 "DB_NAME(database_id) AS DatabaseName, Name AS LogicalName, (size*8) as size\n" +  //this column holds size as 8KB pages
                 "FROM sys.master_files\n" +
                 "ORDER BY size desc"));
@@ -561,7 +561,7 @@ public class SiteSummaryNotification implements Notification
         }
         else
         {
-            ss = new SqlSelector(DbScope.getLabkeyScope(), new SQLFragment("SELECT pg_database_size(?) As size", DbScope.getLabkeyScope().getDatabaseName()));
+            ss = new SqlSelector(DbScope.getLabKeyScope(), new SQLFragment("SELECT pg_database_size(?) As size", DbScope.getLabKeyScope().getDatabaseName()));
             Map<String, Object>[] maps = ss.getMapArray();
             if (maps.length > 0)
             {
