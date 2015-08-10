@@ -421,7 +421,7 @@ public class SiteSummaryNotification implements Notification
                     String fileCountKey = json.getString("path");
                     Long totalFiles = fr.containsKey("totalFiles") ? fr.getLong("totalFiles") : null;
 
-                    newValueMapCounts.put(fileCountKey, totalFiles.toString());
+                    newValueMapCounts.put(fileCountKey, totalFiles == null ? null : totalFiles.toString());
                     Long previousCount = null;
                     if (oldValueMapCounts != null && oldValueMapCounts.containsKey(fileCountKey))
                     {
