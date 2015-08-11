@@ -84,7 +84,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
 
     getSubjects: function(existing){
         //we clean up, combine, then split the subjectBox and subject inputs
-        var subjectArray = this.idNormalizer(this.down('#subjArea').getValue());
+        var subjectArray = EHR.Utils.splitIds(this.down('#subjArea').getValue());
 
         if (existing)
             subjectArray = subjectArray.concat(existing);
