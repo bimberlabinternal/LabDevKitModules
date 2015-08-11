@@ -103,7 +103,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
     },
 
     getSubjects: function(){
-        var subjectArray = EHR.Utils.splitIds(this.down('#subjArea').getValue());
+        var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
 
         if (subjectArray.length > 0){
             subjectArray = Ext4.unique(subjectArray);

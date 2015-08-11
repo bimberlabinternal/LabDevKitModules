@@ -533,6 +533,31 @@ LDK.Utils = new function(){
             }
 
             window.location = LABKEY.ActionURL.buildURL('ldk', 'updateQuery', null, params);
+        },
+
+        splitIds: function(subjectArray){
+            if (!subjectArray){
+                return [];
+            }
+
+            subjectArray = Ext4.String.trim(subjectArray);
+            subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
+            subjectArray = subjectArray.replace(/(^;|;$)/g, '');
+            subjectArray = subjectArray.toLowerCase();
+
+            if (subjectArray){
+                subjectArray = subjectArray.split(';');
+            }
+            else {
+                subjectArray = [];
+            }
+
+            if (subjectArray.length > 0){
+                subjectArray = Ext4.unique(subjectArray);
+                subjectArray.sort();
+            }
+
+            return subjectArray;
         }
     }
 }
