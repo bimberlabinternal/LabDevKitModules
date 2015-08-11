@@ -10,6 +10,21 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
     initComponent: function(){
         this.items = this.getItems();
 
+        this.idNormalizer = this.tabbedReportPanel.idNormalizer ||
+            function(subjects)
+            {
+                // Default implementation treats all whitespace as delimeters and converts to lower case
+                subjects = Ext4.String.trim(subjects);
+                subjects = subjects.replace(/[\s,;]+/g, ';');
+                subjects = subjects.replace(/(^;|;$)/g, '');
+                subjects = subjects.toLowerCase();
+
+                if(subjects)
+                    return subjects.split(';');
+                else
+                    return new Array();
+            };
+
         this.callParent();
     },
 
@@ -103,18 +118,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
     },
 
     getSubjects: function(){
-        var subjectArray = this.down('#subjArea').getValue();
-        subjectArray = Ext4.String.trim(subjectArray);
-        subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
-        subjectArray = subjectArray.replace(/(^;|;$)/g, '');
-        subjectArray = subjectArray.toLowerCase();
-
-        if (subjectArray){
-            subjectArray = subjectArray.split(';');
-        }
-        else {
-            subjectArray = [];
-        }
+        var subjectArray = this.idNormalizer(this.down('#subjArea').getValue());
 
         if (subjectArray.length > 0){
             subjectArray = Ext4.unique(subjectArray);

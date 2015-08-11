@@ -84,15 +84,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
 
     getSubjects: function(existing){
         //we clean up, combine, then split the subjectBox and subject inputs
-        var subjectArray = this.down('#subjArea').getValue();
-        subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
-        subjectArray = subjectArray.replace(/(^;|;$)/g, '');
-        subjectArray = subjectArray.toLowerCase();
-
-        if(subjectArray)
-            subjectArray = subjectArray.split(';');
-        else
-            subjectArray = new Array();
+        var subjectArray = this.idNormalizer(this.down('#subjArea').getValue());
 
         if (existing)
             subjectArray = subjectArray.concat(existing);
