@@ -535,7 +535,7 @@ LDK.Utils = new function(){
             window.location = LABKEY.ActionURL.buildURL('ldk', 'updateQuery', null, params);
         },
 
-        splitIds: function(subjectArray){
+        splitIds: function(subjectArray, unsorted){
             if (!subjectArray){
                 return [];
             }
@@ -552,9 +552,11 @@ LDK.Utils = new function(){
                 subjectArray = [];
             }
 
-            if (subjectArray.length > 0){
+            if (subjectArray.length > 0) {
                 subjectArray = Ext4.unique(subjectArray);
-                subjectArray.sort();
+                if (!unsorted) {
+                    subjectArray.sort();
+                }
             }
 
             return subjectArray;
