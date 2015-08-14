@@ -10,12 +10,14 @@
  * @cfg filterTypes
  * @cfg autoLoadDefaultTab If true, the default tab will automatically load unless another is selected
  * @cfg reportNamespace The namespace where JS reports are located
+ * @cfg maxSubjectsToShow The maximum number of subject IDs to show as buttons before collapsing into a summary
  * @cfg reports
  */
 Ext4.define('LDK.panel.TabbedReportPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ldk-tabbedreportpanel',
     allowEditing: true,
+    maxSubjectsToShow: 12,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -139,7 +141,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             });
 
             var toAdd = [];
-            if (subjects.length <= 12){
+            if (subjects.length <= this.maxSubjectsToShow){
                 for (var i = 0; i < subjects.length; i++){
                     toAdd.push({
                         xtype: 'button',
