@@ -133,6 +133,7 @@ labModules/LDK/resources/web/LDK/field/EditInPlaceElement.js -text
 labModules/LDK/resources/web/LDK/field/ExpDataField.js -text
 labModules/LDK/resources/web/LDK/field/IntegerField.js -text
 labModules/LDK/resources/web/LDK/field/NumberField.js -text
+labModules/LDK/resources/web/LDK/field/SimpleCombo.js -text
 labModules/LDK/resources/web/LDK/field/SimpleLabKeyCombo.js -text
 labModules/LDK/resources/web/LDK/form/Panel.js -text
 labModules/LDK/resources/web/LDK/grid/Panel.js -text
