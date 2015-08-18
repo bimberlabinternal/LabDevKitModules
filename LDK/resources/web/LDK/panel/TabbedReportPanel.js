@@ -473,7 +473,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         var jsFunction = ns[tab.report.jsHandler];
         if (!jsFunction)
         {
-            alert("Could not find JavaScript function '" + tab.report.jsHandler + "' to load tab. The report is misconfigured. Please inform a system administrator.");
+            var message = "Could not find JavaScript function '" + tab.report.jsHandler + "' to load tab in Animal History. The report is misconfigured.";
+            LDK.Utils.logError(message);
+            alert(message);
         }
         else
         {
