@@ -99,7 +99,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         if (Ext4.isIE){
             toAdd.push({
                 border: false,
-                html: '<span>NOTE: You are currently using Internet Explorer.  While this page will work on any browser, it may it should perform better on any other major browser, such as Chrome or Firefox.  For the best experience, we recommend using one of these browsers.</span>',
+                html: '<span>NOTE: You are currently using Internet Explorer.  While this page will work on any browser, it may perform better in other browsers, such as Chrome or Firefox.  For the best experience, we recommend using one of these browsers.</span>',
                 style: 'padding-top: 20px;'
             });
         }
@@ -470,7 +470,15 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
     loadJS: function(tab){
         var ns = this.reportNamespace;
-        ns[tab.report.jsHandler](this, tab);
+        var jsFunction = ns[tab.report.jsHandler];
+        if (!jsFunction)
+        {
+            alert("Could not find JavaScript function '" + tab.report.jsHandler + "' to load tab. The report is misconfigured. Please inform a system administrator.");
+        }
+        else
+        {
+            jsFunction(this, tab);
+        }
     },
 
     loadDetails: function(tab, target){
