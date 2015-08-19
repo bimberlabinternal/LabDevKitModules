@@ -135,7 +135,7 @@ LDK.Utils = new function(){
          * @param config The config object, which supports the following options:
          * <li>message: The message to log</li>
          * <li>level: The error level, either ERROR, WARN, INFO or DEBUG.  Defaults to ERROR</li>
-         * <li>includeContext: If true, the following will automatially be appended to the message string: URL of the current page, Browser, Platform.  Defaults to true
+         * <li>includeContext: If true, the following will automatically be appended to the message string: URL of the current page, Browser, Platform.  Defaults to true
          */
         logToServer: function(config){
             if (!config || !config.message){
