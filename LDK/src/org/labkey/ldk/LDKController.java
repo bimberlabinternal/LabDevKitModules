@@ -41,7 +41,7 @@ import org.labkey.api.query.QueryView;
 import org.labkey.api.query.QueryWebPart;
 import org.labkey.api.security.CSRF;
 import org.labkey.api.security.PrincipalType;
-import org.labkey.api.security.RequiresPermissionClass;
+import org.labkey.api.security.RequiresPermission;
 import org.labkey.api.security.SecurityManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
@@ -89,7 +89,7 @@ public class LDKController extends SpringActionController
         setActionResolver(_actionResolver);
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetNotificationsAction extends ApiAction<Object>
     {
@@ -114,7 +114,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetFileRootSizesAction extends ApiAction<FileRootSizeForm>
     {
@@ -191,7 +191,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     @CSRF
     public class GetSiteNotificationDetailsAction extends ApiAction<Object>
     {
@@ -227,7 +227,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(UpdatePermission.class)
+    @RequiresPermission(UpdatePermission.class)
     @CSRF
     public class UpdateNotificationSubscriptionsAction extends ApiAction<UpdateNotificationSubscriptionsForm>
     {
@@ -335,7 +335,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     public class RunNotificationAction extends SimpleViewAction<RunNotificationForm>
     {
         private String _title = null;
@@ -387,7 +387,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class SendNotificationAction extends ApiAction<RunNotificationForm>
     {
@@ -421,7 +421,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     public class ValidateContainerScopedTablesAction extends SimpleViewAction<Object>
     {
         public ModelAndView getView(Object form, BindException errors) throws Exception
@@ -442,7 +442,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class GetNotificationSubscriptionsAction extends ApiAction<RunNotificationForm>
     {
@@ -499,7 +499,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class InitiateLdapSyncAction extends ApiAction<InitiateLdapSyncForm>
     {
@@ -547,7 +547,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class ListLdapGroupsAction extends ApiAction<LdapForm>
     {
@@ -821,7 +821,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class TestLdapConnectionAction extends ApiAction<Object>
     {
@@ -860,7 +860,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class GetLdapSettingsAction extends ApiAction<Object>
     {
@@ -880,7 +880,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class SetLdapSettingsAction extends ApiAction<LdapForm>
     {
@@ -971,7 +971,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(AdminPermission.class)
+    @RequiresPermission(AdminPermission.class)
     @CSRF
     public class SetNotificationSettingsAction extends ApiAction<NotificationSettingsForm>
     {
@@ -1103,7 +1103,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     @CSRF
     public class LogMetricAction extends ApiAction<LogMetricForm>
     {
@@ -1278,7 +1278,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermissionClass(ReadPermission.class)
+    @RequiresPermission(ReadPermission.class)
     public class UpdateQueryAction extends SimpleViewAction<QueryForm>
     {
         private QueryForm _form;
