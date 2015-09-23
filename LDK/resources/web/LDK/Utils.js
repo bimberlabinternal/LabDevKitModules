@@ -560,6 +560,65 @@ LDK.Utils = new function(){
             }
 
             return subjectArray;
+        },
+
+        customizeWebpartTitle: function(webpartId, properties, defaultTitle){
+            Ext4.onReady(function(){
+                properties = properties || {};
+
+                Ext4.create('Ext.window.Window', {
+                    title: 'Customize Webpart',
+                    bodyStyle: 'padding: 5px;',
+                    modal: true,
+                    width: 400,
+                    border: false,
+                    items: [{
+                        xtype: 'textfield',
+                        name: 'title',
+                        width: 380,
+                        fieldLabel: 'Title',
+                        itemId: 'title',
+                        value: properties['webpart.title'] || defaultTitle
+                    }],
+                    buttons: [{
+                        text: 'Submit',
+                        handler: function(btn) {
+                            var title = btn.up('window').down('#title').getValue();
+                            var values = {
+                                webPartId: webpartId,
+                                'webpart.title': title
+                            };
+
+                            Ext4.Msg.wait('Saving...');
+                            Ext4.Ajax.request({
+                                url    : LABKEY.ActionURL.buildURL('project', 'customizeWebPartAsync.api', null, values),
+                                method : 'POST',
+                                failure : LDK.Utils.getErrorCallback(),
+                                success: function(){
+                                    Ext4.Msg.hide();
+                                    btn.up('window').close();
+                                    LABKEY.Utils.setWebpartTitle(title, webpartId);
+                                },
+                                scope : this
+                            });
+                        },
+                        scope: this
+                    },{
+                        text: 'Cancel',
+                        handler: function(btn){
+                            btn.up('window').close();
+                        },
+                        scope: this
+                    }],
+                    listeners: {
+                        scope: this,
+                        show: function(win){
+                            var f = win.down('#title');
+                            f.focus.defer(100, f);
+                        }
+                    }
+                }).show();
+            });
         }
     }
 }
