@@ -4,8 +4,10 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
     statics: {
         filterName: 'singleSubject',
-        label: 'Single Subject'
+        DEFAULT_LABEL: 'Single Subject'
     },
+
+    nounSingular: 'Subject',
 
     initComponent: function(){
         this.items = this.getItems();
@@ -19,7 +21,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
         toAdd.push({
             width: 200,
-            html: 'Enter Subject Id:',
+            html: 'Enter ' + this.nounSingular + ' Id:',
             style: 'margin-bottom:10px'
         });
 
@@ -76,7 +78,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         var val = this.down('#subjArea').getValue();
         val = Ext4.String.trim(val);
         if(!val){
-            Ext4.Msg.alert('Error', 'Must enter at least one subject ID');
+            Ext4.Msg.alert('Error', 'Must enter at least one ' + this.nounSingular + ' ID');
             return false;
         };
 
@@ -85,7 +87,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
     validateReport: function(report){
         if (!report.subjectFieldName)
-            return 'This report cannot be used with the selected filter type, because the report does not contain a subject Id field';
+            return 'This report cannot be used with the selected filter type, because the report does not contain a ' + this.nounSingular + ' Id field';
 
         return null;
     },

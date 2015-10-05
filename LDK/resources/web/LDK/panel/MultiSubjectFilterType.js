@@ -27,7 +27,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
 
         toAdd.push({
             width: 200,
-            html: 'Enter Subject Id(s):<br><i>(Separated by commas, semicolons, space or line breaks)</i>'
+            html: 'Enter ' + this.nounSingular + ' Id(s):<br><i>(Separated by commas, semicolons, space or line breaks)</i>'
         });
 
         toAdd.push({
@@ -140,7 +140,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         var subjects = this.getSubjects(otherSubjects);
 
         if (!subjects.length){
-            Ext4.Msg.alert('Error', 'Must enter at least one subject ID');
+            Ext4.Msg.alert('Error', 'Must enter at least one ' + this.nounSingular + ' ID');
             return false;
         }
 
