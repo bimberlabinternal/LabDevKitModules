@@ -83,7 +83,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 itemId: 'tabPanel',
                 listeners: {
                     scope: this,
-                    tabchange: this.onCategoryTabChange
+                    tabchange: this.onCategoryTabChange,
+                    afterrender: function(panel) {
+                        panel.getTabBar().addCls("category-tab-bar");
+                    }
                 }
             }]
         });
@@ -354,6 +357,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     onDataRegionLoad: function(dr){
         var itemWidth = Ext4.get('dataregion_'+dr.id).getSize().width + 150;
         this.doResize(itemWidth);
+        LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
     },
 
     onTabChange: function(tab){
@@ -366,6 +370,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             var width = item.getWidth();
             this.doResize(width);
         }
+        LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
     },
 
     doResize: function(itemWidth){
@@ -444,6 +449,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             success: function(result){
                 target.unmask();
                 target.createListeners.defer(200, target);
+                LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
             },
             failure: LDK.Utils.getErrorCallback(),
             scope: this
@@ -479,6 +485,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         {
             jsFunction(this, tab);
         }
+        LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
     },
 
     loadDetails: function(tab, target){
@@ -498,6 +505,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             title: tab.report.label + this.getTitleSuffix(),
             titleField: 'Id',
             renderTo: target.id,
+            success: function(){
+                LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
+            },
             filterArray: filterArray,
             multiToGrid: this.multiToGrid
         };
@@ -681,7 +691,12 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                         tabchange: function(panel, tab, oldTab){
                             this.activeReport = tab;
                             this.silentlySetActiveTab(this.activeReport);
+                            //jQuery(".report-tab-bar").removeClass("report-tab-bar");
+                            //panel.getTabBar().addCls("report-tab-bar");
                             this.onSubmit();
+                        },
+                        added: function(panel) {
+                            panel.getTabBar().addCls("report-tab-bar");
                         }
                     }
                 });
@@ -756,6 +771,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         if (submitBtn){
             this.tabsReady = true;
             submitBtn.setDisabled(false);
+            LABKEY.Utils.signalWebDriverTest("LDK_reportPanelLoaded");
         }
     },
 
