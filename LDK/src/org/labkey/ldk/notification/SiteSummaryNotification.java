@@ -407,11 +407,11 @@ public class SiteSummaryNotification implements Notification
                     String key = json.getString("path");
                     Long size = fr.containsKey("rootSizeInt") ? fr.getLong("rootSizeInt") : null;
 
-                    newValueMap.put(key, String.valueOf(size));
+                    newValueMap.put(key, size == null ? null : String.valueOf(size));
                     Long previousSize = null;
                     if (oldValueMap != null && oldValueMap.containsKey(key))
                     {
-                        previousSize = oldValueMap.getLong(key);
+                        previousSize = oldValueMap.get(key) == null || "null".equals(oldValueMap.get(key)) ? null : oldValueMap.getLong(key);
                     }
 
                     String formattedPreviousSize = previousSize == null ? "" : FileUtils.byteCountToDisplaySize(previousSize);
@@ -425,12 +425,12 @@ public class SiteSummaryNotification implements Notification
                     Long previousCount = null;
                     if (oldValueMapCounts != null && oldValueMapCounts.containsKey(fileCountKey))
                     {
-                        previousCount = oldValueMapCounts.getLong(fileCountKey);
+                        previousCount = oldValueMapCounts.get(key) == null || "null".equals(oldValueMapCounts.get(key)) ? null : oldValueMapCounts.getLong(fileCountKey);
                     }
                     String formattedPreviousCount = previousCount == null ? "" : NumberFormat.getInstance().format(previousCount);
                     String pctChange2 = getPctChange(previousCount, totalFiles, 0.05, "The total number of files under the root for the container: " +  key + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
 
-                    msg.append("<tr><td>").append(json.getString("path")).append("</td><td>").append(fr.getString("rootPath")).append("</td><td>").append(fr.getString("rootSize")).append("</td><td>").append(formattedPreviousSize).append("</td>").append(pctChange).append("<td>").append(NumberFormat.getInstance().format(totalFiles)).append("</td><td>").append(formattedPreviousCount).append("</td>").append(pctChange2).append("</td></tr>");
+                    msg.append("<tr><td>").append(json.getString("path")).append("</td><td>").append(fr.getString("rootPath")).append("</td><td>").append(fr.getString("rootSize")).append("</td><td>").append(formattedPreviousSize).append("</td>").append(pctChange).append("<td>").append(totalFiles == null ? "" : NumberFormat.getInstance().format(totalFiles)).append("</td><td>").append(formattedPreviousCount).append("</td>").append(pctChange2).append("</td></tr>");
                 }
             }
         }
@@ -580,31 +580,18 @@ public class SiteSummaryNotification implements Notification
         final JSONObject oldValueMap = saved.containsKey(listSizes) ? new JSONObject(saved.get(listSizes)) : null;
 
         DbSchema schema = DbSchema.get("list");
+        Map<ListDefinition, Long> listMap = new HashMap<>();
+        appendListsForContainer(ContainerManager.getRoot(), u, listMap);
+
         int listCount = schema.getTableNames().size();
         msg.append("Total # of Lists: " + NumberFormat.getInstance().format(listCount) + "<br><br>");
 
         int maxLists = 20;
         msg.append("Top " + maxLists + " Lists By Size:<br>");
 
-        Map<String, Long> listMap = new HashMap<>();
-        for (String name : schema.getTableNames())
-        {
-            TableInfo ti = schema.getTable(name);
-            if (ti == null)
-            {
-                //note sure why we would ever hit this.  a schema caching issue?
-                log.error("Unable to find list table with table name: " + name);
-                continue;
-            }
-
-            Long rowCount = new TableSelector(ti).getRowCount();
-            listMap.put(name, rowCount);
-        }
-
-
-        List<Map.Entry<String, Long>> list = new ArrayList<>(listMap.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<String, Long>>() {
-            public int compare(Map.Entry<String, Long> e1, Map.Entry<String, Long> e2) {
+        List<Map.Entry<ListDefinition, Long>> list = new ArrayList<>(listMap.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<ListDefinition, Long>>() {
+            public int compare(Map.Entry<ListDefinition, Long> e1, Map.Entry<ListDefinition, Long> e2) {
                 return e2.getValue().compareTo(e1.getValue());
             }
         });
@@ -612,20 +599,10 @@ public class SiteSummaryNotification implements Notification
         msg.append("<table border=1 style='border-collapse: collapse;'>");
         msg.append("<tr style='font-weight:bold;'><td>Table Name</td><td>Container Path</td><td># of Rows</td><td>Previous Value</td><td>% Change</td></tr>");
 
-        for (Map.Entry<String, Long> entry : list.subList(0, Math.min(maxLists, list.size())))
+        for (Map.Entry<ListDefinition, Long> entry : list.subList(0, Math.min(maxLists, list.size())))
         {
-            Integer rowId = Integer.parseInt(entry.getKey().substring(1, entry.getKey().indexOf('d')));
-            Container listContainer = ContainerManager.getForRowId(rowId);
-            if (listContainer == null)
-            {
-                log.error("unable to find list container corresponding to: " + entry.getKey());
-                continue;
-            }
-
-            String listName = entry.getKey().split("_")[1];
-            ListDefinition ld = ListService.get().getList(listContainer, listName);
-
-            String key = entry.getKey().toString();
+            ListDefinition ld = entry.getKey();
+            String key = ld.getContainer().getId() + "||" + ld.getName();
 
             newValueMap.put(key, entry.getValue().toString());
             Long previousValue = null;
@@ -634,16 +611,39 @@ public class SiteSummaryNotification implements Notification
                 previousValue = oldValueMap.getLong(key);
             }
 
-            String pctChange = getPctChange(previousValue, entry.getValue(), 0.05, "The size of the list " +  listName + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
+            String pctChange = getPctChange(previousValue, entry.getValue(), 0.05, "The size of the list " +  ld.getName() + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
 
             if (ld != null)
-                msg.append("<tr><td>" + ld.getName() + "</td><td>" + listContainer.getPath() + "</td><td>" + NumberFormat.getInstance().format(entry.getValue()) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
+                msg.append("<tr><td>" + ld.getName() + "</td><td>" + ld.getContainer().getPath() + "</td><td>" + NumberFormat.getInstance().format(entry.getValue()) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
 
             if (newValueMap.size() > 0)
                 toSave.put(listSizes, new JSONObject(newValueMap).toString());
         }
 
         msg.append("</table><br>");
+    }
+
+    private void appendListsForContainer(Container c, User u, Map<ListDefinition, Long> listMap)
+    {
+        Map<String, ListDefinition> map = ListService.get().getLists(c);
+        if (map != null && !map.isEmpty())
+        {
+            for (ListDefinition ld : map.values())
+            {
+                TableInfo ti = ld.getTable(u);
+                if (ti != null)
+                {
+                    Long rowCount = new TableSelector(ti).getRowCount();
+                    listMap.put(ld, rowCount);
+                }
+            }
+        }
+
+        for (Container child : ContainerManager.getChildren(c))
+        {
+            if (!child.isWorkbook())
+                appendListsForContainer(child, u, listMap);
+        }
     }
 
     private void getAssayRunSummary(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)

@@ -277,6 +277,7 @@ labModules/laboratory/resources/schemas/dbscripts/postgresql/laboratory-12.298-1
 labModules/laboratory/resources/schemas/dbscripts/postgresql/laboratory-12.299-12.300.sql -text
 labModules/laboratory/resources/schemas/dbscripts/postgresql/laboratory-12.300-12.301.sql -text
 labModules/laboratory/resources/schemas/dbscripts/postgresql/laboratory-12.301-12.302.sql -text
+labModules/laboratory/resources/schemas/dbscripts/postgresql/laboratory-12.302-12.303.sql -text
 labModules/laboratory/resources/schemas/dbscripts/postgresql/obsolete/laboratory-0.00-11.00.sql -text
 labModules/laboratory/resources/schemas/dbscripts/postgresql/obsolete/laboratory-11.00-11.01.sql -text
 labModules/laboratory/resources/schemas/dbscripts/postgresql/obsolete/laboratory-11.01-11.12.sql -text
@@ -334,6 +335,7 @@ labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.298-12
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.299-12.300.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.300-12.301.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.301-12.302.sql -text
+labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.302-12.303.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/obsolete/laboratory-0.00-11.12.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/obsolete/laboratory-11.12-11.14.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/obsolete/laboratory-11.14-11.15.sql -text

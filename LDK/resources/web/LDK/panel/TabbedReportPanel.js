@@ -563,7 +563,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 name: 'selector',
                 inputValue: t.inputValue,
                 checked: idx == 0,
-                boxLabel: t.label
+                boxLabel: t.label,
+                hidden: t.hidden,
+                value: t.initialValue
             });
         }, this);
 
