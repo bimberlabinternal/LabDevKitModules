@@ -563,7 +563,7 @@ public class NotificationServiceImpl extends NotificationService
 
             mail.setFrom(NotificationServiceImpl.get().getReturnEmail(c));
             mail.setSubject(notification.getEmailSubject());
-            mail.setBodyContent(msg, "text/html");
+            mail.setHtmlContent(msg);
             mail.addRecipients(Message.RecipientType.TO, recipients.toArray(new Address[recipients.size()]));
 
             MailHelper.send(mail, u, c);
