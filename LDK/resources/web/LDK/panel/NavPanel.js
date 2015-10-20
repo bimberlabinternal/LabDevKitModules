@@ -187,6 +187,38 @@ Ext4.define('LDK.panel.NavPanel', {
             return cfg;
         },
 
+        linkWithChildren: function(item){
+            var cfg = {
+                xtype: 'container',
+                style: LDK.panel.NavPanel.ITEM_STYLE_DEFAULT,
+                items: [this.getLabelItemCfg(item)],
+                defaults: {
+                    border: false
+                }
+            };
+
+            if (item.children){
+                Ext4.Array.forEach(item.children, function(child) {
+                    cfg.items.push({
+                        layout: 'hbox',
+                        bodyStyle: 'background-color: transparent;',
+                        defaults: LDK.panel.NavPanel.ITEM_DEFAULTS,
+                        items: [Ext4.apply(this.getLabelItemCfg(child), {style: 'padding: 2px;padding-left: 10px;background-color: transparent;'}), {
+                            xtype: 'ldk-linkbutton',
+                            linkCls: 'labkey-text-link-noarrow',
+                            style: LDK.panel.NavPanel.ITEM_STYLE_DEFAULT,
+                            text: child.itemText,
+                            href: child.url ? child.url : child.urlConfig ? LABKEY.ActionURL.buildURL(child.urlConfig.controller, child.urlConfig.action, null, child.urlConfig.params) : null,
+                            tooltip: child.tooltip,
+                            showBrackets: false
+                        }]
+                    });
+                }, this);
+            }
+
+            return cfg;
+        },
+
         importingNavItem: function(item){
             var cfg = {
                 layout: 'hbox',
