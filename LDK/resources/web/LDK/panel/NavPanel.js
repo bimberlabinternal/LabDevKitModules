@@ -194,7 +194,8 @@ Ext4.define('LDK.panel.NavPanel', {
                 items: [this.getLabelItemCfg(item)],
                 defaults: {
                     border: false
-                }
+                },
+                hidden: !item.children
             };
 
             if (item.children){
