@@ -16,9 +16,12 @@
 package org.labkey.api.ldk;
 
 import org.jetbrains.annotations.Nullable;
+import org.labkey.api.data.Container;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.module.SimpleController;
 import org.labkey.api.module.SimpleModule;
+import org.labkey.api.security.User;
+import org.labkey.api.view.ActionURL;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -60,6 +63,12 @@ public class ExtendedSimpleModule extends SimpleModule
     public String getResourcePath()
     {
         return "/" + getClass().getPackage().getName().replaceAll("\\.", "/");
+    }
+
+    @Override
+    public ActionURL getTabURL(Container c, User user)
+    {
+        return SimpleController.getBeginViewUrl(this, c);
     }
 
     @Override

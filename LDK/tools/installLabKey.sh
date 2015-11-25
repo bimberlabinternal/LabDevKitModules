@@ -27,6 +27,8 @@ DIST_NAME=onprc
 GZ=$1
 if [ $# -eq 0 ]; then
     wget -r --trust-server-names --no-check-certificate http://teamcity.labkey.org/guestAuth/repository/download/${BRANCH}/.lastSuccessful/${DIST_NAME}/${GZ_PREFIX}-{build.number}-${DIST_NAME}-bin.tar.gz
+    mv ./teamcity.labkey.org/guestAuth/repository/download/${BRANCH}/.lastSuccessful/${DIST_NAME}/*.gz ./
+    rm -Rf ./teamcity.labkey.org
     GZ=$(ls -tr | grep '^LabKey.*\.gz$' | tail -n -1)
 fi
 

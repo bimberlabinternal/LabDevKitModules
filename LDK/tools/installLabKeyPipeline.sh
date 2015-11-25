@@ -23,18 +23,19 @@
 BRANCH=LabkeyDISCVR152_Installers
 GZ_PREFIX=LabKey15.2DISCVR
 DIST_NAME=onprc
+SERVICE_NAME=labkeyRemotePipeline
 
 GZ=$1
 if [ $# -eq 0 ]; then
     wget -r --trust-server-names --no-check-certificate http://teamcity.labkey.org/guestAuth/repository/download/${BRANCH}/.lastSuccessful/${DIST_NAME}/${GZ_PREFIX}-{build.number}-${DIST_NAME}-bin.tar.gz
-    mv ./teamcity.labkey.org/guestAuth/repository/download/LabkeyONPRC151_Installers/.lastSuccessful/onprc/*.gz ./
+    mv ./teamcity.labkey.org/guestAuth/repository/download/${BRANCH}/.lastSuccessful/${DIST_NAME}/*.gz ./
     rm -Rf ./teamcity.labkey.org
     GZ=$(ls -tr | grep '^LabKey.*\.gz$' | tail -n -1)
 fi
 
 LABKEY_DIR=/usr/local/labkey
 echo "Installing LabKey using: $GZ"
-service labkeyRemotePipeline stop
+service ${SERVICE_NAME} stop
 
 echo "Unzipping $GZ"
 gunzip $GZ
@@ -45,7 +46,7 @@ DIR=`echo $TAR | sed -e "s/.tar$//"`
 echo "DIR: $DIR"
 cd $DIR
 ./manual-upgrade.sh -u labkey -c /usr/local/tomcat -l ${LABKEY_DIR}
-service labkeyRemotePipeline start
+service ${SERVICE_NAME} start
 cd ../
 echo "Removing folder: $DIR"
 rm -Rf $DIR
