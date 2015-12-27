@@ -187,7 +187,6 @@ labModules/LDK/src/org/labkey/ldk/ldap/LdapEntry.java -text
 labModules/LDK/src/org/labkey/ldk/ldap/LdapScheduler.java -text
 labModules/LDK/src/org/labkey/ldk/ldap/LdapSettings.java -text
 labModules/LDK/src/org/labkey/ldk/ldap/LdapSyncAuditProvider.java -text
-labModules/LDK/src/org/labkey/ldk/ldap/LdapSyncAuditViewFactory.java -text
 labModules/LDK/src/org/labkey/ldk/ldap/LdapSyncRunner.java -text
 labModules/LDK/src/org/labkey/ldk/notification/NotificationJob.java -text
 labModules/LDK/src/org/labkey/ldk/notification/NotificationServiceImpl.java -text
@@ -961,7 +960,6 @@ onprcEHRModules/onprc_billing/src/org/labkey/onprc_billing/pipeline/BillingPipel
 onprcEHRModules/onprc_billing/src/org/labkey/onprc_billing/pipeline/BillingPipelineProvider.java -text
 onprcEHRModules/onprc_billing/src/org/labkey/onprc_billing/pipeline/BillingTask.java -text
 onprcEHRModules/onprc_billing/src/org/labkey/onprc_billing/query/BillingAuditProvider.java -text
-onprcEHRModules/onprc_billing/src/org/labkey/onprc_billing/query/BillingAuditViewFactory.java -text
 onprcEHRModules/onprc_billing/src/org/labkey/onprc_billing/query/BillingTriggerHelper.java -text
 onprcEHRModules/onprc_billing/src/org/labkey/onprc_billing/query/ONPRC_EHRBillingUserSchema.java -text
 onprcEHRModules/onprc_billing/src/org/labkey/onprc_billing/security/ONPRCAliasEditorPermission.java -text
@@ -1105,7 +1103,6 @@ onprcEHRModules/sla/src/org/labkey/sla/dataentry/CensusFormSection.java -text
 onprcEHRModules/sla/src/org/labkey/sla/dataentry/CensusFormType.java -text
 onprcEHRModules/sla/src/org/labkey/sla/etl/ETL.java -text
 onprcEHRModules/sla/src/org/labkey/sla/etl/ETLAuditProvider.java -text
-onprcEHRModules/sla/src/org/labkey/sla/etl/ETLAuditViewFactory.java -text
 onprcEHRModules/sla/src/org/labkey/sla/etl/ETLRunnable.java -text
 onprcEHRModules/sla/src/org/labkey/sla/security/SLAEntryPermission.java -text
 onprcEHRModules/sla/src/org/labkey/sla/security/SLAEntryRole.java -text

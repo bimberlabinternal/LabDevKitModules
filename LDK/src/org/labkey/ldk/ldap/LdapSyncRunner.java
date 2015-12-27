@@ -499,7 +499,7 @@ public class LdapSyncRunner implements Job
         if (_previewOnly)
             return;
 
-        LdapSyncAuditViewFactory.addAuditEntry(_settings.getLabKeyAdminUser(), _usersAdded, _usersRemoved, _usersInactivated, _usersModified, _groupsAdded, _groupsRemoved, _membershipsAdded, _membershipsRemoved);
+        LdapSyncAuditProvider.addAuditEntry(_settings.getLabKeyAdminUser(), _usersAdded, _usersRemoved, _usersInactivated, _usersModified, _groupsAdded, _groupsRemoved, _membershipsAdded, _membershipsRemoved);
     }
 
     private void initPreviouslySyncedRecords()

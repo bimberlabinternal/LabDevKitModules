@@ -210,12 +210,8 @@ public class SiteSummaryNotification implements Notification
     private void siteUsage(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
     {
         //different behavior depending on whether audit data has migrated
-        String tableName = "auditlog";
-        if (AuditLogService.get().hasEventTypeMigrated("UserAuditEvent"))
-        {
-            AuditTypeProvider ap = AuditLogService.get().getAuditProvider("UserAuditEvent");
-            tableName = ap.getDomain().getStorageTableName();
-        }
+        AuditTypeProvider ap = AuditLogService.get().getAuditProvider("UserAuditEvent");
+        String tableName = ap.getDomain().getStorageTableName();
 
         DbSchema auditSchema = DbSchema.get("audit");
         String sql = "SELECT\n" +

@@ -1,18 +1,19 @@
 package org.labkey.ldk.ldap;
 
 import org.labkey.api.audit.AbstractAuditTypeProvider;
-import org.labkey.api.audit.AuditLogEvent;
+import org.labkey.api.audit.AuditLogService;
 import org.labkey.api.audit.AuditTypeEvent;
 import org.labkey.api.audit.AuditTypeProvider;
 import org.labkey.api.audit.query.AbstractAuditDomainKind;
 import org.labkey.api.audit.query.DefaultAuditTypeTable;
 import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.PropertyDescriptor;
 import org.labkey.api.exp.PropertyType;
-import org.labkey.api.exp.property.Domain;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,22 +101,6 @@ public class LdapSyncAuditProvider extends AbstractAuditTypeProvider implements 
     }
 
     @Override
-    public <K extends AuditTypeEvent> K convertEvent(AuditLogEvent event)
-    {
-        LdapSyncAuditEvent bean = new LdapSyncAuditEvent();
-        copyStandardFields(bean, event);
-
-        if (event.getIntKey1() != null)
-            bean.setTotalUsersAndGroupsAdded(event.getIntKey1());
-        if (event.getIntKey2() != null)
-            bean.setTotalUsersAndGroupsRemoved(event.getIntKey2());
-        if (event.getIntKey3() != null)
-            bean.setTotalMembershipsChanged(event.getIntKey3());
-
-        return (K)bean;
-    }
-
-    @Override
     public Map<FieldKey, String> legacyNameMap()
     {
         Map<FieldKey, String> legacyMap =  super.legacyNameMap();
@@ -130,6 +115,18 @@ public class LdapSyncAuditProvider extends AbstractAuditTypeProvider implements 
     public <K extends AuditTypeEvent> Class<K> getEventClass()
     {
         return (Class<K>)LdapSyncAuditEvent.class;
+    }
+
+    public static void addAuditEntry(User user, int usersAdded, int usersRemoved, int usersInactivated, int usersModified, int groupsAdded, int groupsRemoved, int membershipsAdded, int membershipsRemoved)
+    {
+        String comment = String.format("LDAP Sync Summary: users added: %s, users removed: %s, users inactivated: %s, users modified: %s, groups added: %s, groups removed: %s, memberships added: %s, memberships removed: %s", usersAdded, usersRemoved, usersInactivated, usersModified, groupsAdded, groupsRemoved, membershipsAdded, membershipsRemoved);
+        LdapSyncAuditProvider.LdapSyncAuditEvent event = new LdapSyncAuditProvider.LdapSyncAuditEvent(ContainerManager.getRoot().getId(), comment);
+
+        event.setTotalUsersAndGroupsAdded(usersAdded + groupsAdded);
+        event.setTotalUsersAndGroupsRemoved(usersRemoved + groupsRemoved);
+        event.setTotalMembershipsChanged(membershipsAdded + membershipsRemoved);
+
+        AuditLogService.get().addEvent(user, event);
     }
 
     public static class LdapSyncAuditEvent extends AuditTypeEvent
