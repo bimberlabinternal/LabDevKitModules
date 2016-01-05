@@ -42,15 +42,12 @@ tar -xf $TAR
 DIR=`echo $TAR | sed -e "s/.tar$//"`
 echo "DIR: $DIR"
 cd $DIR
-./manual-upgrade.sh -u labkey -c /usr/local/tomcat -l /usr/local/labkey
+./manual-upgrade.sh -u labkey -c /usr/local/tomcat -l /usr/local/labkey --noPrompt
 cd ../
 echo "Removing folder: $DIR"
 rm -Rf $DIR
 echo "GZipping distribution"
 gzip $TAR
-
-echo "Updating reference study"
-su labkey -c 'svn --no-auth-cache --username cpas --password cpas update /lkfiles/studyDefinition/Study'
 
 echo "cleaning up installers, leaving 5 most recent"
 ls -tr | grep '^LabKey.*\.gz$' | head -n -5 | xargs rm

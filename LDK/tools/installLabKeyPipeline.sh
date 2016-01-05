@@ -34,6 +34,8 @@ if [ $# -eq 0 ]; then
 fi
 
 LABKEY_DIR=/usr/local/labkey
+TOMCAT_DIR=/usr/local/tomcat
+
 echo "Installing LabKey using: $GZ"
 service ${SERVICE_NAME} stop
 
@@ -45,7 +47,7 @@ tar -xf $TAR
 DIR=`echo $TAR | sed -e "s/.tar$//"`
 echo "DIR: $DIR"
 cd $DIR
-./manual-upgrade.sh -u labkey -c /usr/local/tomcat -l ${LABKEY_DIR}
+./manual-upgrade.sh -u labkey -c ${TOMCAT_DIR} -l ${LABKEY_DIR} --noPrompt
 service ${SERVICE_NAME} start
 cd ../
 echo "Removing folder: $DIR"

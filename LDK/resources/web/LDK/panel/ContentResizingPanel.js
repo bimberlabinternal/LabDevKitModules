@@ -25,7 +25,7 @@ Ext4.define('LDK.panel.ContentResizingPanel', {
         this.callParent(arguments);
 
         this.addEvents('contentsizechange');
-        this.on('contentsizechange', this.onContentSizeChange, this, {buffer: 100});
+        this.on('contentsizechange', this.onContentSizeChange, this, {buffer: 200});
         this.on('afterrender', this.onAfterPanelRender, this);
     },
 
