@@ -173,6 +173,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 target.add({
                     xtype: 'panel',
                     itemId: 'buttonPanel',
+                    subjectIDs: subjects,
                     layout: {
                         type: 'table',
                         columns: 5
@@ -184,7 +185,6 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             if (subjects.length > this.maxSubjectsToShow) {
                 target.add({
                     xtype: 'panel',
-                    subjectIDs: subjects,
                     border: false,
                     html: '<span class="labkey-error">Plus ' + (subjects.length - this.maxSubjectsToShow)  + ' additional IDs</span>'
                 });
@@ -198,12 +198,16 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             return null;
 
         var subjects = [];
-        panel.items.each(function(btn){
-            if (btn.subjectID)
-                subjects.push(btn.subjectID);
-            else if (btn.subjectIDs)
-                subjects = subjects.concat(btn.subjectIDs);
-        }, this);
+
+        if (panel.subjectIDs)
+            subjects = subjects.concat(panel.subjectIDs);
+        else
+        {
+            panel.items.each(function (btn) {
+                if (btn.subjectID)
+                    subjects.push(btn.subjectID);
+            }, this);
+        }
 
         return subjects;
     },
