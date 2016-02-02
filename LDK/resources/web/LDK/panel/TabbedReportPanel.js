@@ -154,6 +154,11 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                     style: 'margin: 2px;',
                     handler: function(button){
                         var panel = button.up('#buttonPanel');
+                        var index = panel.subjectIDs.indexOf(button.subjectID);
+                        if(index > -1) {
+                            panel.subjectIDs.splice(index, 1);
+                        }
+
                         button.destroy();
 
                         var total = panel.items.getCount();
