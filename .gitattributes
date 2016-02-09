@@ -11,7 +11,6 @@ labModules/LDK/api-src/org/labkey/api/ldk/notification/NotificationService.java 
 labModules/LDK/build.xml -text
 labModules/LDK/lib/api-all-1.0.0-M14.jar -text
 labModules/LDK/lib/mina-core-2.0.7.jar -text
-labModules/LDK/lib/quartz-2.1.6.jar -text
 labModules/LDK/module.properties -text
 labModules/LDK/resources/credits/jars.txt -text
 labModules/LDK/resources/module.xml -text
