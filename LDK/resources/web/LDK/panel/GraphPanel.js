@@ -66,6 +66,7 @@ Ext4.define('LDK.panel.GraphPanel', {
             height: config.height || 400,
             width: config.width || 900,
             clipRect: true,
+            rendererType: 'd3',
             data: LDK.QueryHelper.getRowMapsFromSelectRows(this.plotConfig.results),
             aes: {
                 x: function(row){
@@ -89,7 +90,9 @@ Ext4.define('LDK.panel.GraphPanel', {
     },
 
     getScaleConfig: function(){
-        return {
+        var config = this.plotConfig || {};
+
+        return Ext4.apply({
             x: {
                 scaleType: 'continuous',
                 trans: 'linear',
@@ -103,7 +106,7 @@ Ext4.define('LDK.panel.GraphPanel', {
             shape: {
                 scaleType: 'discrete'
             }
-        }
+        }, config.scales);
     },
 
     getTickFormatFnForField: function(fieldName){
@@ -161,7 +164,7 @@ Ext4.define('LDK.panel.GraphPanel', {
                     return row[layerConfig.y]
                 }
             }
-        }
+        };
         if (layerConfig.hoverText)
             cfg.aes.hoverText = layerConfig.hoverText;
 
