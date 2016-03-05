@@ -364,7 +364,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     onDataRegionLoad: function(dr){
-        var itemWidth = Ext4.get('dataregion_'+dr.id).getSize().width + 150;
+        var itemWidth = Ext4.get(dr.domId).getSize().width + 150;
         this.doResize(itemWidth);
         LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
     },
