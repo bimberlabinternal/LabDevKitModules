@@ -33,7 +33,6 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                 notificationMap[notification.category] = [];
 
             var notificationItems = notificationMap[notification.category];
-            var timeSince = notification.lastRun == 0 ? null : ((new Date()) - notification.lastRun) / (1000 * 60);
 
             notificationItems.push({
                 layout: 'hbox',
@@ -51,8 +50,8 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                 },{
                     width: 350,
                     html: ['Schedule: ' + notification.schedule,
-                        'Last Run: ' + (notification.lastRun == 0 ? 'Never' : new Date(notification.lastRun).format('Y-m-d H:i')),
-                        'Next Fire Time: ' + (notification.nextFireTime ? new Date(notification.nextFireTime).format('Y-m-d H:i') : ''),
+                        'Last Run: ' + (notification.lastRun == 0 ? 'Never' : Ext4.Date.format(new Date(notification.lastRun), 'Y-m-d H:i')),
+                        'Next Fire Time: ' + (notification.nextFireTime ? Ext4.Date.format(new Date(notification.nextFireTime), 'Y-m-d H:i') : ''),
                         'Time Since: ' + (notification.durationString ? notification.durationString : ''),
                         'Description: ' + (notification.description ? notification.description: ''),
                         'You are ' + (notification.subscriptions.length ? '' : 'not ') +  'subscribed to this notification'
