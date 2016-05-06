@@ -12,7 +12,7 @@ Ext4.define('LDK.panel.LdapSettingsPanel', {
                 border: false
             },
             items: [{
-                html: 'This is an extension to LabKey Server produced by staff at Oregon Health and Science University, and is not officially supported by LabKey software.  It is designed to provide a mechanism to automatically sync users and groups from an external LDAP server with users/groups in LabKey.  This sync is unidirectional, meaning changes in the LDAP server will be reflected in LabKey, but not the reverse.  It is designed to allow flexibility; however, it is still relatively new and has only been used on a small number of LDAP servers.' +
+                html: 'This is an extension to LabKey Server produced by staff at Oregon Health and Science University, and is not officially supported by LabKey.  It is designed to provide a mechanism to automatically sync users and groups from an external LDAP server with users/groups in LabKey.  This sync is unidirectional, meaning changes in the LDAP server will be reflected in LabKey, but not the reverse.  It is designed to allow flexibility; however, it is still relatively new and has only been used on a small number of LDAP servers.' +
                     'Because the sync needs to perform searches against the LDAP server, rather just just authenticate, it operates somewhat differently than LabKey\'s built-in LDAP authentication module.  As such, there is relatively little shared configuration between the two, and enabling one does not currently enable the other.',
                 style: 'padding-bottom: 20px;'
             },{
