@@ -59,7 +59,7 @@ LDK.SelectRowsRow = function(row){
 
         getFormattedDateValue: function(name, formatString){
             var date = this.getDateValue(name);
-            return date ? date.format(formatString) : date;
+            return date ? Ext4.Date.format(date, formatString) : date;
         }
     }
 };
