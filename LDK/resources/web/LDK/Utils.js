@@ -226,6 +226,7 @@ LDK.Utils = new function(){
             var cfg = Ext4.apply({
                 allowChooseQuery: false,
                 showRecordSelectors: true,
+                allowHeaderLock: false,
                 buttonBarPosition: 'top',
                 frame: 'none',
                 timeout: 0,
@@ -249,6 +250,7 @@ LDK.Utils = new function(){
             var cfg = Ext4.apply({
                 allowChooseQuery: false,
                 allowChooseView: true,
+                allowHeaderLock: false,
                 showRecordSelectors: true,
                 showDetailsColumn: true,
                 showUpdateColumn: false,
