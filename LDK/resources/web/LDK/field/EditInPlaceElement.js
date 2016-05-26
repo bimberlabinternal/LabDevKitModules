@@ -35,7 +35,7 @@ Ext4.define('LDK.field.EditInPlaceElement', {
                         return;
 
                     item.getEl().on('click', this.enterEditMode, this);
-                    this.appendEditIcon.defer(100, this);
+                    Ext4.defer(this.appendEditIcon, 100, this);
                 }
             }
         }
