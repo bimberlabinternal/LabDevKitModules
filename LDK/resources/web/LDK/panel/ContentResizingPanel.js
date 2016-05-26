@@ -52,13 +52,13 @@ Ext4.define('LDK.panel.ContentResizingPanel', {
             var panel = this;
             var el = Ext4.get(this.renderTarget);
             if (!el){
-                this.createListeners.defer(250, this);
+                Ext4.defer(this.createListeners, 250, this);
                 return;
             }
 
             el = el.query('table[name="webpart"]')[0];
             if (!el){
-                this.createListeners.defer(250, this);
+                Ext4.defer(this.createListeners, 250, this);
                 return;
             }
 

@@ -457,7 +457,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             filters: filterArray,
             success: function(result){
                 target.unmask();
-                target.createListeners.defer(200, target);
+                Ext4.defer(target.createListeners, 200, target);
                 LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
             },
             failure: LDK.Utils.getErrorCallback(),

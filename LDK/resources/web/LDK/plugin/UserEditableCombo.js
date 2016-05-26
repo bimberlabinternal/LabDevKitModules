@@ -160,7 +160,7 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
             this.mun(editor, 'beforecomplete', this.onBeforeComplete, this);
             this.combo.getPicker().refresh();
             this.combo.expand();
-            this.combo.focus.defer(20, this.combo);
+            Ext4.defer(this.combo.focus, 20, this.combo);
         }
         else {
             this.combo.fireEvent('blur', this.combo);

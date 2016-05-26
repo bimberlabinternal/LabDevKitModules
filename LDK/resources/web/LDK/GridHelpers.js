@@ -222,7 +222,7 @@ Ext4.define('LDK.ext.StoreSorterWindow', {
             this.close();
         }
         else {
-            this.sortGrid.defer(100, this, [fields, stores]);
+            Ext4.defer(this.sortGrid, 100, this, [fields, stores]);
         }
     },
 

@@ -616,7 +616,7 @@ LDK.Utils = new function(){
                         scope: this,
                         show: function(win){
                             var f = win.down('#title');
-                            f.focus.defer(100, f);
+                            Ext4.defer(f.focus, 100, f);
                         }
                     }
                 }).show();
