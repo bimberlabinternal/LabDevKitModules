@@ -68,6 +68,22 @@ LDK.ConvertUtils = new function(){
                 val.setFullYear(val.getFullYear() + 100);
 
             return val;
+        },
+        
+        parseDatesInSelectRowsResults: function(results){
+            if (!results.rows || !results.metaData || !results.metaData.fields){
+                return;
+            }
+
+            Ext4.Array.forEach(results.metaData.fields, function(field){
+                if (field.jsonType == 'date'){
+                    Ext4.Array.forEach(results.rows, function(row){
+                        if (row[field.name]){
+                            row[field.name] = LDK.ConvertUtils.parseDate(row[field.name]);
+                        }
+                    }, this);
+                }
+            }, this);
         }
     }
 };

@@ -19,15 +19,22 @@ package org.labkey.ldk;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
+import org.labkey.api.action.ConfirmAction;
+import org.labkey.api.action.SimpleErrorView;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.CoreSchema;
+import org.labkey.api.data.DbScope;
+import org.labkey.api.data.DbSequenceManager;
+import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.Notification;
@@ -51,6 +58,8 @@ import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.util.ConfigurationException;
+import org.labkey.api.util.GUID;
+import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
 import org.labkey.api.view.NavTree;
@@ -65,6 +74,7 @@ import org.labkey.ldk.ldap.LdapSettings;
 import org.labkey.ldk.ldap.LdapSyncRunner;
 import org.labkey.ldk.notification.NotificationServiceImpl;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.text.SimpleDateFormat;
@@ -1382,6 +1392,135 @@ public class LDKController extends SpringActionController
                 // exists with errors
                 return true;
             }
+        }
+    }
+
+    @RequiresPermission(AdminPermission.class)
+    public static class MoveWorkbookAction extends ConfirmAction<MoveWorkbookForm>
+    {
+        private Container _movedWb = null;
+
+        @Override
+        public void validateCommand(MoveWorkbookForm form, Errors errors)
+        {
+
+        }
+
+        @Override
+        public ModelAndView getConfirmView(MoveWorkbookForm form, BindException errors) throws Exception
+        {
+            if (!getContainer().isWorkbook())
+            {
+                errors.reject(ERROR_MSG, "This is only supported for workbooks");
+                return new SimpleErrorView(errors);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("This will move this workbook for the selected folder, renaming this workbook to match the series in that container.  Note: there are many reasons this can be problematic, so please do this with great care<p>");
+            sb.append("<input name=\"targetContainer\" type=\"text\"></input>");
+
+            return new HtmlView(sb.toString());
+        }
+
+        public boolean handlePost(MoveWorkbookForm form, BindException errors) throws Exception
+        {
+            Container toMove = getContainer();
+            if (!toMove.isWorkbook())
+            {
+                errors.reject(ERROR_MSG, "This is only supported for workbooks");
+                return false;
+            }
+
+            if (StringUtils.trimToNull(form.getTargetContainer()) == null)
+            {
+                errors.reject(ERROR_MSG, "Must provide target container");
+                return false;
+            }
+
+            Container target = ContainerManager.getForPath(StringUtils.trimToNull(form.getTargetContainer()));
+            if (target == null)
+            {
+                target = ContainerManager.getForId(StringUtils.trimToNull(form.getTargetContainer()));
+            }
+
+            if (target == null)
+            {
+                errors.reject(ERROR_MSG, "Unknown container: " + form.getTargetContainer());
+                return false;
+            }
+
+            if (target.isWorkbook())
+            {
+                errors.reject(ERROR_MSG, "Target cannot be a workbook: " + form.getTargetContainer());
+                return false;
+            }
+
+            if (ContainerManager.isSystemContainer(target))
+            {
+                errors.reject(ERROR_MSG, "Cannot move to system containers: " + form.getTargetContainer());
+                return false;
+            }
+
+            if (target.equals(toMove.getParent()))
+            {
+                errors.reject(ERROR_MSG, "Cannot move the workbook to its current parent: " + form.getTargetContainer());
+                return false;
+            }
+
+            //NOTE: transaction causing problems for larger sites?
+            //try (DbScope.Transaction transaction = CoreSchema.getInstance().getSchema().getScope().ensureTransaction())
+            //{
+                //first rename workbook to make unique
+                String tempName = new GUID().toString();
+                Integer sortOrder = DbSequenceManager.get(target, ContainerManager.WORKBOOK_DBSEQUENCE_NAME).next();
+                _log.info("renaming workbook to in preparation for move from: " + toMove.getPath() + "  to: " + tempName);
+                ContainerManager.rename(toMove, getUser(), tempName);
+                toMove = ContainerManager.getForId(toMove.getId());
+
+                //then move parent
+                _log.info("moving workbook from: " + toMove.getPath() + "  to: " + target.getPath());
+                ContainerManager.move(toMove, target, getUser());
+                toMove = ContainerManager.getForId(toMove.getId());
+
+                //finally move to correct name
+                _log.info("renaming workbook from: " + toMove.getPath() + "  to: " + sortOrder.toString());
+                ContainerManager.rename(toMove, getUser(), sortOrder.toString());
+                toMove.setSortOrder(sortOrder);
+                new SqlExecutor(CoreSchema.getInstance().getSchema()).execute("UPDATE core.containers SET SortOrder = ? WHERE EntityId = ?", toMove.getSortOrder(), toMove.getId());
+                toMove = ContainerManager.getForId(toMove.getId());
+
+                //transaction.commit();
+                _log.info("workbook move finished");
+
+                _movedWb = toMove;
+            //}
+
+            return true;
+        }
+
+        @NotNull
+        @Override
+        public URLHelper getSuccessURL(MoveWorkbookForm moveWorkbookForm)
+        {
+            if (_movedWb == null)
+                return getContainer().getStartURL(getUser());
+            else
+                return _movedWb.getStartURL(getUser());
+        }
+    }
+
+    public static class MoveWorkbookForm
+    {
+        private String _targetContainer;
+
+        public String getTargetContainer()
+        {
+            return _targetContainer;
+        }
+
+        public void setTargetContainer(String targetContainer)
+        {
+            _targetContainer = targetContainer;
         }
     }
 }

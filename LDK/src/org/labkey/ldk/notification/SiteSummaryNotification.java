@@ -18,6 +18,7 @@ package org.labkey.ldk.notification;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -161,6 +162,8 @@ public class SiteSummaryNotification implements Notification
 
     public String getMessage(Container c, User u)
     {
+        Date start = new Date();
+
         _pctFormat = NumberFormat.getPercentInstance();
         _pctFormat.setMaximumFractionDigits(1);
 
@@ -197,7 +200,7 @@ public class SiteSummaryNotification implements Notification
             msg.insert(0, alerts);
         }
 
-        msg.insert(0, "This email contains a series of alerts designed for site admins.  It was run on: " + _dateTimeFormat.format(new Date()) + ".<p>");
+        msg.insert(0, "This email contains a series of alerts designed for site admins.  It was run on: " + _dateTimeFormat.format(new Date()) + ".  Runtime: " + DurationFormatUtils.formatDurationWords((new Date()).getTime() - start.getTime(), true, true) + "<p>");
 
         saveValues(c, saved, newValues);
 

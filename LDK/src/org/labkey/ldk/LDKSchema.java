@@ -34,6 +34,9 @@ public class LDKSchema
     public static final String TABLE_NOTIFICATION_RECIPIENTS = "notificationrecipients";
     public static final String TABLE_LDAP_SYNC_MAP = "ldapSyncMap";
 
+    public static final String TABLE_LOOKUPS = "lookup_data";
+    public static final String TABLE_LOOKUP_SETS = "lookup_sets";
+
     public static LDKSchema getInstance()
     {
         return _instance;

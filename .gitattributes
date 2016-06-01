@@ -42,6 +42,7 @@ labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.33-12.34.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.34-12.35.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.35-12.36.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.36-12.37.sql -text
+labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.37-12.38.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-0.00-0.01.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-0.01-0.02.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-0.02-12.30.sql -text
@@ -52,6 +53,7 @@ labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.33-12.34.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.34-12.35.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.35-12.36.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.36-12.37.sql -text
+labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.37-12.38.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/naturalize_install.sql -text
 labModules/LDK/resources/schemas/ldk.xml -text
 labModules/LDK/resources/scripts/ldk/Assert.js -text
@@ -157,6 +159,7 @@ labModules/LDK/resources/web/LDK/panel/MultiSubjectFilterType.js -text
 labModules/LDK/resources/web/LDK/panel/NavPanel.js -text
 labModules/LDK/resources/web/LDK/panel/NoFiltersFilterType.js -text
 labModules/LDK/resources/web/LDK/panel/NotificationAdminPanel.js -text
+labModules/LDK/resources/web/LDK/panel/PopulateDataPanel.js -text
 labModules/LDK/resources/web/LDK/panel/QueryPanel.js -text
 labModules/LDK/resources/web/LDK/panel/QueryTabPanel.js -text
 labModules/LDK/resources/web/LDK/panel/SingleSubjectFilterType.js -text
@@ -194,7 +197,9 @@ labModules/LDK/src/org/labkey/ldk/query/BuiltInColumnsCustomizer.java -text
 labModules/LDK/src/org/labkey/ldk/query/ColumnOrderCustomizer.java -text
 labModules/LDK/src/org/labkey/ldk/query/DefaultTableCustomizer.java -text
 labModules/LDK/src/org/labkey/ldk/query/IndexStatsTable.java -text
+labModules/LDK/src/org/labkey/ldk/query/LookupSetTable.java -text
 labModules/LDK/src/org/labkey/ldk/query/LookupValidationHelper.java -text
+labModules/LDK/src/org/labkey/ldk/query/LookupsUserSchema.java -text
 labModules/LDK/src/org/labkey/ldk/query/MssqlUtilsUserSchema.java -text
 labModules/LDK/src/org/labkey/ldk/query/UniqueConstraintHelper.java -text
 labModules/LDK/tools/installLabKey.sh -text
@@ -385,9 +390,6 @@ labModules/laboratory/resources/views/begin.view.xml -text
 labModules/laboratory/resources/views/begin.webpart.xml -text
 labModules/laboratory/resources/views/customizeDataBrowser.html -text
 labModules/laboratory/resources/views/customizeDataBrowser.view.xml -text
-labModules/laboratory/resources/views/dataBrowser.html -text
-labModules/laboratory/resources/views/dataBrowser.view.xml -text
-labModules/laboratory/resources/views/dataBrowser.webpart.xml -text
 labModules/laboratory/resources/views/folderSummary.html -text
 labModules/laboratory/resources/views/folderSummary.view.xml -text
 labModules/laboratory/resources/views/folderSummary.webpart.xml -text
@@ -501,6 +503,7 @@ labModules/laboratory/src/org/labkey/laboratory/query/WorkbookIdDisplayColumn.ja
 labModules/laboratory/src/org/labkey/laboratory/query/WorkbookModel.java -text
 labModules/laboratory/src/org/labkey/laboratory/security/LaboratoryAdminRole.java -text
 labModules/laboratory/src/org/labkey/laboratory/table/WrappingTableCustomizer.java -text
+labModules/laboratory/src/org/labkey/laboratory/view/dataBrowser.jsp -text
 labModules/laboratory/src/org/labkey/laboratory/view/workbookHeader.jsp -text
 onprcEHRModules/GeneticsCore/GeneticsCore.iml -text
 onprcEHRModules/GeneticsCore/build.xml -text
@@ -545,6 +548,8 @@ onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/button/PublishSBTHaplot
 onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/button/PublishSBTResultsButton.java -text
 onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/button/SBTReviewButton.java -text
 onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/notification/GeneticsCoreNotification.java -text
+onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/pipeline/BlastPipelineJobResourceAllocator.java -text
+onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/pipeline/SequenceJobResourceAllocator.java -text
 onprcEHRModules/GeneticsCore/tools/installLabkey.sh -text
 onprcEHRModules/GeneticsCore/tools/pipelineConfig/fergie2/pipelineConfig.xml -text
 onprcEHRModules/GeneticsCore/tools/pipelineConfig/fergie2/remoteMuleConfig.xml -text

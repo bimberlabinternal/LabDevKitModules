@@ -135,4 +135,119 @@
             </ns:column>
         </ns:columns>
     </ns:table>
+    <ns:table tableName="lookup_sets" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Lookup Sets</ns:tableTitle>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:columns>
+            <ns:column columnName="rowid">
+
+            </ns:column>
+            <ns:column columnName="setname">
+
+            </ns:column>
+            <ns:column columnName="label">
+                <ns:columnTitle>Label</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:columnTitle>Description</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="keyField">
+                <ns:columnTitle>Key Field</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="titleColumn">
+                <ns:columnTitle>Title Column</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="container">
+
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="lookup_data" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Reference Values</ns:tableTitle>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="set_name">
+                <ns:columnTitle>Set Name</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="value">
+                <ns:columnTitle>Value</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="displayValue">
+                <ns:columnTitle>Display Value</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="category">
+                <ns:columnTitle>Category</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:columnTitle>Description</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="sort_order">
+                <ns:columnTitle>Sort Order</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="date_disabled">
+                <ns:columnTitle>Date Disabled</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="objectid">
+                <ns:columnTitle>Key</ns:columnTitle>
+                <ns:shownInDetailsView>false</ns:shownInDetailsView>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
 </ns:tables>

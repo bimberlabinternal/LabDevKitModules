@@ -33,6 +33,7 @@ import org.labkey.ldk.ldap.LdapScheduler;
 import org.labkey.ldk.ldap.LdapSyncAuditProvider;
 import org.labkey.ldk.notification.NotificationServiceImpl;
 import org.labkey.ldk.notification.SiteSummaryNotification;
+import org.labkey.ldk.query.LookupsUserSchema;
 import org.labkey.ldk.query.MssqlUtilsUserSchema;
 
 import java.util.Collection;
@@ -52,7 +53,7 @@ public class LDKModule extends ExtendedSimpleModule
     @Override
     public double getVersion()
     {
-        return 12.37;
+        return 12.38;
     }
 
     @Override
@@ -124,5 +125,7 @@ public class LDKModule extends ExtendedSimpleModule
         {
             MssqlUtilsUserSchema.register(this);
         }
+
+        LookupsUserSchema.register(this);
     }
 }

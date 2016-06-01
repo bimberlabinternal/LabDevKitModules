@@ -9,7 +9,7 @@
  * @cfg defaultReport The default report (2nd tier tab) to show on load.
  * @cfg filterTypes
  * @cfg autoLoadDefaultTab If true, the default tab will automatically load unless another is selected
- * @cfg reportNamespace The namespace where JS reports are located
+ * @cfg reportNamespace The namespace where JS reports are located.  If null, it assumes none (i.e. this)
  * @cfg maxSubjectsToShow The maximum number of subject IDs to show as buttons before collapsing into a summary
  * @cfg reports
  */
@@ -18,6 +18,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     alias: 'widget.ldk-tabbedreportpanel',
     allowEditing: true,
     maxSubjectsToShow: 15,
+    showDiscvrLink: true,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -84,10 +85,14 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 listeners: {
                     scope: this,
                     tabchange: this.onCategoryTabChange,
-                    afterrender: function(panel) {
+                    afterrender: function (panel) {
                         panel.getTabBar().addCls("category-tab-bar");
                     }
                 }
+            },{
+                hidden: !this.showDiscvrLink,
+                style: 'padding: 5px;padding-top: 0px;text-align: center',
+                html: 'Powered By DISCVR.  <a href="https://github.com/bbimber/discvr/wiki">Click here to learn more.</a>'
             }]
         });
 
@@ -309,6 +314,21 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         return filterArray;
     },
 
+    getCombinedFilterArray: function(tab){
+        var fa = this.getFilterArray(tab);
+        var ret = [];
+        if (fa && fa.removable){
+            ret = ret.concat(fa.removable);
+        }
+
+        if (fa && fa.nonRemovable){
+            ret = ret.concat(fa.nonRemovable);
+        }
+        
+        return ret;
+    },
+
+
     getTitleSuffix: function(tab){
         var title = this.activeFilterType.getTitle(tab);
         return title ? ' - ' + title : '';
@@ -348,12 +368,18 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             scope: this
         };
 
+        //special case these two properties because they are common
         if (tab.report.viewName){
             queryConfig.viewName = tab.report.viewName;
         }
 
         if (tab.report.containerPath){
             queryConfig.containerPath = tab.report.containerPath;
+        }
+
+        //allow any other supported properties to be applied through here
+        if (tab.report.queryConfig){
+            Ext4.apply(queryConfig, tab.report.queryConfig);
         }
 
         tab.add({
@@ -482,8 +508,16 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     loadJS: function(tab){
-        var ns = this.reportNamespace;
-        var jsFunction = ns[tab.report.jsHandler];
+        var jsFunction;
+        if (Ext4.isFunction(tab.report.jsHandler)){
+            jsFunction = tab.report.jsHandler;
+        }
+        else {
+            //NOTE: namespace is only retained for legacy support.  It should be eliminated.
+            var ns = this.reportNamespace;
+            jsFunction = ns ? ns[tab.report.jsHandler] : this[tab.report.jsHandler];
+        }
+
         if (!jsFunction)
         {
             var message = "Could not find JavaScript function '" + tab.report.jsHandler + "' to load tab in Animal History. The report is misconfigured.";
