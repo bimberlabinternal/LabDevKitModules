@@ -10,12 +10,28 @@ LDK.DataRegionUtils = new function(){
             }).show(btn);
         },
 
-        getDataRegionWhereClause: function(dataRegion, tableAlias){
+        getDataRegionWhereClause: function(dataRegion, tableAlias, success, onNoneSelected, failure){
             var selectorCols = !Ext4.isEmpty(dataRegion.selectorCols) ? dataRegion.selectorCols : dataRegion.pkCols;
             LDK.Assert.assertNotEmpty('Unable to find selector columns for: ' + dataRegion.schemaName + '.' + dataRegion.queryName, selectorCols);
+            LDK.Assert.assertTrue(success + ' is not a valid success function.', Ext4.isFunction(success));
 
-            var colExpr = '(' + tableAlias + '.' + selectorCols.join(" || ',' || " + tableAlias + ".") + ')';
-            return "WHERE " + colExpr + " IN ('" + dataRegion.getChecked().join("', '") + "')";
+            var selectionSuccess = function(selection) {
+                if(!selection.selected.length && Ext4.isFunction(onNoneSelected)) {
+                    onNoneSelected();
+                }
+                else {
+                    var colExpr = '(' + tableAlias + '.' + selectorCols.join(" || ',' || " + tableAlias + ".") + ')';
+                    var clause = "WHERE " + colExpr + " IN ('" + selection.selected.join("', '") + "')";
+                    success(clause);
+                }
+            };
+
+            var config = {
+                success: selectionSuccess,
+                failure: Ext4.isFunction(failure)?failure:LDK.Utils.getErrorCallback()
+            };
+
+            dataRegion.getSelected(config);
         },
 
         getDisplayName: function(dataRegion){
