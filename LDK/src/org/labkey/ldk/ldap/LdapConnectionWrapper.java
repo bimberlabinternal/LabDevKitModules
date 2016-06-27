@@ -1,7 +1,6 @@
 package org.labkey.ldk.ldap;
 
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
-import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.message.SearchScope;
@@ -10,20 +9,15 @@ import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 import org.apache.directory.ldap.client.api.PoolableLdapConnectionFactory;
 import org.apache.log4j.Logger;
-import org.labkey.api.data.PropertyManager;
-import org.labkey.api.gwt.client.util.StringUtils;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 1/20/13
  * Time: 9:00 PM

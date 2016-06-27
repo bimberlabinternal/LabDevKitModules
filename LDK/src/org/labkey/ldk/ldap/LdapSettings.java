@@ -1,21 +1,18 @@
 package org.labkey.ldk.ldap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.exception.LdapException;
-import org.json.JSONObject;
 import org.labkey.api.data.PropertyManager;
-import org.labkey.api.gwt.client.util.StringUtils;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.ValidEmail;
 import org.labkey.api.util.ConfigurationException;
-import org.labkey.api.util.PageFlowUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.

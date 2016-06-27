@@ -15,6 +15,7 @@
  */
 package org.labkey.ldk.query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -29,7 +30,6 @@ import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.UserDefinedButtonConfig;
 import org.labkey.api.gwt.client.AuditBehaviorType;
-import org.labkey.api.gwt.client.util.StringUtils;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.query.DetailsURL;
