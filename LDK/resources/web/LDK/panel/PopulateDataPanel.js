@@ -18,15 +18,6 @@ Ext4.define('LDK.panel.PopulateDataPanel', {
             return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
         });
 
-        // Keep lookup sets as the first item
-        this.tables.splice(0, 0, {
-            label: 'Lookup Sets',
-            doSkip: true,
-            populateFn: 'populateLookupSets',
-            schemaName: 'ldk',
-            queryName: 'lookup_sets'
-        });
-
         Ext4.apply(this, {
             pendingInserts: 0,
             pendingDeletes: 0,
@@ -34,13 +25,54 @@ Ext4.define('LDK.panel.PopulateDataPanel', {
                 border: false
             },
             border: false,
-            items: this.getItems()
+            items: [{
+                html: 'This page is designed to provide simplified version control and deployment of lookup tables and other relatively invariant data.  ' +
+                'The overall idea is that checked into your module you have TSVs (one per table) with the raw data.  These data can only be simple pick ' +
+                'lists with columns for: value, display value (optional), and sort order (optional).  <br><br>' +
+
+                '<b>Step 1:</b> When the developer created this page, he/she provided a list of tables for the server to create in the lookups schema.  ' +
+                'The first time you use this page, you will need to tell the server to create these lookup tables.  ' +
+                'Do this using the "Populate Lookup Sets" button (or "Delete Lookup Sets" to clear them).  This only needs to happen one time, unless you have added/removed tables.  If your admin has changed these tables, you should delete/populate this table again to refresh the set of tables.  ',
+                style: 'padding-bottom: 20px;',
+                border: false
+            },this.getLookupSetButtons(),{
+                html: '<b>Step 2:</b> Once the lookup tables exist, you can populate the data in those tables.  To do this, simply, click the Populate button for a given table, or use the "Populate All" button to import into all tables.  ' +
+                'Note: the populate button will do a simple bulk insert to the table, meaning that if you have existing data you might get errors about primary key conflicts.  Use the Delete button first to remove all existing records and avoid this.  ' +
+				'If you see error messages about a given table not existing, either retry Step 1 (which should create the expected tables), and/or use the schema browser to inspect the lookups schema and verify which tables are present.',
+                style: 'padding-bottom: 20px;',
+                border: false
+            }].concat(this.getTableButtons())
         });
 
         this.callParent(arguments);
     },
 
-    getItems: function(){
+	getLookupSetButtons: function(){
+		return {
+			border: false,
+			style: 'padding-bottom: 20px;',
+			layout: {
+				type: 'table',
+				columns: 2
+			},
+			defaults: {
+				style: 'margin: 2px;'
+			},
+			items: [{
+				xtype: 'button',
+				text: 'Populate Lookup Sets',
+				handler: this.populateLookupSets,
+				scope: this
+			},{
+				xtype: 'button',
+				text: 'Delete Data From Lookup Sets',
+				handler: this.deleteLookupSets,
+				scope: this
+			}]
+		}
+	},
+
+    getTableButtons: function(){
         var tableItems = [];
         var items = [{
             layout: 'hbox',
@@ -136,7 +168,7 @@ Ext4.define('LDK.panel.PopulateDataPanel', {
                 }, this);
             }
         });
-        console.log(items);
+
         return items;
     },
 
@@ -149,11 +181,11 @@ Ext4.define('LDK.panel.PopulateDataPanel', {
         }
     },
 
-    truncate: function (schemaName, queryName) {
+    truncate: function (schemaName, queryName, success) {
         this.pendingDeletes++;
         LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL("query", "truncateTable.api"),
-            success: LABKEY.Utils.getCallbackWrapper(this.onDeleteSuccess, this),
+            success: LABKEY.Utils.getCallbackWrapper(success || this.onDeleteSuccess, this),
             failure: LDK.Utils.getErrorCallback({
                 callback: function (resp) {
                     document.getElementById('msgbox').innerHTML += '<div class="labkey-error">Error loading data: ' + resp.errorMsg + '</div>';
@@ -179,17 +211,57 @@ Ext4.define('LDK.panel.PopulateDataPanel', {
         }
     },
 
+	deleteLookupSets: function(){
+		this.truncate('ldk', 'lookup_sets', this.onDeleteLookupSetsSuccess);
+	},
+
+	onDeleteLookupSetsSuccess: function(data){
+		console.log('lookup set records deleted');
+
+		LABKEY.Ajax.request({
+			url: LABKEY.ActionURL.buildURL('admin', 'caches', '/'),
+			method:  'post',
+			params: {
+				clearCaches: 1
+			},
+			scope: this,
+			success: function(){
+				console.log('cleared caches');
+				this.onDeleteSuccess(data);
+			},
+			failure: function(){
+				console.error(arguments);
+			}
+		});
+	},
+
     populateLookupSets: function(){
         this.pendingInserts++;
 
-        //records for reports:
+        var rows = [];
+        Ext4.each(this.tables, function(t){
+            if (!t.queryName){
+                console.warn('no queryName, skipping');
+                console.warn(t);
+                return;
+            }
+
+            rows.push({
+                setname: t.queryName,
+                label: t.label || t.queryName,
+                description: t.description,
+                keyField: t.keyField || 'value',
+                titleColumn: t.titleColumn || 'value'
+            });
+        }, this);
+
         var config = {
             schemaName: 'ldk',
             queryName: 'lookup_sets',
-            moduleResource: '/data/ldk-lookup_sets.tsv',
             success: this.onSuccess,
             failure: this.onError,
-            scope: this
+            scope: this,
+            rows: rows
         };
 
         var origSuccess = config.success;
@@ -213,7 +285,7 @@ Ext4.define('LDK.panel.PopulateDataPanel', {
             });
         };
 
-        this.importFile(config);
+        LABKEY.Query.insertRows(config);
     },
 
     populateFromFile: function (schemaName, queryName) {
@@ -237,7 +309,7 @@ Ext4.define('LDK.panel.PopulateDataPanel', {
             schemaName: config.schemaName,
             queryName: config.queryName
         };
-console.log(config.moduleResource)
+
         LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL("query", "import", config.containerPath, {
                 module: this.moduleName,

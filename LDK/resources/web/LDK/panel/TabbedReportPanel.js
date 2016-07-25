@@ -101,6 +101,19 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         this.on('afterrender', this.onAfterRender);
     },
 
+    getDistinctCategories: function(){
+        var categories = [];
+        Ext4.each(this.reports, function(r){
+            if (r.category){
+                categories.push(r.category);
+            }
+        }, this);
+
+        categories = Ext4.unique(categories);
+
+        return categories
+    },
+
     getIEWarning: function(){
         var toAdd = [];
 
@@ -714,6 +727,17 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             return;
         }
 
+        //if there is only one category, simplify the output
+        if (this.getDistinctCategories().length == 1){
+            if (tabPanel.rendered){
+                tabPanel.down('tabbar').setHidden(true);
+            }
+            else {
+                tabPanel.tabBar = tabPanel.tabBar || {};
+                tabPanel.tabBar.hidden = true;
+            }
+        }
+        
         Ext4.each(this.reports, function(report){
             if (!report || !report.category)
                 return;
