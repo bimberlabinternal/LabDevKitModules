@@ -160,7 +160,8 @@ public class SiteSummaryNotification implements Notification
         map.save();
     }
 
-    public String getMessage(Container c, User u)
+    @Override
+    public String getMessageBodyHTML(Container c, User u)
     {
         Date start = new Date();
 

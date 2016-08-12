@@ -18,6 +18,7 @@ package org.labkey.ldk.query;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.SchemaTableInfo;
+import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.AbstractDataDefinedTable;
 import org.labkey.api.query.UserSchema;
 
@@ -88,6 +89,8 @@ public class LookupSetTable extends AbstractDataDefinedTable
                 setTitleColumn(titleCol.getName());
             }
         }
+        LDKService.get().getDefaultTableCustomizer().customize(this);
+
         return this;
     }
 }

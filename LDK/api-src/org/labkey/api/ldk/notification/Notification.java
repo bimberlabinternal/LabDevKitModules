@@ -15,14 +15,13 @@
  */
 package org.labkey.api.ldk.notification;
 
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
-import org.labkey.api.module.Module;
 import org.labkey.api.security.User;
+import org.labkey.api.util.MailHelper;
 
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 /**
  * User: bbimber
@@ -34,45 +33,64 @@ public interface Notification
     /**
      * @return The display name used to identify this notification
      */
-    public String getName();
+    String getName();
 
     /**
      * @return An arbitrary string used to group notifications in the management UI
      */
-    public String getCategory();
+    String getCategory();
 
     /**
      * A string representing the schedule of this notification, similar to cron, that will be passed to
      * Quartz for scheduling.  See Quartz docs for more detail.  Note: if NULL is returned, this notification
      * will not be scheduled, but could be run on demand.
      */
-    public String getCronString();
+    String getCronString();
 
     /**
      * @return The string describing the scheduled intervals.  This is solely used for display purposes, because it is difficult to translate the a list of ScheduledFuture object into english.
      * This string should make sense in the context of the text: 'Schedule : ' + {description here}
      */
-    public String getScheduleDescription();
+    String getScheduleDescription();
 
     /**
-     * @return The body of the email message to be sent.  If null is returned, no email will be sent.
+     * @return The HTML body of the email message to be sent.  If null is returned, no email will be sent.
      */
-    public String getMessage(Container c, User u);
+    @Nullable
+    String getMessageBodyHTML(Container c, User u);
+
+    /**
+     * @return The full body of the email message to be sent.  If null is returned, no email will be sent. Recipient list,
+     * sender, and subject will be populated separately.
+     */
+    @Nullable
+    default MimeMessage createMessage(Container c, User u) throws MessagingException
+    {
+        String msg = getMessageBodyHTML(c, u);
+        if (org.apache.commons.lang3.StringUtils.isEmpty(msg))
+        {
+            return null;
+        }
+
+        MailHelper.MultipartMessage message = MailHelper.createMultipartMessage();
+        message.setEncodedHtmlContent(msg);
+        return message;
+    }
 
     /**
      * @return The string description of this notification that appears in the UI
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * @return The email subject line
      */
-    public String getEmailSubject();
+    String getEmailSubject();
 
     /**
      * @return True if this notification is allowable in the passed container.
      * Typically this would test whether the owning module is active; however, this could
      * also include other others such as the presence of a study or other resource
      */
-    public boolean isAvailable(Container c);
+    boolean isAvailable(Container c);
 }

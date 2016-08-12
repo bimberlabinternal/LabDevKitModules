@@ -43,6 +43,7 @@ import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.MailHelper;
+import org.labkey.api.util.PageFlowUtil;
 import org.labkey.ldk.LDKSchema;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
@@ -54,6 +55,9 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import javax.mail.Address;
 import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -402,7 +406,7 @@ public class NotificationServiceImpl extends NotificationService
         }
     }
 
-    public String getMessage(Notification n, Container c)
+    public String getMessage(Notification n, Container c) throws IOException, MessagingException
     {
         if (!n.isAvailable(c))
             return null;
@@ -411,7 +415,31 @@ public class NotificationServiceImpl extends NotificationService
         if (u == null)
             return null;
 
-        return n.getMessage(c, u);
+        MimeMessage message = n.createMessage(c, u);
+        if (message != null)
+        {
+            Map<String, String> map = MailHelper.getBodyParts(message);
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry<String, String> entry : map.entrySet())
+            {
+                if ("text/html".equals(entry.getKey()))
+                {
+                    sb.append(entry.getValue());
+                }
+                else if (entry.getKey().startsWith("text/"))
+                {
+                    sb.append(PageFlowUtil.filter(entry.getValue()));
+                }
+                else
+                {
+                    sb.append("Attached file. MIME ContentType: " + entry.getKey() + " (not rendered here)");
+                }
+                sb.append("<br/><br/><br/>");
+            }
+            return sb.toString();
+        }
+
+        return null;
     }
 
     public User getUser(Notification n, Container c)
@@ -551,19 +579,17 @@ public class NotificationServiceImpl extends NotificationService
 
         try
         {
-            String msg = notification.getMessage(c, u);
-            if (org.apache.commons.lang3.StringUtils.isEmpty(msg))
+            MimeMessage mail = notification.createMessage(c, u);
+            if (mail == null)
             {
                 _log.info("Notification " + notification.getName() + " did not produce a message, will not send email");
                 return;
             }
 
             _log.info("Sending message for notification: " + notification.getName() + " to " + recipients.size() + " recipients");
-            MailHelper.MultipartMessage mail = MailHelper.createMultipartMessage();
 
             mail.setFrom(NotificationServiceImpl.get().getReturnEmail(c));
             mail.setSubject(notification.getEmailSubject());
-            mail.setEncodedHtmlContent(msg);
             mail.addRecipients(Message.RecipientType.TO, recipients.toArray(new Address[recipients.size()]));
 
             MailHelper.send(mail, u, c);
