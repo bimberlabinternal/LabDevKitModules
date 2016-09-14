@@ -20,10 +20,8 @@ import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.module.Module;
-import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.settings.AppProps;
-import org.labkey.api.study.StudyService;
 
 import java.text.SimpleDateFormat;
 

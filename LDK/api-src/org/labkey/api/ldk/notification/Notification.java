@@ -15,6 +15,7 @@
  */
 package org.labkey.api.ldk.notification;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.security.User;
@@ -67,7 +68,7 @@ public interface Notification
     default MimeMessage createMessage(Container c, User u) throws MessagingException
     {
         String msg = getMessageBodyHTML(c, u);
-        if (org.apache.commons.lang3.StringUtils.isEmpty(msg))
+        if (StringUtils.isEmpty(msg))
         {
             return null;
         }
@@ -84,8 +85,9 @@ public interface Notification
 
     /**
      * @return The email subject line
+     * @param c The current container
      */
-    String getEmailSubject();
+    String getEmailSubject(Container c);
 
     /**
      * @return True if this notification is allowable in the passed container.

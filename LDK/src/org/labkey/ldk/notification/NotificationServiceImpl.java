@@ -589,7 +589,7 @@ public class NotificationServiceImpl extends NotificationService
             _log.info("Sending message for notification: " + notification.getName() + " to " + recipients.size() + " recipients");
 
             mail.setFrom(NotificationServiceImpl.get().getReturnEmail(c));
-            mail.setSubject(notification.getEmailSubject());
+            mail.setSubject(notification.getEmailSubject(c));
             mail.addRecipients(Message.RecipientType.TO, recipients.toArray(new Address[recipients.size()]));
 
             MailHelper.send(mail, u, c);

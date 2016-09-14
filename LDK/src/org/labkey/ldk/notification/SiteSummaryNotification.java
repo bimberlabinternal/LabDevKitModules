@@ -109,7 +109,7 @@ public class SiteSummaryNotification implements Notification
         return "This runs every day at 5AM and sends an email summarizing various events about the site, including usage";
     }
 
-    public String getEmailSubject()
+    public String getEmailSubject(Container c)
     {
         return "Daily Admin Alerts: " + _dateTimeFormat.format(new Date());
     }
