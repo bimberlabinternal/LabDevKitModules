@@ -22,9 +22,12 @@ Ext4.define('LDK.field.ExpDataField', {
             style: 'vertical-align:top;'
         });
 
+        if (this.getValue()){
+            this.updateFileLabel();
+        }
     },
 
-    onTriggerClick: function(){
+    updateFileLabel: function(){
         var val = this.getValue();
         if (!val){
             this.setText(null);
@@ -52,8 +55,20 @@ Ext4.define('LDK.field.ExpDataField', {
         });
     },
 
+    setValue: function(){
+        this.callParent(arguments);
+
+        this.updateFileLabel();
+    },
+
+    onTriggerClick: function(){
+        this.updateFileLabel();
+    },
+
     setText: function(text){
-        this.fileDiv.update(text);
+        if (this.rendered){
+            this.fileDiv.update(text);
+        }
     },
 
     onDestroy : function() {

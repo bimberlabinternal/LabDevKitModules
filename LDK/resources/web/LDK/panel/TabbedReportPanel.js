@@ -730,7 +730,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         //if there is only one category, simplify the output
         if (this.getDistinctCategories().length == 1){
             if (tabPanel.rendered){
-                tabPanel.down('tabbar').setHidden(true);
+                tabPanel.down('tabbar').setVisible(false);
             }
             else {
                 tabPanel.tabBar = tabPanel.tabBar || {};

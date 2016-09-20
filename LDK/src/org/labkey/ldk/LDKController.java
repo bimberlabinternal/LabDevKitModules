@@ -1416,7 +1416,7 @@ public class LDKController extends SpringActionController
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.append("This will move this workbook for the selected folder, renaming this workbook to match the series in that container.  Note: there are many reasons this can be problematic, so please do this with great care<p>");
+            sb.append("This will move this workbook to the selected folder, renaming this workbook to match the series in that container.  Note: there are many reasons this can be problematic, so please do this with great care<p>");
             sb.append("<input name=\"targetContainer\" type=\"text\"></input>");
 
             return new HtmlView(sb.toString());
