@@ -34,7 +34,7 @@ Ext4.define('LDK.form.field.SimpleLabKeyCombo', {
             var me = this, args = arguments;
             me.store.on('load', function(){
                 me.setValue.apply(me, args);
-            }, this, {defer: 100});
+            }, me, {defer: 100});
         }
 
         if (this.store && this.valueField && Ext4.isPrimitive(val)){
