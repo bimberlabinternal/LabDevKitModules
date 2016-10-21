@@ -54,3 +54,13 @@ div.ldk-wp table.labkey-wp {
     width: auto !important;
     max-width: 800px;
 }
+
+div.ldk-tooltip {
+    font-size: 13px;
+    color: black;
+}
+
+div.ldk-tooltip-light {
+    font-size: 10px;
+    color: grey;
+}

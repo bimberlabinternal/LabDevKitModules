@@ -10,6 +10,15 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
     initComponent: function(){
         this.items = this.getItems();
 
+        // if an alias table is not set, verify id's against demographics
+        if (!Ext4.isDefined(this.aliasTable)) {
+            this.aliasTable = {
+                schemaName: 'study',
+                queryName: 'demographics',
+                idColumn: 'Id'
+            };
+        }
+
         this.callParent();
 
         //force subject list to get processed and append icons to left-hand panel on load
@@ -17,7 +26,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
     },
 
     prepareRemove: function(){
-        this.tabbedReportPanel.setSubjGrid();
+        this.tabbedReportPanel.setSubjGrid(true);
     },
 
     getItems: function(){
@@ -56,23 +65,24 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
                     style: 'margin: 5px;'
                 },
                 items: [{
-                    text: 'Append -->',
+                    text: 'Add',
                     handler: function(btn){
                         var panel = btn.up('ldk-multisubjectfiltertype');
-                        panel.getSubjects(panel.tabbedReportPanel.getSubjects());
+                        panel.checkAliases(panel.updateSubjects, panel);
                     }
                 },{
-                    text: 'Replace -->',
+                    text: 'Replace',
                     handler: function(btn){
                         var panel = btn.up('ldk-multisubjectfiltertype');
-                        panel.getSubjects();
+                        panel.checkAliases(panel.replaceSubjects, panel);
                     }
                 },{
                     text: 'Clear',
                     handler: function(btn){
                         var panel = btn.up('ldk-multisubjectfiltertype');
-                        panel.tabbedReportPanel.setSubjGrid();
+                        panel.tabbedReportPanel.setSubjGrid(true);
                         panel.down('#subjArea').setValue();
+                        panel.subjects = [];
                         panel.getSubjects();
                     }
                 }]
@@ -82,9 +92,59 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         return toAdd;
     },
 
+    updateSubjects: function () {
+        this.renderSubjects(false, this.getSubjects());
+    },
+
+    replaceSubjects: function () {
+        this.renderSubjects(true, this.getSubjects());
+    },
+
+    checkAliases: function (callback, panel) {
+        var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
+
+        if (subjectArray.length > 0) {
+            subjectArray = Ext4.unique(subjectArray);
+            subjectArray.sort();
+        }
+
+        this.down('#subjArea').setValue(null);
+
+        this.subjects = subjectArray;
+        this.aliases = {};
+        this.getAlias(subjectArray, callback, panel);
+    },
+
+    getAlias: function (subjectArray, callback, panel) {
+        this.aliasTableConfig(subjectArray);
+
+        this.aliasTable.success = function (results) {
+            this.handleAliasResults(results);
+            if (callback)
+                callback.call(panel);
+        };
+
+        LABKEY.Query.selectRows(this.aliasTable);
+    },
+
+    handleAliases: function (results) {
+
+        this.handleAliasResults(results);
+
+        if (this.subjects.length)
+            this.renderSubjects(false, this.getSubjects());
+    },
+
+    renderSubjects: function (clear, subjects) {
+        this.down('#subjArea').setValue(null);
+        this.tabbedReportPanel.setSubjGrid(clear, subjects, this.aliases, this.notFound);
+    },
+
     getSubjects: function(existing){
         //we clean up, combine, then split the subjectBox and subject inputs
-        var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
+        var subjectArray = this.subjects;
+        if (subjectArray.length == 0)
+            subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
 
         if (existing)
             subjectArray = subjectArray.concat(existing);
@@ -94,32 +154,34 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
             subjectArray.sort();
         }
 
-        this.down('#subjArea').setValue(null);
-
-        if (subjectArray.length)
-            this.tabbedReportPanel.setSubjGrid(subjectArray);
-
+        this.subjects = subjectArray;
         return subjectArray || [];
     },
 
     getFilters: function(){
-        var subj = this.down('#subjArea').getValue();
-        if (subj){
-            subj = subj.split(';');
-        }
-        else {
-            subj = [];
-        }
-
+        var filters = this.subjects;
         var otherSubjects = this.tabbedReportPanel.getSubjects();
 
         if (otherSubjects && otherSubjects.length)
-            subj = subj.concat(otherSubjects);
+            filters = filters.concat(otherSubjects);
 
-        subj = Ext4.unique(subj);
         return {
-            subjects: subj
+            subjects: Ext4.unique(filters)
         }
+    },
+
+    getFilterArray: function (tab) {
+        return this.handleFilters(tab, this.getFilters().subjects);
+    },
+
+    loadReport: function (tab, callback, panel) {
+
+        this.subjects = [];
+        this.subjects = this.subjects.concat(panel.subjects[panel.btnTypes.subjects]);
+        this.subjects = this.subjects.concat(panel.subjects[panel.btnTypes.aliases]);
+        this.subjects = this.subjects.concat(panel.subjects[panel.btnTypes.conflicted]);
+
+        callback.call(panel, this.handleFilters(tab, this.subjects));
     },
 
     getTitle: function(){
@@ -140,7 +202,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         var subjects = this.getSubjects(otherSubjects);
 
         if (!subjects.length){
-            Ext4.Msg.alert('Error', 'Must enter at least one ' + this.nounSingular + ' ID');
+            Ext4.Msg.alert('Error', 'Must enter at least one valid ' + this.nounSingular + ' ID');
             return false;
         }
 

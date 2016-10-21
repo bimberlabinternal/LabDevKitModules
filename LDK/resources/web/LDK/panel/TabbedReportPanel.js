@@ -17,8 +17,24 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ldk-tabbedreportpanel',
     allowEditing: true,
-    maxSubjectsToShow: 15,
     showDiscvrLink: true,
+    subjectColumns: 8,
+    subjectMaxRows: 9,
+    rowHeight: 22,
+
+    btnPanelPrefix: 'btnPanel',
+    totalPanelPrefix: 'totalPanel',
+    btnPrefix: 'btn',
+    btnTypes: {
+        subjects: 'Subjects',
+        aliases: 'Aliases',
+        conflicted: 'Conflicted',
+        notfound: 'NotFound'
+    },
+
+    totalMessages: {},
+    subjects: {},
+    tooltips: {},
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -66,7 +82,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             },{
                 xtype: 'button',
                 border: true,
-                text: 'Refresh',
+                text: 'Update Report',
                 handler: this.onSubmit,
                 forceRefresh: true,
                 itemId: 'submitBtn',
@@ -95,6 +111,21 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 html: 'Powered By DISCVR.  <a href="https://github.com/bbimber/discvr/wiki">Click here to learn more.</a>'
             }]
         });
+
+        if(!Ext4.isDefined(this.maxSubjectsToShow))
+            this.maxSubjectsToShow = this.subjectColumns * this.subjectMaxRows;
+
+        this.totalMessages[this.btnTypes.subjects] = "IDs found";
+        this.totalMessages[this.btnTypes.aliases] = "IDs resolved from alias";
+        this.totalMessages[this.btnTypes.conflicted] = "Alias conflicts";
+        this.totalMessages[this.btnTypes.notfound] = "IDs not found";
+
+        this.subjects[this.btnTypes.subjects] = [];
+        this.subjects[this.btnTypes.aliases] = [];
+        this.subjects[this.btnTypes.conflicted] = [];
+        this.subjects[this.btnTypes.notfound] = [];
+
+        Ext.QuickTips.init();
 
         this.callParent(arguments);
 
@@ -151,87 +182,371 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
     },
 
-    setSubjGrid: function(subjects){
+    setSubjMsg: function(msg){
         var target = this.down('#idPanel');
         target.removeAll();
 
-        if (subjects && subjects.length){
-            target.add({
-                itemId: 'totalPanel',
-                html: 'Total IDs: ' + subjects.length
-            });
+        target.add({
+            itemId: 'msgPanel',
+            html: msg
+        });
+    },
 
-            var toAdd = [];
-            for (var i = 0; i < Math.min(this.maxSubjectsToShow, subjects.length); i++){
-                toAdd.push({
-                    xtype: 'button',
-                    border: true,
-                    minWidth: 80,
-                    text: subjects[i]+' (X)',
-                    subjectID: subjects[i],
-                    style: 'margin: 2px;',
-                    handler: function(button){
-                        var panel = button.up('#buttonPanel');
-                        var index = panel.subjectIDs.indexOf(button.subjectID);
-                        if(index > -1) {
-                            panel.subjectIDs.splice(index, 1);
-                        }
+    // Delete button and subject
+    buttonHandler: function (button) {
+        var section = button.section;
+        var panel = button.up('#' + this.btnPanelPrefix + section);
 
-                        button.destroy();
+        var index = this.subjects[section].indexOf(button.subjectID);
+        if (index > -1)
+            this.subjects[section].splice(index, 1);
 
-                        var total = panel.items.getCount();
-                        var owner = panel.up('panel');
-                        var div = owner.down('#totalPanel');
-                        div.destroy();
-                        owner.insert(0, {
-                            itemId: 'totalPanel',
-                            html: 'Total IDs: ' + total
-                        });
-                    },
-                    scope: this
-                });
+        // Remove tooltip for subject
+        if (Ext4.isDefined(this.tooltips[button.subjectID]))
+            delete this.tooltips[button.subjectID];
+
+        button.destroy();
+
+        var totalPanel = Ext4.getCmp(this.totalPanelPrefix + section);
+
+        if (this.subjects[section].length > 0) {
+            var total = this.subjects[section].length;
+            var shown = panel.items.getCount();
+
+            if (shown < total) {
+                var btnPanel = Ext4.getCmp(this.btnPanelPrefix + section);
+                btnPanel.add(this.getButton(this.subjects[section][shown++], section));
             }
 
-            if (toAdd.length){
-                target.add({
-                    xtype: 'panel',
-                    itemId: 'buttonPanel',
-                    subjectIDs: subjects,
-                    layout: {
-                        type: 'table',
-                        columns: 5
-                    },
-                    items: toAdd
-                });
-            }
+            var shownMsg = '';
+            if (shown < total)
+                shownMsg = ' (showing ' + shown + ')';
 
-            if (subjects.length > this.maxSubjectsToShow) {
-                target.add({
-                    xtype: 'panel',
-                    border: false,
-                    html: '<span class="labkey-error">Plus ' + (subjects.length - this.maxSubjectsToShow)  + ' additional IDs</span>'
-                });
-            }
+            totalPanel.update('<div class="labkey-button">' + this.totalMessages[section] + ': ' + total + shownMsg + '</div>');
+        }
+        else {
+            // If no more id's in that section, redisplay to remove section
+            this.setSubjGrid(false);
         }
     },
 
-    getSubjects: function(){
-        var panel = this.down('#buttonPanel');
-        if (!panel || !panel.items.getCount())
-            return null;
 
-        var subjects = [];
+    getButton: function (subject, name) {
 
-        if (panel.subjectIDs)
-            subjects = subjects.concat(panel.subjectIDs);
-        else
-        {
-            panel.items.each(function (btn) {
-                if (btn.subjectID)
-                    subjects.push(btn.subjectID);
+        return {
+            xtype: 'button',
+            border: true,
+            minWidth: 80,
+            height: this.rowHeight,
+            text: subject,
+            id: this.btnPrefix + subject,
+            subjectID: subject,
+            tooltipType: 'qtip',
+            style: 'margin: 2px;',
+            section: name,
+            handler: this.buttonHandler,
+            listeners: {
+                scope: this,
+                afterRender: function (btn) {
+                    Ext4.create('Ext.tip.ToolTip', {
+                        target: btn.getEl(),
+                        anchorToTarget: true,
+                        html: '<div class="ldk-tooltip">' + this.tooltips[btn.subjectID] +
+                        (Ext4.isEmpty(this.tooltips[btn.subjectID]) ? '' : '<br>') + '</div><div class="ldk-tooltip-light">Click to remove.</div>'
+                    });
+                }
+            },
+            scope: this
+        }
+    },
+
+    generateButtons: function (subjects, max, name) {
+        var subjButtons = [];
+
+        for (var i = 0; i < subjects.length; i++) {
+            subjButtons.push(this.getButton(subjects[i], name));
+        }
+
+        return {
+            xtype: 'panel',
+            id: this.btnPanelPrefix + name,
+            border: false,
+            items: subjButtons,
+            overflowY: 'auto',
+            maxHeight: max * (this.rowHeight + 4) + 1,
+            layout: {
+                type: 'table',
+                columns: this.subjectColumns
+            }
+        };
+    },
+
+    removeFromSubjects: function (id, newSubjects) {
+        var subjIndex = newSubjects.indexOf(id);
+
+        // Remove from new subjects being added
+        if (subjIndex != -1)
+            newSubjects.splice(subjIndex, 1);
+
+        // Remove from existing subjects
+        for (var i = 0; i < this.subjects[this.btnTypes.subjects].length; i++) {
+            if (this.subjects[this.btnTypes.subjects][i] == id) {
+                this.subjects[this.btnTypes.subjects].splice(i, 1)
+            }
+        }
+
+        return newSubjects;
+    },
+
+    adjustSpace: function (totalSections) {
+        var rowsPerSection = 0, extraRows = 0;
+
+        // This is in order of priority who gets spare rows
+        var sections = [{
+            name: this.btnTypes.subjects,
+            rows: Math.ceil(this.subjects[this.btnTypes.subjects].length / this.subjectColumns),
+            rowsDonated: 0
+        },
+            {
+                name: this.btnTypes.aliases,
+                rows: Math.ceil(this.subjects[this.btnTypes.aliases].length / this.subjectColumns),
+                rowsDonated: 0
+            },
+            {
+                name: this.btnTypes.conflicted,
+                rows: Math.ceil(this.subjects[this.btnTypes.conflicted].length / this.subjectColumns),
+                rowsDonated: 0
+            },
+            {
+                name: this.btnTypes.notfound,
+                rows: Math.ceil(this.subjects[this.btnTypes.notfound].length / this.subjectColumns),
+                rowsDonated: 0
+            }];
+
+        // Make room for headers
+        var maxSubjects = this.maxSubjectsToShow - ((totalSections) * this.subjectColumns);
+
+        // Calculate even space for each section
+        if (totalSections != 0)
+            rowsPerSection = Math.floor((maxSubjects / this.subjectColumns) / totalSections);
+
+        // Since taking the floor of rowsPerSection there will be remainder rows available
+        extraRows = this.subjectMaxRows - totalSections - (rowsPerSection * totalSections);
+
+        Ext4.each(sections, function (section) {
+            var totalRows = section.rows;
+            if ((section.rows - rowsPerSection) > 0) {
+                section.rows = rowsPerSection;
+
+                // Get empty rows from other sections
+                Ext4.each(sections, function (check) {
+                    if (check.rows == 0 || check.name == section.name)
+                        return;
+
+                    var available = rowsPerSection - check.rows - check.rowsDonated;
+                    var needed = totalRows - rowsPerSection + section.rowsDonated;
+                    if (needed < 1)
+                        return;
+
+                    if (available > 0) {
+                        var diff = needed - available;
+                        if (diff > -1) {
+                            section.rows += available;
+                            section.rowsDonated -= available;
+                            check.rowsDonated += available;
+                        }
+                        else {
+                            section.rows += needed;
+                            section.rowsDonated -= needed;
+                            check.rowsDonated += needed;
+                        }
+                    }
+                }, this);
+
+                // Remainder rows
+                if (totalRows > section.rows && extraRows > 0) {
+                    var stillNeeded = totalRows - section.rows;
+                    if (stillNeeded >= extraRows) {
+                        section.rows += extraRows;
+                        extraRows = 0;
+                    }
+                    else {
+                        section.rows += stillNeeded;
+                        extraRows -= stillNeeded;
+                    }
+                }
+            }
+        }, this);
+
+
+        var rowCounts = {};
+        Ext4.each(sections, function (section) {
+            rowCounts[section.name] = section.rows;
+        }, this);
+
+        return rowCounts;
+    },
+
+    getHeader: function (name, msg, total, shown, first) {
+        return {
+            xtype: 'panel',
+            id: this.totalPanelPrefix + name,
+            border: false,
+            margins: first ? '0' : '10px 0 0 0',
+            html: '<div class="labkey-button">' + msg + ': ' + total + '</div>'
+        }
+    },
+
+    generateSection: function (subjects, name, rowCounts, msg, first, page) {
+        var items = [];
+        var shown = subjects.length;
+
+        if (subjects.length > (rowCounts[name] * this.subjectColumns)) {
+            shown = rowCounts[name] * this.subjectColumns;
+        }
+
+        items.push(this.getHeader(name, msg, subjects.length, shown, first));
+        items = items.concat(this.generateButtons(subjects, rowCounts[name], name, page));
+
+        return items;
+    },
+
+    sortSubjects: function (subjects, aliases, notfound) {
+        if (this.subjects[this.btnTypes.subjects].length > 0) {
+            this.subjects[this.btnTypes.subjects] = Ext4.unique(this.subjects[this.btnTypes.subjects]);
+            this.subjects[this.btnTypes.subjects].sort();
+        }
+
+        if (this.subjects[this.btnTypes.aliases].length > 0) {
+            this.subjects[this.btnTypes.aliases] = Ext4.unique(this.subjects[this.btnTypes.aliases]);
+            this.subjects[this.btnTypes.aliases].sort();
+        }
+
+        if (this.subjects[this.btnTypes.conflicted].length > 0) {
+            this.subjects[this.btnTypes.conflicted] = Ext4.unique(this.subjects[this.btnTypes.conflicted]);
+            this.subjects[this.btnTypes.conflicted].sort();
+        }
+
+        if (this.subjects[this.btnTypes.notfound].length > 0) {
+            this.subjects[this.btnTypes.notfound] = Ext4.unique(this.subjects[this.btnTypes.notfound]);
+            this.subjects[this.btnTypes.notfound].sort();
+        }
+    },
+
+    setSubjGrid: function (clear, subjects, aliases, notfound, page) {
+        var target = this.down('#idPanel');
+        target.removeAll();
+
+        var items = [], aliasId;
+        var sections = 0, rowCounts;
+
+        if (clear) {
+            this.subjects[this.btnTypes.subjects] = [];
+            this.subjects[this.btnTypes.aliases] = [];
+            this.subjects[this.btnTypes.conflicted] = [];
+            this.subjects[this.btnTypes.notfound] = [];
+            this.tooltips = {};
+        }
+
+        // All not found subjects
+        if (notfound && notfound.length > 0) {
+            Ext4.each(notfound, function (subj) {
+                this.subjects[this.btnTypes.notfound].push(subj);
+                this.tooltips[subj] = 'ID not found.';
             }, this);
         }
 
+        if (aliases) {
+            for (var alias in aliases) {
+                if (aliases.hasOwnProperty(alias)) {
+
+                    // multiple ID's for one alias
+                    if (aliases[alias].length > 1) {
+                        Ext4.each(aliases[alias], function (id) {
+                            this.subjects[this.btnTypes.conflicted].push(id);
+                            this.tooltips[id] = 'Alias: ' + alias;
+                            subjects = this.removeFromSubjects(id, subjects);
+                        }, this);
+                    }
+                    else {
+                        aliasId = aliases[alias][0];
+                        this.subjects[this.btnTypes.aliases].push(aliasId);
+                        this.tooltips[aliasId] = 'Alias: ' + alias;
+                        subjects = this.removeFromSubjects(aliasId, subjects);
+                    }
+                }
+            }
+        }
+
+        // Process new non-alias subjects
+        if (subjects && subjects.length > 0) {
+            Ext4.each(subjects, function (subj) {
+                this.subjects[this.btnTypes.subjects].push(subj);
+                this.tooltips[subj] = '';
+            }, this);
+        }
+
+        this.sortSubjects();
+
+        // Count sections
+        if (this.subjects[this.btnTypes.subjects].length > 0)
+            sections++;
+        if (this.subjects[this.btnTypes.aliases].length > 0)
+            sections++;
+        if (this.subjects[this.btnTypes.conflicted].length > 0)
+            sections++;
+        if (this.subjects[this.btnTypes.notfound].length > 0)
+            sections++;
+
+        // Adjust rows per section
+        rowCounts = this.adjustSpace(sections);
+
+        var first = true;
+
+        // Buttons for non-alias subjects
+        if (this.subjects[this.btnTypes.subjects].length > 0) {
+            items = items.concat(this.generateSection(this.subjects[this.btnTypes.subjects], this.btnTypes.subjects, rowCounts, this.totalMessages[this.btnTypes.subjects], first, page));
+            first = false;
+        }
+
+        // Buttons for alias subjects
+        if (this.subjects[this.btnTypes.aliases].length > 0) {
+            items = items.concat(this.generateSection(this.subjects[this.btnTypes.aliases], this.btnTypes.aliases, rowCounts, this.totalMessages[this.btnTypes.aliases], first, page));
+            first = false;
+        }
+
+        // Buttons for conflicted aliases
+        if (this.subjects[this.btnTypes.conflicted].length > 0) {
+            items = items.concat(this.generateSection(this.subjects[this.btnTypes.conflicted], this.btnTypes.conflicted, rowCounts, this.totalMessages[this.btnTypes.conflicted], first, page));
+            first = false;
+        }
+
+        // Buttons for ID's not found
+        if (this.subjects[this.btnTypes.notfound].length > 0) {
+            items = items.concat(this.generateSection(this.subjects[this.btnTypes.notfound], this.btnTypes.notfound, rowCounts, this.totalMessages[this.btnTypes.notfound], first, page));
+        }
+
+        target.add({
+            xtype: 'panel',
+            border: false,
+            layout: {
+                type: 'vbox'
+            },
+            items: items
+        });
+    },
+
+    getSubjects: function () {
+        var subjects = [];
+
+        for (var section in this.subjects) {
+            if (this.subjects.hasOwnProperty(section) && section != this.btnTypes.notfound) {
+                Ext4.each(this.subjects[section], function (subject) {
+                    subjects.push(subject);
+                }, this);
+            }
+        }
+        
         return subjects;
     },
 
@@ -655,7 +970,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     getFilterContext: function(){
         var ctx;
         if (this.activeFilterType){
-            ctx = this.activeFilterType.getFilters();
+            ctx = this.activeFilterType.getFilterArray(this.activeReport || this.findReport(this.defaultReport));
         }
 
         ctx = ctx || {};
@@ -866,10 +1181,12 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         tabPanel.resumeEvents();
     },
 
-    loadTab: function(tab){
-        var filters = this.getFilters(tab);
-
+    updateTab: function (filters) {
+        var tab = this.activeReport || this.findReport(this.defaultReport);
         var reload = false;
+
+        filters = this.filterHistory(tab, filters);
+
         if (tab.filters){
             for (var i in filters){
                 if (JSON.stringify(filters[i]) !== JSON.stringify(tab.filters[i])){
@@ -899,8 +1216,8 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         this.displayReport(tab);
     },
 
-    getFilters: function(tab){
-        var filters = this.activeFilterType.getFilters() || {};
+    filterHistory: function (tab, filters) {
+
         Ext4.apply(filters, {
             inputType : this.down('#inputType').getValue().selector,
             showReport: 1,
@@ -910,6 +1227,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         //set history
         var token = [];
         for (var i in filters){
+            if (!filters.hasOwnProperty(i)) {
+                continue;
+            }
             if (filters[i]){
                 // NOTE: requests will fail if the URL is too long.  when trying to filter on a long list of discrete IDs, it can be fairly easy to hit this limit
                 // this solution isnt perfect, but if we simply omit those IDs from the return URL it should succeed.  this will
@@ -925,5 +1245,14 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         Ext4.History.add(token.join('&'));
 
         return filters;
+    },
+
+    loadTab: function (tab) {
+        if (this.activeFilterType.loadReport) {
+            this.activeFilterType.loadReport(tab, this.updateTab, this);
+        }
+        else {
+            this.updateTab(this.activeFilterType.getFilters() || {});
+        }
     }
 });
