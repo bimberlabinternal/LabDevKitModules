@@ -125,7 +125,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         this.subjects[this.btnTypes.conflicted] = [];
         this.subjects[this.btnTypes.notfound] = [];
 
-        Ext.QuickTips.init();
+        Ext4.QuickTips.init();
 
         this.callParent(arguments);
 
