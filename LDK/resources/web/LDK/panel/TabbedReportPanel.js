@@ -115,10 +115,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         if(!Ext4.isDefined(this.maxSubjectsToShow))
             this.maxSubjectsToShow = this.subjectColumns * this.subjectMaxRows;
 
-        this.totalMessages[this.btnTypes.subjects] = "IDs found";
-        this.totalMessages[this.btnTypes.aliases] = "IDs resolved from alias";
+        this.totalMessages[this.btnTypes.subjects] = "ID's found";
+        this.totalMessages[this.btnTypes.aliases] = "ID's resolved from alias";
         this.totalMessages[this.btnTypes.conflicted] = "Alias conflicts";
-        this.totalMessages[this.btnTypes.notfound] = "IDs not found";
+        this.totalMessages[this.btnTypes.notfound] = "ID's not found";
 
         this.subjects[this.btnTypes.subjects] = [];
         this.subjects[this.btnTypes.aliases] = [];
@@ -505,7 +505,8 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
         // Buttons for non-alias subjects
         if (this.subjects[this.btnTypes.subjects].length > 0) {
-            items = items.concat(this.generateSection(this.subjects[this.btnTypes.subjects], this.btnTypes.subjects, rowCounts, this.totalMessages[this.btnTypes.subjects], first, page));
+            var title = Ext4.isDefined(this.activeFilterType.aliasTable)?this.totalMessages[this.btnTypes.subjects]:"Total ID's";
+            items = items.concat(this.generateSection(this.subjects[this.btnTypes.subjects], this.btnTypes.subjects, rowCounts, title, first, page));
             first = false;
         }
 

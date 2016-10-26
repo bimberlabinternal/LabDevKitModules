@@ -15,16 +15,6 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
     initComponent: function () {
         this.items = this.getItems();
-
-        // if an alias table is not set, verify id's against demographics
-        if (!Ext4.isDefined(this.aliasTable)) {
-            this.aliasTable = {
-                schemaName: 'study',
-                queryName: 'demographics',
-                idColumn: 'Id'
-            };
-        }
-
         this.callParent();
     },
 
@@ -122,7 +112,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
         this.subjects = subjectArray;
         this.aliases = {};
-        if (this.aliasTable) {
+        if (Ext4.isDefined(this.aliasTable)) {
             this.getAlias(subjectArray, callback, panel, tab);
         }
         else {

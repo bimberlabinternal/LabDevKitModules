@@ -9,16 +9,6 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
 
     initComponent: function(){
         this.items = this.getItems();
-
-        // if an alias table is not set, verify id's against demographics
-        if (!Ext4.isDefined(this.aliasTable)) {
-            this.aliasTable = {
-                schemaName: 'study',
-                queryName: 'demographics',
-                idColumn: 'Id'
-            };
-        }
-
         this.callParent();
 
         //force subject list to get processed and append icons to left-hand panel on load
@@ -68,13 +58,13 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
                     text: 'Add',
                     handler: function(btn){
                         var panel = btn.up('ldk-multisubjectfiltertype');
-                        panel.checkAliases(panel.updateSubjects, panel);
+                        panel.addId(panel.updateSubjects, panel);
                     }
                 },{
                     text: 'Replace',
                     handler: function(btn){
                         var panel = btn.up('ldk-multisubjectfiltertype');
-                        panel.checkAliases(panel.replaceSubjects, panel);
+                        panel.addId(panel.replaceSubjects, panel);
                     }
                 },{
                     text: 'Clear',
@@ -100,7 +90,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         this.renderSubjects(true, this.getSubjects());
     },
 
-    checkAliases: function (callback, panel) {
+    addId: function (callback, panel) {
         var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
 
         if (subjectArray.length > 0) {
@@ -111,8 +101,13 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         this.down('#subjArea').setValue(null);
 
         this.subjects = subjectArray;
-        this.aliases = {};
-        this.getAlias(subjectArray, callback, panel);
+
+        if(Ext4.isDefined(this.aliasTable)) {
+            this.aliases = {};
+            this.getAlias(subjectArray, callback, panel);
+        } else {
+            callback.call(this);
+        }
     },
 
     getAlias: function (subjectArray, callback, panel) {
