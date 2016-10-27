@@ -137,7 +137,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         // Create messages for not found ids
         if (!Ext4.isEmpty(this.notFound)) {
             Ext4.each(this.notFound, function (id) {
-                msg += "<div class='labkey-error'>Animal ID " + id + " not found.</div>";
+                msg += "<div class='labkey-error'>ID " + id + " not found.</div>";
             }, this);
         }
         this.tabbedReportPanel.setSubjMsg(msg);
