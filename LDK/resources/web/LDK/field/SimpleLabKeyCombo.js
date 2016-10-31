@@ -33,6 +33,10 @@ Ext4.define('LDK.form.field.SimpleLabKeyCombo', {
         if (this.store && this.store.isLoading()){
             var args = arguments;
             this.store.on('load', function(){
+                if (this.isDestroyed || (this.store && this.store.isDestroyed)){
+                    return;
+                }
+
                 this.setValue.apply(this, args);
             }, this, {defer: 100, single: true});
         }
