@@ -12,13 +12,19 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         this.callParent();
 
         //force subject list to get processed and append icons to left-hand panel on load
-        this.getSubjects(this.tabbedReportPanel.getSubjects());
+        var subjs = this.getSubjects(this.tabbedReportPanel.getSubjects());
+        this.tabbedReportPanel.setSubjGrid(false, Ext4.isDefined(this.aliasTable), subjs);
+        this.clearSubjectArea();
     },
 
     prepareRemove: function(){
         this.tabbedReportPanel.setSubjGrid(true);
     },
 
+    clearSubjectArea: function(){
+        this.down('#subjArea').setValue(null);
+    },
+    
     getItems: function(){
         var ctx = this.filterContext || {};
 
@@ -26,7 +32,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
 
         toAdd.push({
             width: 200,
-            html: 'Enter ' + this.nounSingular + ' Id(s):<br><i>(Separated by commas, semicolons, space or line breaks)</i>'
+            html: 'Enter ' + this.nounSingular + ' IDs:<br><i>(Separated by commas, semicolons, space or line breaks)</i>'
         });
 
         toAdd.push({
@@ -132,7 +138,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
 
     renderSubjects: function (clear, subjects) {
         this.down('#subjArea').setValue(null);
-        this.tabbedReportPanel.setSubjGrid(clear, subjects, this.aliases, this.notFound);
+        this.tabbedReportPanel.setSubjGrid(clear, Ext4.isDefined(this.aliasTable), subjects, this.aliases, this.notFound);
     },
 
     getSubjects: function(existing){
@@ -169,14 +175,29 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         return this.handleFilters(tab, this.getFilters().subjects);
     },
 
-    loadReport: function (tab, callback, panel) {
+    handleReport: function(panel) {
 
         this.subjects = [];
         this.subjects = this.subjects.concat(panel.subjects[panel.btnTypes.subjects]);
         this.subjects = this.subjects.concat(panel.subjects[panel.btnTypes.aliases]);
         this.subjects = this.subjects.concat(panel.subjects[panel.btnTypes.conflicted]);
+    },
 
-        callback.call(panel, this.handleFilters(tab, this.subjects));
+    loadReport: function (tab, callback, panel) {
+
+        var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
+
+        if(subjectArray.length > 0) {
+            this.addId(function(){
+                this.updateSubjects();
+                this.handleReport(panel);
+                callback.call(panel, this.handleFilters(tab, this.subjects));
+            }, this);
+        }
+        else {
+            this.handleReport(panel);
+            callback.call(panel, this.handleFilters(tab, this.subjects));
+        }
     },
 
     getTitle: function(){

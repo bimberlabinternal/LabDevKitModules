@@ -58,7 +58,9 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
             nonRemovable: []
         };
 
-        var subjectFieldName = tab.report.subjectFieldName;
+        var subjectFieldName;
+        if(tab.report)
+            subjectFieldName= tab.report.subjectFieldName;
         if (!subjectFieldName) {
             return;
         }

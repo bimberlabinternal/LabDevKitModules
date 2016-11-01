@@ -115,10 +115,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         if(!Ext4.isDefined(this.maxSubjectsToShow))
             this.maxSubjectsToShow = this.subjectColumns * this.subjectMaxRows;
 
-        this.totalMessages[this.btnTypes.subjects] = "ID's found";
-        this.totalMessages[this.btnTypes.aliases] = "ID's resolved from alias";
+        this.totalMessages[this.btnTypes.subjects] = "IDs found";
+        this.totalMessages[this.btnTypes.aliases] = "IDs resolved from alias";
         this.totalMessages[this.btnTypes.conflicted] = "Alias conflicts";
-        this.totalMessages[this.btnTypes.notfound] = "ID's not found";
+        this.totalMessages[this.btnTypes.notfound] = "IDs not found";
 
         this.subjects[this.btnTypes.subjects] = [];
         this.subjects[this.btnTypes.aliases] = [];
@@ -226,7 +226,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
         else {
             // If no more id's in that section, redisplay to remove section
-            this.setSubjGrid(false);
+            this.setSubjGrid(false, Ext4.isDefined(this.activeFilterType.aliasTable));
         }
     },
 
@@ -397,7 +397,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
     },
 
-    generateSection: function (subjects, name, rowCounts, msg, first, page) {
+    generateSection: function (subjects, name, rowCounts, msg, first) {
         var items = [];
         var shown = subjects.length;
 
@@ -406,12 +406,12 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
 
         items.push(this.getHeader(name, msg, subjects.length, shown, first));
-        items = items.concat(this.generateButtons(subjects, rowCounts[name], name, page));
+        items = items.concat(this.generateButtons(subjects, rowCounts[name], name));
 
         return items;
     },
 
-    sortSubjects: function (subjects, aliases, notfound) {
+    sortSubjects: function () {
         if (this.subjects[this.btnTypes.subjects].length > 0) {
             this.subjects[this.btnTypes.subjects] = Ext4.unique(this.subjects[this.btnTypes.subjects]);
             this.subjects[this.btnTypes.subjects].sort();
@@ -433,9 +433,11 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
     },
 
-    setSubjGrid: function (clear, subjects, aliases, notfound, page) {
+    setSubjGrid: function (clear, aliasCheck, subjects, aliases, notfound) {
         var target = this.down('#idPanel');
         target.removeAll();
+        if(Ext4.isDefined(this.activeFilterType) && Ext4.isFunction(this.activeFilterType.clearSubjectArea))
+            this.activeFilterType.clearSubjectArea();
 
         var items = [], aliasId;
         var sections = 0, rowCounts;
@@ -505,26 +507,26 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
         // Buttons for non-alias subjects
         if (this.subjects[this.btnTypes.subjects].length > 0) {
-            var title = Ext4.isDefined(this.activeFilterType.aliasTable)?this.totalMessages[this.btnTypes.subjects]:"Total ID's";
-            items = items.concat(this.generateSection(this.subjects[this.btnTypes.subjects], this.btnTypes.subjects, rowCounts, title, first, page));
+            var title = aliasCheck?this.totalMessages[this.btnTypes.subjects]:"Total IDs";
+            items = items.concat(this.generateSection(this.subjects[this.btnTypes.subjects], this.btnTypes.subjects, rowCounts, title, first));
             first = false;
         }
 
         // Buttons for alias subjects
         if (this.subjects[this.btnTypes.aliases].length > 0) {
-            items = items.concat(this.generateSection(this.subjects[this.btnTypes.aliases], this.btnTypes.aliases, rowCounts, this.totalMessages[this.btnTypes.aliases], first, page));
+            items = items.concat(this.generateSection(this.subjects[this.btnTypes.aliases], this.btnTypes.aliases, rowCounts, this.totalMessages[this.btnTypes.aliases], first));
             first = false;
         }
 
         // Buttons for conflicted aliases
         if (this.subjects[this.btnTypes.conflicted].length > 0) {
-            items = items.concat(this.generateSection(this.subjects[this.btnTypes.conflicted], this.btnTypes.conflicted, rowCounts, this.totalMessages[this.btnTypes.conflicted], first, page));
+            items = items.concat(this.generateSection(this.subjects[this.btnTypes.conflicted], this.btnTypes.conflicted, rowCounts, this.totalMessages[this.btnTypes.conflicted], first));
             first = false;
         }
 
         // Buttons for ID's not found
         if (this.subjects[this.btnTypes.notfound].length > 0) {
-            items = items.concat(this.generateSection(this.subjects[this.btnTypes.notfound], this.btnTypes.notfound, rowCounts, this.totalMessages[this.btnTypes.notfound], first, page));
+            items = items.concat(this.generateSection(this.subjects[this.btnTypes.notfound], this.btnTypes.notfound, rowCounts, this.totalMessages[this.btnTypes.notfound], first));
         }
 
         target.add({
@@ -595,7 +597,6 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             var parentTab = this.activeReport.up('tabpanel');
             tabPanel.setActiveTab(parentTab);
             parentTab.setActiveTab(this.activeReport);
-
             this.loadTab(this.activeReport);
         }
         else {
