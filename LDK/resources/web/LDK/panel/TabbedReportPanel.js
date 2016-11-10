@@ -272,8 +272,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             id: this.btnPanelPrefix + name,
             border: false,
             items: subjButtons,
-            overflowY: 'auto',
+            autoScroll: true,
             maxHeight: max * (this.rowHeight + 4) + 1,
+            maxWidth: this.getWidth() - 500,
             layout: {
                 type: 'table',
                 columns: this.subjectColumns
