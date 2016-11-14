@@ -128,7 +128,7 @@ Ext4.define('LDK.panel.GraphPanel', {
         switch (jsonType){
             case 'date':
                 //NOTE: we could attempt to format based on the datetime format provided by this column, but it rarely makes sense
-                return function(value){return value ? Ext4.Date.format(new Date(value), 'Y-m-d') : null};
+                return function(value){return value ? Ext4.Date.format(new Date(value), LABKEY.extDefaultDateFormat) : null};
                 break;
             case 'int':
                 if (meta.extFormatFn)
