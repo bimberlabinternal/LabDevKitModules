@@ -22,7 +22,9 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.settings.AppProps;
+import org.labkey.api.settings.LookAndFeelProperties;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 /**
@@ -35,8 +37,6 @@ abstract public class AbstractNotification implements Notification
     private Module _owner;
 
     protected final static Logger log = Logger.getLogger(AbstractNotification.class);
-    protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
-    protected final static SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     protected final static SimpleDateFormat _timeFormat = new SimpleDateFormat("kk:mm");
 
     public AbstractNotification(Module owner)
@@ -70,5 +70,15 @@ abstract public class AbstractNotification implements Notification
             ret += "&" + filter.toQueryString("query");
 
         return ret;
+    }
+
+    public DateFormat getDateFormat(Container c)
+    {
+        return new SimpleDateFormat(LookAndFeelProperties.getInstance(c).getDefaultDateFormat());
+    }
+
+    public DateFormat getDateTimeFormat(Container c)
+    {
+        return new SimpleDateFormat(LookAndFeelProperties.getInstance(c).getDefaultDateTimeFormat());
     }
 }
