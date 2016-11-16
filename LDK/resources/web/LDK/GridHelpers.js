@@ -415,7 +415,7 @@ Ext4.define('LDK.ext.SpreadsheetImportWindow', {
                         LDK.StoreUtils.createExcelTemplate({
                             fields: fields,
                             skippedFields: [],
-                            fileName: win.fileNamePrefix + '_' + Ext4.Date.format(new Date(), 'Y-m-d H_i_s') + '.xls'
+                            fileName: win.fileNamePrefix + '_' + Ext4.Date.format(new Date(), LABKEY.extDefaultDateFormat + ' H_i_s') + '.xls'
                         });
                     }
                 },{

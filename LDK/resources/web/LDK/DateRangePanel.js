@@ -5,7 +5,7 @@
 Ext4.define('LDK.ext.DateRangePanel', {
     extend: 'Ext.form.Panel',
     alias: 'widget.ldk-daterangepanel',
-    dateFormat: 'Y-M-d', //YYYY-MMM-DD
+    dateFormat: LABKEY.extDefaultDateFormat, //YYYY-MMM-DD
     initComponent: function(){
         Ext4.apply(this, {
             border: false,

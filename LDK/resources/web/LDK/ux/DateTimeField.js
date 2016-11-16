@@ -29,7 +29,7 @@ Ext4.define('Ext.ux.form.field.DateTime', {
      * This value is overridden if format is specified in the dateConfig.
      * The default is 'Y-m-d'
      */
-    dateFormat: 'Y-m-d',
+    dateFormat: LABKEY.extDefaultDateFormat,
     /**
      * @cfg {String} timeFormat
      * Convenience config for specifying the format of the time portion.

@@ -51,6 +51,7 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.study.assay.AssayProtocolSchema;
@@ -60,6 +61,7 @@ import org.labkey.ldk.LDKServiceImpl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -82,8 +84,6 @@ import java.util.TreeMap;
 public class SiteSummaryNotification implements Notification
 {
     protected final static Logger log = Logger.getLogger(SiteSummaryNotification.class);
-    protected final static SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
     private static final String lastSave = "lastSave";
     private NumberFormat _pctFormat = null;
 
@@ -111,7 +111,17 @@ public class SiteSummaryNotification implements Notification
 
     public String getEmailSubject(Container c)
     {
-        return "Daily Admin Alerts: " + _dateTimeFormat.format(new Date());
+        return "Daily Admin Alerts: " + getDateTimeFormat(c).format(new Date());
+    }
+
+    public DateFormat getDateFormat(Container c)
+    {
+        return new SimpleDateFormat(LookAndFeelProperties.getInstance(c).getDefaultDateFormat());
+    }
+
+    public DateFormat getDateTimeFormat(Container c)
+    {
+        return new SimpleDateFormat(LookAndFeelProperties.getInstance(c).getDefaultDateTimeFormat());
     }
 
     @Override
@@ -130,13 +140,13 @@ public class SiteSummaryNotification implements Notification
         return PropertyManager.getProperties(c, PROP_CATEGORY);
     }
 
-    private String getLastSaveString(Map<String, String> map)
+    private String getLastSaveString(Container c, Map<String, String> map)
     {
         Long lastSaveMills = map.containsKey(lastSave) ? Long.parseLong(map.get(lastSave)) : null;
         if (lastSaveMills == null)
             return "never";
         else
-            return _dateTimeFormat.format(new Date(lastSaveMills));
+            return getDateTimeFormat(c).format(new Date(lastSaveMills));
     }
 
     private void saveValues(Container c, Map<String, String> saved, Map<String, String> newValues)
@@ -201,7 +211,7 @@ public class SiteSummaryNotification implements Notification
             msg.insert(0, alerts);
         }
 
-        msg.insert(0, "This email contains a series of alerts designed for site admins.  It was run on: " + _dateTimeFormat.format(new Date()) + ".  Runtime: " + DurationFormatUtils.formatDurationWords((new Date()).getTime() - start.getTime(), true, true) + "<p>");
+        msg.insert(0, "This email contains a series of alerts designed for site admins.  It was run on: " + getDateTimeFormat(c).format(new Date()) + ".  Runtime: " + DurationFormatUtils.formatDurationWords((new Date()).getTime() - start.getTime(), true, true) + "<p>");
 
         saveValues(c, saved, newValues);
 
@@ -269,7 +279,7 @@ public class SiteSummaryNotification implements Notification
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DATE, -1);
-        SQLFragment sql = new SQLFragment("SELECT t.formtype, count(*) as total FROM ehr.tasks t WHERE cast(t.created as date) = '" + _dateFormat.format(cal.getTime()) + "' GROUP BY t.formtype ORDER BY t.formtype");
+        SQLFragment sql = new SQLFragment("SELECT t.formtype, count(*) as total FROM ehr.tasks t WHERE cast(t.created as date) = '" + new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime()) + "' GROUP BY t.formtype ORDER BY t.formtype");
 
         UserSchema us = QueryService.get().getUserSchema(u, c, "core");
         SqlSelector ss = new SqlSelector(us.getDbSchema(), sql);
@@ -317,7 +327,7 @@ public class SiteSummaryNotification implements Notification
                     previousValue = oldValueMap.getLong(s.getEntityId());
                 }
 
-                String pctChange = getPctChange(previousValue, count, 0.05, "The number of rows in the study " +  s.getLabel() + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
+                String pctChange = getPctChange(previousValue, count, 0.05, "The number of rows in the study " +  s.getLabel() + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
                 msg.append("<tr><td>" + s.getLabel() + "</td><td>" + s.getContainer().getPath() + "</td><td>" + NumberFormat.getInstance().format(count) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
             }
 
@@ -415,7 +425,7 @@ public class SiteSummaryNotification implements Notification
                     }
 
                     String formattedPreviousSize = previousSize == null ? "" : FileUtils.byteCountToDisplaySize(previousSize);
-                    String pctChange = getPctChange(previousSize, size, 0.05, "The size of files under the root for the container: " +  key + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
+                    String pctChange = getPctChange(previousSize, size, 0.05, "The size of files under the root for the container: " +  key + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
 
                     //then do the same for file count
                     String fileCountKey = json.getString("path");
@@ -428,7 +438,7 @@ public class SiteSummaryNotification implements Notification
                         previousCount = oldValueMapCounts.get(key) == null || "null".equals(oldValueMapCounts.get(key)) ? null : oldValueMapCounts.getLong(fileCountKey);
                     }
                     String formattedPreviousCount = previousCount == null ? "" : NumberFormat.getInstance().format(previousCount);
-                    String pctChange2 = getPctChange(previousCount, totalFiles, 0.05, "The total number of files under the root for the container: " +  key + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
+                    String pctChange2 = getPctChange(previousCount, totalFiles, 0.05, "The total number of files under the root for the container: " +  key + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
 
                     msg.append("<tr><td>").append(json.getString("path")).append("</td><td>").append(fr.getString("rootPath")).append("</td><td>").append(fr.getString("rootSize")).append("</td><td>").append(formattedPreviousSize).append("</td>").append(pctChange).append("<td>").append(totalFiles == null ? "" : NumberFormat.getInstance().format(totalFiles)).append("</td><td>").append(formattedPreviousCount).append("</td>").append(pctChange2).append("</td></tr>");
                 }
@@ -499,7 +509,7 @@ public class SiteSummaryNotification implements Notification
                         previousValue = oldValueMap.getLong(key);
                     }
 
-                    String pctChange = getPctChange(previousValue, total, 0.05, "The number of rows in the table " +  key + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
+                    String pctChange = getPctChange(previousValue, total, 0.05, "The number of rows in the table " +  key + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
                     msg.append("<tr><td>" + (schema == null ? "" : schema) + "</td><td>" + (table == null ? "" : table) + "</td><td>" + (total == null ? "" : NumberFormat.getInstance().format(total)) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
                 }
             });
@@ -550,7 +560,7 @@ public class SiteSummaryNotification implements Notification
                         previousValue = oldValueMap.getLong(key);
                     }
 
-                    String pctChange = getPctChange(previousValue, size, 0.05, "The size of the database " +  key + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
+                    String pctChange = getPctChange(previousValue, size, 0.05, "The size of the database " +  key + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
                     msg.append("<tr><td>" + row.get("DatabaseName").toString() + "</td><td>" + row.get("LogicalName").toString() + "</td><td>" + FileUtils.byteCountToDisplaySize(size * 1000) + "</td><td>" + (previousValue == null ? "" : FileUtils.byteCountToDisplaySize(previousValue * 1000))+ "</td>" + pctChange + "</tr>");
                 }
                 msg.append("</table>");
@@ -611,7 +621,7 @@ public class SiteSummaryNotification implements Notification
                 previousValue = oldValueMap.getLong(key);
             }
 
-            String pctChange = getPctChange(previousValue, entry.getValue(), 0.05, "The size of the list " +  ld.getName() + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
+            String pctChange = getPctChange(previousValue, entry.getValue(), 0.05, "The size of the list " +  ld.getName() + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
 
             if (ld != null)
                 msg.append("<tr><td>" + ld.getName() + "</td><td>" + ld.getContainer().getPath() + "</td><td>" + NumberFormat.getInstance().format(entry.getValue()) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
@@ -696,7 +706,7 @@ public class SiteSummaryNotification implements Notification
                     previousValue = oldValueMap.getLong(key);
                 }
 
-                String pctChange = getPctChange(previousValue, totals[1], 0.05, "The number of assay results for " +  p.getName() + " has changed signficiantly since the last run on " + getLastSaveString(saved), alerts);
+                String pctChange = getPctChange(previousValue, totals[1], 0.05, "The number of assay results for " +  p.getName() + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
                 msg.append("<tr><td>" + ap + "</td><td>" + p.getName() + "</td><td>" + p.getContainer().getPath() + "</td><td>" + NumberFormat.getInstance().format(totals[0]) + "</td><td>" + NumberFormat.getInstance().format(totals[1]) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
             }
         }

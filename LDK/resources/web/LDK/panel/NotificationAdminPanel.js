@@ -50,8 +50,8 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                 },{
                     width: 350,
                     html: ['Schedule: ' + notification.schedule,
-                        'Last Run: ' + (notification.lastRun == 0 ? 'Never' : Ext4.Date.format(new Date(notification.lastRun), 'Y-m-d H:i')),
-                        'Next Fire Time: ' + (notification.nextFireTime ? Ext4.Date.format(new Date(notification.nextFireTime), 'Y-m-d H:i') : ''),
+                        'Last Run: ' + (notification.lastRun == 0 ? 'Never' : Ext4.Date.format(new Date(notification.lastRun), LABKEY.extDefaultDateTimeFormat)),
+                        'Next Fire Time: ' + (notification.nextFireTime ? Ext4.Date.format(new Date(notification.nextFireTime), LABKEY.extDefaultDateTimeFormat) : ''),
                         'Time Since: ' + (notification.durationString ? notification.durationString : ''),
                         'Description: ' + (notification.description ? notification.description: ''),
                         'You are ' + (notification.subscriptions.length ? '' : 'not ') +  'subscribed to this notification'

@@ -32,7 +32,6 @@ import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.CoreSchema;
-import org.labkey.api.data.DbScope;
 import org.labkey.api.data.DbSequenceManager;
 import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.TableInfo;
@@ -57,6 +56,7 @@ import org.labkey.api.security.ValidEmail;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
+import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.GUID;
 import org.labkey.api.util.URLHelper;
@@ -374,7 +374,7 @@ public class LDKController extends SpringActionController
 
             StringBuilder sb = new StringBuilder();
             Date lastRun = NotificationServiceImpl.get().getLastRunDate(n);
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+            SimpleDateFormat df = new SimpleDateFormat(LookAndFeelProperties.getInstance(getContainer()).getDefaultDateTimeFormat());
             sb.append("The notification email was last sent on: " + (lastRun == null ? "never" : df.format(lastRun)) + "<p><hr><p>");
 
             User u = NotificationServiceImpl.get().getUser(getContainer());
