@@ -1,0 +1,4 @@
+dependencies {
+   external 'org.apache.directory.api:api-all:1.0.0-M14'
+   external 'org.apache.mina:mina-core:2.0.7'
+}
