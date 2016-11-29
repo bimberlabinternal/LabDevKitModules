@@ -33,6 +33,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
             items: [{
                 xtype: 'textfield',
                 width: 165,
+                name: 'subjectId',
                 itemId: 'subjArea',
                 value: Ext4.isArray(ctx.subjects) ? ctx.subjects.join(';') : ctx.subjects,
                 listeners: {

@@ -48,6 +48,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
                     width: 180,
                     height: 100,
                     itemId: 'subjArea',
+                    name: 'subjectIds',
                     value: Ext4.isArray(ctx.subjects) ? ctx.subjects.join(';') : ctx.subjects
                 }]
             },{

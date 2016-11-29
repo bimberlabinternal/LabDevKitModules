@@ -532,6 +532,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
         target.add({
             xtype: 'panel',
+            id: 'subjectButtonPanel',
             border: false,
             layout: {
                 type: 'vbox'
@@ -935,6 +936,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             cfg[1].items.push({
                 xtype: 'radio',
                 name: 'selector',
+                inputAttrTpl: 'name = ' + t.inputValue,
                 inputValue: t.inputValue,
                 checked: idx == 0,
                 boxLabel: t.label,
@@ -961,6 +963,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             target.removeAll();
 
             this.activeFilterType = target.add(cfg);
+            LABKEY.Utils.signalWebDriverTest('filterTypeUpdate', this.activeFilterType.inputValue);
         }
 
         if (this.loadOnRender || this.autoLoadDefaultTab){
