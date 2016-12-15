@@ -92,7 +92,7 @@ Ext4.define('LDK.panel.GraphPanel', {
     getScaleConfig: function(){
         var config = this.plotConfig || {};
 
-        return Ext4.apply({
+        return Ext4.merge({
             x: {
                 scaleType: 'continuous',
                 trans: 'linear',
