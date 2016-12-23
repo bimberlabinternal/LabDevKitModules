@@ -148,7 +148,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     getIEWarning: function(){
         var toAdd = [];
 
-        if (Ext4.isIE){
+        if (Ext4.isIE9m){
             toAdd.push({
                 border: false,
                 html: '<span>NOTE: You are currently using Internet Explorer.  While this page will work on any browser, it may perform better in other browsers, such as Chrome or Firefox.  For the best experience, we recommend using one of these browsers.</span>',
