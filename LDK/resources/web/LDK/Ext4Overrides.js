@@ -3,7 +3,7 @@
  * These are controlled using the combo config properties anyMatch or caseSensitive
  */
 Ext4.override(Ext4.form.field.ComboBox, {
-    //this is overriden to allow the combo to be reset even when forceSelection=true
+    //this is overridden to allow the combo to be reset even when forceSelection=true
     assertValue: function() {
         var me = this,
                 value = me.getRawValue(),
