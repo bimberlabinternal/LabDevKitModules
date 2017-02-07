@@ -51,7 +51,7 @@ public class MssqlUtilsUserSchema extends SimpleUserSchema
     }
 
     @Override
-    protected TableInfo createTable(String name)
+    public TableInfo createTable(String name)
     {
         if (!getTableNames().contains(name))
             return null;

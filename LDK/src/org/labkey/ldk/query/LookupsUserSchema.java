@@ -114,7 +114,7 @@ public class LookupsUserSchema extends SimpleUserSchema
     }
 
     @Override
-    protected TableInfo createTable(String name)
+    public TableInfo createTable(String name)
     {
         Set<String> available = super.getTableNames();
 
