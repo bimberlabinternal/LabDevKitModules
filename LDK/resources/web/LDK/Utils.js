@@ -117,8 +117,9 @@ LDK.Utils = new function(){
             }
 
             LABKEY.Ajax.request({
-                url: LABKEY.ActionURL.buildURL('admin', 'logClientException', null, params),
-                method : 'GET',
+                url: LABKEY.ActionURL.buildURL('admin', 'logClientException.api'),
+                method : 'POST',
+                jsonData: params,
                 scope: this,
                 failure: function(response){
                     console.log('unable to log to mothership');
