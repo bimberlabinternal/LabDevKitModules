@@ -461,7 +461,10 @@ public class NotificationServiceImpl extends NotificationService
                 {
                     int userId = rs.getInt("recipient");
                     UserPrincipal u = SecurityManager.getPrincipal(userId);
-                    recipients.add(u);
+                    if (u != null)
+                        recipients.add(u);
+                    else
+                        _log.error("unknown user registered with " + n.getName() + "notification: " + userId);
                 }
             });
         }
