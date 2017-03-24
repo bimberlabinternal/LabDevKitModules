@@ -873,6 +873,10 @@ onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/GeneticsCoreController.
 onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/GeneticsCoreManager.java -text
 onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/GeneticsCoreModule.java -text
 onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/GeneticsTableCustomizer.java -text
+onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/analysis/CombineMethylationRatesHandler.java -text
+onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/analysis/GFF3Codec.java -text
+onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/analysis/GFF3Feature.java -text
+onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/analysis/GFF3FeatureImpl.java -text
 onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/analysis/MethylationRateComparison.java -text
 onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/analysis/MethylationRateComparisonHandler.java -text
 onprcEHRModules/GeneticsCore/src/org/labkey/GeneticsCore/button/ChangeReadsetStatusButton.java -text

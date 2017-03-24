@@ -976,7 +976,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     getFilterContext: function(){
         var ctx;
         if (this.activeFilterType){
-            ctx = this.activeFilterType.getFilterArray(this.activeReport || this.findReport(this.defaultReport));
+            var tab = this.activeReport || this.findReport(this.defaultReport);
+            if (tab)
+                ctx = this.activeFilterType.getFilterArray(tab);
         }
 
         ctx = ctx || {};

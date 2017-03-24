@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.data.AbstractTableInfo;
+import org.labkey.api.data.BuiltInButtonConfig;
 import org.labkey.api.data.ButtonBarConfig;
 import org.labkey.api.data.ButtonConfig;
 import org.labkey.api.data.ColumnInfo;
@@ -275,10 +276,50 @@ public class DefaultTableCustomizer implements TableCustomizer
 
         configureMoreActionsBtn(ti, buttons, cfg, scripts);
 
+        //Reset default text back to 'Import Data', since this button does both single/bulk import
+        if (ti.getImportDataURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL && !hasImportDataBtn(cfg))
+        {
+            BuiltInButtonConfig importBtn = new BuiltInButtonConfig("Import Bulk Data", "Import Data");
+            if (ti.getDeleteURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL)
+                importBtn.setInsertBefore("Delete");
+            else
+                importBtn.setInsertBefore("Export");
+
+            List<ButtonConfig> existingBtns = cfg.getItems();
+            existingBtns.add(importBtn);
+            cfg.setItems(existingBtns);
+        }
+
         cfg.setScriptIncludes(scripts.toArray(new String[scripts.size()]));
         cfg.setAlwaysShowRecordSelectors(true);
 
         ti.setButtonBarConfig(cfg);
+    }
+
+    private static boolean hasImportDataBtn(ButtonBarConfig cfg)
+    {
+        if (cfg.getItems() == null)
+            return false;
+
+        for (ButtonConfig bc : cfg.getItems())
+        {
+            if (bc instanceof BuiltInButtonConfig)
+            {
+                if (((BuiltInButtonConfig)bc).getOriginalCaption().equals("Import Data") || ((BuiltInButtonConfig) bc).getOriginalCaption().equals("Import Bulk Data"))
+                {
+                    return true;
+                }
+            }
+            else if (bc instanceof UserDefinedButtonConfig)
+            {
+                if (((UserDefinedButtonConfig)bc).getText().equals("Import Data") || ((UserDefinedButtonConfig) bc).getText().equals("Import Bulk Data"))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private static void configureMoreActionsBtn(TableInfo ti, List<ButtonConfigFactory> buttons, ButtonBarConfig cfg, Set<String> scripts)

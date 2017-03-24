@@ -68,6 +68,10 @@ Ext4.define('LDK.field.ExpDataField', {
     setText: function(text){
         if (this.rendered){
             this.fileDiv.update(text);
+            var parent = this.up('container');
+            if (parent){
+                parent.doLayout();
+            }
         }
     },
 
