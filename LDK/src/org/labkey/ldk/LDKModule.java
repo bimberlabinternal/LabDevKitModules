@@ -80,7 +80,7 @@ public class LDKModule extends ExtendedSimpleModule
     @Override
     protected void doStartupAfterSpringConfig(ModuleContext moduleContext)
     {
-        AuditLogService.registerAuditType(new LdapSyncAuditProvider());
+        AuditLogService.get().registerAuditType(new LdapSyncAuditProvider());
 
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "notification service admin", DetailsURL.fromString("/ldk/notificationSiteAdmin.view").getActionURL());
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "ldap sync admin", DetailsURL.fromString("/ldk/ldapSettings.view").getActionURL());
