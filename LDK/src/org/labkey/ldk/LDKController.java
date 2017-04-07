@@ -53,6 +53,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.ValidEmail;
+import org.labkey.api.security.permissions.AdminOperationsPermission;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
@@ -201,18 +202,13 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermission(ReadPermission.class)
+    @RequiresPermission(AdminOperationsPermission.class)
     @CSRF
     public class GetSiteNotificationDetailsAction extends ApiAction<Object>
     {
         @Override
         public ApiResponse execute(Object form, BindException errors) throws Exception
         {
-            if (!getUser().isSiteAdmin())
-            {
-                throw new UnauthorizedException("Only site admins can view this page");
-            }
-
             Map<String, Object> result = new HashMap<>();
 
             result.put("serviceEnabled", NotificationServiceImpl.get().isServiceEnabled());
@@ -509,17 +505,12 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermission(AdminPermission.class)
+    @RequiresPermission(AdminOperationsPermission.class)
     @CSRF
     public class InitiateLdapSyncAction extends ApiAction<InitiateLdapSyncForm>
     {
         public ApiResponse execute(InitiateLdapSyncForm form, BindException errors) throws Exception
         {
-            if (!getUser().isSiteAdmin())
-            {
-                throw new UnauthorizedException("Only site admins can view this page");
-            }
-
             try
             {
                 LdapSyncRunner runner = new LdapSyncRunner();
@@ -831,17 +822,12 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermission(AdminPermission.class)
+    @RequiresPermission(AdminOperationsPermission.class)
     @CSRF
     public class TestLdapConnectionAction extends ApiAction<Object>
     {
         public ApiResponse execute(Object form, BindException errors) throws Exception
         {
-            if (!getUser().isSiteAdmin())
-            {
-                throw new UnauthorizedException("Only site admins can view this page");
-            }
-
             ApiSimpleResponse resp = new ApiSimpleResponse();
 
             LdapConnectionWrapper wrapper = null;
@@ -870,17 +856,12 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermission(AdminPermission.class)
+    @RequiresPermission(AdminOperationsPermission.class)
     @CSRF
     public class GetLdapSettingsAction extends ApiAction<Object>
     {
         public ApiResponse execute(Object form, BindException errors)
         {
-            if (!getUser().isSiteAdmin())
-            {
-                throw new UnauthorizedException("Only site admins can view this page");
-            }
-
             Map<String, Object> result = new HashMap<>();
 
             Map<String, Object> props = (new LdapSettings()).getSettingsMap();
@@ -890,17 +871,12 @@ public class LDKController extends SpringActionController
         }
     }
 
-    @RequiresPermission(AdminPermission.class)
+    @RequiresPermission(AdminOperationsPermission.class)
     @CSRF
     public class SetLdapSettingsAction extends ApiAction<LdapForm>
     {
         public ApiResponse execute(LdapForm form, BindException errors)
         {
-            if (!getUser().isSiteAdmin())
-            {
-                throw new UnauthorizedException("Only site admins can view this page");
-            }
-
             Map<String, String> props = new HashMap<>();
 
             //search strings

@@ -26,6 +26,8 @@ import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.query.DetailsURL;
+import org.labkey.api.security.permissions.AdminOperationsPermission;
+import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.settings.AdminConsole;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
@@ -82,13 +84,13 @@ public class LDKModule extends ExtendedSimpleModule
     {
         AuditLogService.get().registerAuditType(new LdapSyncAuditProvider());
 
-        AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "notification service admin", DetailsURL.fromString("/ldk/notificationSiteAdmin.view").getActionURL());
-        AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "ldap sync admin", DetailsURL.fromString("/ldk/ldapSettings.view").getActionURL());
-        AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "file root usage summary", DetailsURL.fromString("/ldk/folderSizeSummary.view").getActionURL());
+        AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "notification service admin", DetailsURL.fromString("/ldk/notificationSiteAdmin.view").getActionURL(), AdminOperationsPermission.class);
+        AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "ldap sync admin", DetailsURL.fromString("/ldk/ldapSettings.view").getActionURL(), AdminOperationsPermission.class);
+        AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "file root usage summary", DetailsURL.fromString("/ldk/folderSizeSummary.view").getActionURL(), AdminPermission.class);
 
         if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
         {
-            AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "sql server DB index usage", DetailsURL.fromString("/query/executeQuery.view?schemaName=mssqlutils&query.queryName=index_stats").getActionURL());
+            AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "sql server DB index usage", DetailsURL.fromString("/query/executeQuery.view?schemaName=mssqlutils&query.queryName=index_stats").getActionURL(), AdminPermission.class);
         }
 
         LdapScheduler.get().schedule();
