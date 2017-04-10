@@ -28,6 +28,7 @@ import org.labkey.api.module.ModuleContext;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.security.permissions.AdminOperationsPermission;
 import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.settings.AdminConsole;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
@@ -86,7 +87,7 @@ public class LDKModule extends ExtendedSimpleModule
 
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "notification service admin", DetailsURL.fromString("/ldk/notificationSiteAdmin.view").getActionURL(), AdminOperationsPermission.class);
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "ldap sync admin", DetailsURL.fromString("/ldk/ldapSettings.view").getActionURL(), AdminOperationsPermission.class);
-        AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "file root usage summary", DetailsURL.fromString("/ldk/folderSizeSummary.view").getActionURL(), AdminPermission.class);
+        AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "file root usage summary", DetailsURL.fromString("/ldk/folderSizeSummary.view").getActionURL(), ReadPermission.class);
 
         if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
         {
