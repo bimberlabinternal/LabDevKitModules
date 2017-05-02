@@ -10,6 +10,10 @@ Ext4.define('LDK.field.ExpDataField', {
     },
 
     onRender : function(ct, position){
+        Ext4.applyIf({
+            helpPopup: 'Enter the ID of the data object into this field and hit the magnifying glass to validate that file.'
+        });
+
         this.callParent(arguments);
 
         this.wrap = this.inputEl.wrap({

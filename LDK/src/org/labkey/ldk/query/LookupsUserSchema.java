@@ -120,7 +120,7 @@ public class LookupsUserSchema extends SimpleUserSchema
 
         if (LDKSchema.TABLE_LOOKUP_SETS.equalsIgnoreCase(name))
         {
-            ContainerScopedTable ret = new ContainerScopedTable(this, createSourceTable(name), "setname");
+            ContainerScopedTable ret = new ContainerScopedTable<>(this, createSourceTable(name), "setname");
             ret.addPermissionMapping(InsertPermission.class, AdminPermission.class);
             ret.addPermissionMapping(UpdatePermission.class, AdminPermission.class);
             ret.addPermissionMapping(DeletePermission.class, AdminPermission.class);

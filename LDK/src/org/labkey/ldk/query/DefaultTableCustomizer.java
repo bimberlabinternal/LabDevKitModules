@@ -37,6 +37,7 @@ import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.study.assay.AssayResultTable;
 import org.labkey.api.util.StringExpression;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
@@ -279,7 +280,7 @@ public class DefaultTableCustomizer implements TableCustomizer
         //Reset default text back to 'Import Data', since this button does both single/bulk import
         if (ti.getImportDataURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL && !hasImportDataBtn(cfg))
         {
-            BuiltInButtonConfig importBtn = new BuiltInButtonConfig("Import Bulk Data", "Import Data");
+            BuiltInButtonConfig importBtn = new BuiltInButtonConfig("Import" + (ti instanceof AssayResultTable ? "" : " Bulk") + " Data", "Import Data");
             if (ti.getDeleteURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL)
                 importBtn.setInsertBefore("Delete");
             else

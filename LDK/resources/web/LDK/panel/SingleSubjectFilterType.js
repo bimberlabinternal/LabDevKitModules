@@ -63,7 +63,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         if(tab.report)
             subjectFieldName= tab.report.subjectFieldName;
         if (!subjectFieldName) {
-            return;
+            return filterArray;
         }
 
         if (filters && filters.length) {
