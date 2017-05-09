@@ -307,9 +307,6 @@ cnprcEHRModules/cnprc_pdl/src/org/labkey/cnprc_pdl/CNPRC_PDLContainerListener.ja
 cnprcEHRModules/cnprc_pdl/src/org/labkey/cnprc_pdl/CNPRC_PDLController.java -text
 cnprcEHRModules/cnprc_pdl/src/org/labkey/cnprc_pdl/CNPRC_PDLModule.java -text
 cnprcEHRModules/cnprc_pdl/src/org/labkey/cnprc_pdl/CNPRC_PDLSchema.java -text
-/externalModules.iml -text
-labModules/LDK/LDK-API.iml -text
-labModules/LDK/LDK.iml -text
 labModules/LDK/api-src/org/labkey/api/ldk/ExtendedSimpleModule.java -text
 labModules/LDK/api-src/org/labkey/api/ldk/LDKService.java -text
 labModules/LDK/api-src/org/labkey/api/ldk/notification/AbstractNotification.java -text
@@ -516,8 +513,6 @@ labModules/LDK/tools/installLabKeyPipeline.sh -text
 labModules/LDK/tools/naturalize/naturalize.cs -text
 labModules/LDK/tools/server/tomcat_log_cleanup.sh -text
 labModules/build.gradle -text
-labModules/laboratory/Laboratory-API.iml -text
-labModules/laboratory/Laboratory.iml -text
 labModules/laboratory/api-src/org/labkey/api/laboratory/AbstractImportingNavItem.java -text
 labModules/laboratory/api-src/org/labkey/api/laboratory/AbstractQueryNavItem.java -text
 labModules/laboratory/api-src/org/labkey/api/laboratory/AbstractUrlNavItem.java -text
@@ -1523,7 +1518,6 @@ onprcEHRModules/treatmentETL/resources/queries/study/dateRangedata.sql -text
 onprcEHRModules/treatmentETL/resources/queries/study/treatmentScheduleUpdate.sql -text
 onprcEHRModules/treatmentETL/resources/queries/study/treatmenttodrug.sql -text
 snprcEHRModules/build.gradle -text
-snprcEHRModules/snprc_genetics/SNPRC_Genetics.iml -text
 snprcEHRModules/snprc_genetics/build.gradle -text
 snprcEHRModules/snprc_genetics/module.properties -text
 snprcEHRModules/snprc_genetics/resources/queries/assay/General/Gene[!!-~]Expression/Data.query.xml -text
