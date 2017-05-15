@@ -1,4 +1,5 @@
 <tables xmlns="http://labkey.org/data/xml">
+    <description>Utility tables to make query authoring easier</description>
     <table tableName="metrics" tableDbType="TABLE">
         <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
         <columns>
@@ -22,6 +23,7 @@
         </columns>
     </table>
     <table tableName="integers" tableDbType="TABLE">
+        <description>Values 0-1000, inclusive</description>
         <columns>
             <column columnName="value"/>
         </columns>
@@ -103,6 +105,7 @@
         </columns>
     </table>
     <table tableName="daysOfWeek" tableDbType="TABLE" hidden="false">
+        <description>Full names for the days of the week. 1-indexed, with Sunday as the first day</description>
         <tableTitle>Days Of The Week</tableTitle>
         <importUrl></importUrl>
         <insertUrl></insertUrl>
@@ -115,6 +118,7 @@
         </columns>
     </table>
     <table tableName="months" tableDbType="TABLE" useColumnOrder="true">
+        <description>Full text names of the months. 1-indexed, starting with January.</description>
         <tableTitle>Months</tableTitle>
         <importUrl></importUrl>
         <insertUrl></insertUrl>

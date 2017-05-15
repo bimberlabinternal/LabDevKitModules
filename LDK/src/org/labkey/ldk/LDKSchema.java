@@ -20,10 +20,8 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.dialect.SqlDialect;
 
 /**
- * Created by IntelliJ IDEA.
  * User: bbimber
  * Date: 7/14/12
- * Time: 9:10 AM
  */
 public class LDKSchema
 {
