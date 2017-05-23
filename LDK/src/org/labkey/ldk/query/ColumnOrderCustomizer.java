@@ -1,29 +1,22 @@
 package org.labkey.ldk.query;
 
-import org.apache.log4j.Logger;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 2/1/13
- * Time: 7:11 AM
  */
 public class ColumnOrderCustomizer implements TableCustomizer
 {
-    private static final Logger _log = Logger.getLogger(TableCustomizer.class);
-
     public ColumnOrderCustomizer()
     {
-
     }
 
     public void customize(TableInfo table)
@@ -47,7 +40,7 @@ public class ColumnOrderCustomizer implements TableCustomizer
         // put calculated columns at the end
         // respect the original sort order for non-calculated
         // alphabetize calculated columns
-        Collections.sort(columns, new Comparator<ColumnInfo>()
+        columns.sort(new Comparator<ColumnInfo>()
         {
             @Override
             public int compare(ColumnInfo o1, ColumnInfo o2)

@@ -490,14 +490,7 @@ public class LDKController extends SpringActionController
                 ret.add(map);
             }
 
-            Collections.sort(ret, new Comparator<Map<String, String>>()
-            {
-                @Override
-                public int compare(Map<String, String> o1, Map<String, String> o2)
-                {
-                    return o1.get("name").compareTo(o2.get("name"));
-                }
-            });
+            ret.sort(Comparator.comparing(o -> o.get("name")));
 
             result.put("subscriptions", ret);
             result.put("success", true);

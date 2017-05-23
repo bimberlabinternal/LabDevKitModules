@@ -66,8 +66,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -76,10 +74,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- * Created by IntelliJ IDEA.
  * User: bbimber
  * Date: 8/4/12
- * Time: 4:02 PM
  */
 public class SiteSummaryNotification implements Notification
 {
@@ -600,11 +596,7 @@ public class SiteSummaryNotification implements Notification
         msg.append("Top " + maxLists + " Lists By Size:<br>");
 
         List<Map.Entry<ListDefinition, Long>> list = new ArrayList<>(listMap.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<ListDefinition, Long>>() {
-            public int compare(Map.Entry<ListDefinition, Long> e1, Map.Entry<ListDefinition, Long> e2) {
-                return e2.getValue().compareTo(e1.getValue());
-            }
-        });
+        list.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
         msg.append("<table border=1 style='border-collapse: collapse;'>");
         msg.append("<tr style='font-weight:bold;'><td>Table Name</td><td>Container Path</td><td># of Rows</td><td>Previous Value</td><td>% Change</td></tr>");
