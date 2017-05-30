@@ -1,0 +1,54 @@
+<script type="text/javascript">
+
+    Ext4.onReady(function(){
+        var webpart = <%=webpartContext%>;
+
+        Ext4.Msg.wait('Loading...');
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL('ldk', 'getRedirectUrl'),
+            scope: this,
+            success: LABKEY.Utils.getCallbackWrapper(function(results){
+                Ext4.Msg.hide();
+
+                Ext4.create('Ext.form.Panel', {
+                    border: false,
+                    bodyStyle: 'padding: 5px;',
+                    items: [{
+                        html: 'Use the form below to provide a redirect URL for this folder.  If set, non-admin users will be redirected to this page when they load this folder.',
+                        style: 'padding-bottom: 10px;',
+                        border: false
+                    },{
+                        xtype: 'textfield',
+                        fieldLabel: 'Redirect URL',
+                        width: 400,
+                        itemId: 'urlField',
+                        value: results.url
+                    }],
+                    buttonAlign: 'left',
+                    buttons: [{
+                        text: 'Submit',
+                        handler: function(btn){
+                            var val = btn.up('form').down('#urlField').getValue();
+                            if (!val){
+                                Ext4.Msg.alert('Error', 'Must provide a URL');
+                                return;
+                            }
+
+                            Ext4.Msg.wait('Saving...');
+                            LABKEY.Ajax.request({
+                                url: LABKEY.ActionURL.buildURL('ldk', 'setRedirectUrl', null, {url: val}),
+                                scope: this,
+                                success: function(){
+                                    Ext4.Msg.hide();
+                                },
+                                error: LDK.Utils.getErrorCallback()
+                            });
+                        }
+                    }]
+                }).render(webpart.wrapperDivId);
+            }, this),
+            error: LDK.Utils.getErrorCallback()
+        });
+    });
+
+</script>

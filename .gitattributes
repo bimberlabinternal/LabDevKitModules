@@ -309,6 +309,7 @@ labModules/LDK/api-src/org/labkey/api/ldk/notification/NotificationService.java 
 labModules/LDK/build.gradle -text
 labModules/LDK/module.properties -text
 labModules/LDK/resources/credits/jars.txt -text
+labModules/LDK/resources/folderTypes/Redirecting[!!-~]Folder.folderType.xml -text
 labModules/LDK/resources/module.xml -text
 labModules/LDK/resources/queries/core/DistinctUsersByMonth.sql -text
 labModules/LDK/resources/queries/core/DistinctUsersByMonth/.qview.xml -text
@@ -370,6 +371,9 @@ labModules/LDK/resources/views/notificationSiteAdmin.html -text
 labModules/LDK/resources/views/notificationSiteAdmin.view.xml -text
 labModules/LDK/resources/views/runCustomSql.html -text
 labModules/LDK/resources/views/runCustomSql.view.xml -text
+labModules/LDK/resources/views/setRedirectUrl.html -text
+labModules/LDK/resources/views/setRedirectUrl.view.xml -text
+labModules/LDK/resources/views/setRedirectUrl.webpart.xml -text
 labModules/LDK/resources/views/unitTest.html -text
 labModules/LDK/resources/web/LDK/AssayUtils.js -text
 labModules/LDK/resources/web/LDK/Assert.js -text

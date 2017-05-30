@@ -33,11 +33,14 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSequenceManager;
+import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.Notification;
 import org.labkey.api.ldk.notification.NotificationService;
+import org.labkey.api.module.ModuleHtmlView;
+import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.QueryAction;
 import org.labkey.api.query.QueryException;
@@ -47,6 +50,7 @@ import org.labkey.api.query.QueryView;
 import org.labkey.api.query.QueryWebPart;
 import org.labkey.api.security.CSRF;
 import org.labkey.api.security.PrincipalType;
+import org.labkey.api.security.RequiresNoPermission;
 import org.labkey.api.security.RequiresPermission;
 import org.labkey.api.security.SecurityManager;
 import org.labkey.api.security.User;
@@ -57,15 +61,18 @@ import org.labkey.api.security.permissions.AdminOperationsPermission;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
+import org.labkey.api.settings.AppProps;
 import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.GUID;
+import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.NotFoundException;
 import org.labkey.api.view.Portal;
+import org.labkey.api.view.RedirectException;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.WebPartView;
@@ -78,9 +85,9 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -1492,4 +1499,96 @@ public class LDKController extends SpringActionController
             _targetContainer = targetContainer;
         }
     }
+
+    @RequiresNoPermission
+    public class RedirectStartAction extends SimpleViewAction<Object>
+    {
+        public ModelAndView getView(Object form, BindException errors) throws Exception
+        {
+            if (getContainer().hasPermission(getUser(), AdminPermission.class))
+            {
+                return ModuleHtmlView.get(ModuleLoader.getInstance().getModule(LDKModule.class), Path.parse("/views/setRedirectUrl.html"));
+            }
+            else
+            {
+                String urlString = PropertyManager.getProperties(getContainer(), REDIRECT_URL_DOMAIN).get(REDIRECT_URL_PROP);
+                if (urlString == null)
+                {
+                    return new HtmlView("This folder is only visible to admins");
+                }
+                else
+                {
+                    try
+                    {
+                        URLHelper url = new URLHelper(urlString);
+                        Path path = url.getParsedPath();
+                        if (path.startsWith(AppProps.getInstance().getParsedContextPath()))
+                            path = path.subpath(1, path.size());
+
+                        throw new RedirectException(AppProps.getInstance().getParsedContextPath() + path.toString(null, null));
+                    }
+                    catch (URISyntaxException e)
+                    {
+                        return new HtmlView("Invalid redirect URL set: " + urlString);
+                    }
+                }
+            }
+        }
+
+        public NavTree appendNavTrail(NavTree root)
+        {
+            return root.addChild("Home");
+        }
+    }
+
+    public static final String REDIRECT_URL_DOMAIN = "org.labkey.ldk.redirectSettings";
+    public static final String REDIRECT_URL_PROP = "redirectURL";
+
+    @RequiresPermission(AdminPermission.class)
+    @CSRF
+    public class SetRedirectUrlAction extends ApiAction<SetRedirectUrlForm>
+    {
+        @Override
+        public ApiResponse execute(SetRedirectUrlForm form, BindException errors) throws Exception
+        {
+            if (StringUtils.isEmpty(form.getUrl()))
+            {
+                errors.reject(ERROR_MSG, "No URL Provided");
+                return null;
+            }
+
+            PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(getContainer(), REDIRECT_URL_DOMAIN, true);
+            props.put(REDIRECT_URL_PROP, StringUtils.trimToNull(form.getUrl()));
+            props.save();
+
+            return new ApiSimpleResponse("success", true);
+        }
+    }
+
+    public static class SetRedirectUrlForm
+    {
+        String _url;
+
+        public String getUrl()
+        {
+            return _url;
+        }
+
+        public void setUrl(String url)
+        {
+            _url = url;
+        }
+    }
+
+    @RequiresPermission(AdminPermission.class)
+    @CSRF
+    public class GetRedirectUrlAction extends ApiAction<Object>
+    {
+        @Override
+        public ApiResponse execute(Object form, BindException errors) throws Exception
+        {
+            return new ApiSimpleResponse("url", PropertyManager.getProperties(getContainer(), REDIRECT_URL_DOMAIN).get(REDIRECT_URL_PROP));
+        }
+    }
+
 }

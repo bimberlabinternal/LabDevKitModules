@@ -1,0 +1,24 @@
+<folderType xmlns="http://labkey.org/data/xml/folderType">
+    <name>Redirecting Folder</name>
+    <description>This folder type was designed to be used to prevent non-admin users from inadvertently viewing certain site folders, such as /support or /home.  The admin can set a custom redirect URL, and non-admins will be transferred to this page.</description>
+    <startURL>ldk-redirectStart.view</startURL>
+    <folderTabs>
+        <folderTab>
+            <name>overview</name>
+            <caption>Overview</caption>
+            <requiredWebParts>
+
+            </requiredWebParts>
+            <preferredWebParts>
+                <webPart>
+                    <name>Set Redirect Url</name>
+                    <location>body</location>
+                </webPart>
+            </preferredWebParts>
+        </folderTab>
+    </folderTabs>
+    <modules>
+        <moduleName>LDK</moduleName>
+    </modules>
+    <defaultModule>Core</defaultModule>
+</folderType>

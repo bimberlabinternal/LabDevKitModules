@@ -275,7 +275,7 @@ public class DefaultTableCustomizer implements TableCustomizer
             }
         }
 
-        configureMoreActionsBtn(ti, buttons, cfg, scripts);
+        boolean hasMoreActions = configureMoreActionsBtn(ti, buttons, cfg, scripts);
 
         //Reset default text back to 'Import Data', since this button does both single/bulk import
         if (ti.getImportDataURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL && !hasImportDataBtn(cfg))
@@ -292,7 +292,8 @@ public class DefaultTableCustomizer implements TableCustomizer
         }
 
         cfg.setScriptIncludes(scripts.toArray(new String[scripts.size()]));
-        cfg.setAlwaysShowRecordSelectors(true);
+        if (hasMoreActions)
+            cfg.setAlwaysShowRecordSelectors(true);
 
         ti.setButtonBarConfig(cfg);
     }
@@ -323,11 +324,11 @@ public class DefaultTableCustomizer implements TableCustomizer
         return false;
     }
 
-    private static void configureMoreActionsBtn(TableInfo ti, List<ButtonConfigFactory> buttons, ButtonBarConfig cfg, Set<String> scripts)
+    private static boolean configureMoreActionsBtn(TableInfo ti, List<ButtonConfigFactory> buttons, ButtonBarConfig cfg, Set<String> scripts)
     {
         if (buttons == null || buttons.isEmpty())
         {
-            return;
+            return false;
         }
 
         List<ButtonConfig> existingBtns = cfg.getItems();
@@ -352,7 +353,7 @@ public class DefaultTableCustomizer implements TableCustomizer
         {
             //abort if there are no custom buttons
             if (buttons.size() == 0)
-                return;
+                return false;
 
             moreActionsBtn = new UserDefinedButtonConfig();
             moreActionsBtn.setText(MORE_ACTIONS);
@@ -388,5 +389,7 @@ public class DefaultTableCustomizer implements TableCustomizer
         }
 
         moreActionsBtn.setMenuItems(menuItems);
+
+        return true;
     }
 }
