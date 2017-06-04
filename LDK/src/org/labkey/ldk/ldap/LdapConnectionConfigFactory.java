@@ -1,13 +1,10 @@
 package org.labkey.ldk.ldap;
 
-import com.sun.jndi.url.ldap.ldapURLContextFactory;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 
-import javax.naming.ConfigurationException;
 import javax.naming.Context;
 import javax.naming.Name;
-import javax.naming.NamingException;
 import javax.naming.RefAddr;
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
