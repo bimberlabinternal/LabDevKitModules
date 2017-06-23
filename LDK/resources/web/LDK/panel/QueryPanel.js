@@ -42,8 +42,8 @@ Ext4.define('LDK.panel.QueryPanel', {
         var success = qwpConfig.success;
         var scope = qwpConfig.scope;
         qwpConfig.success = Ext4.Function.pass(function(callback, scope, dr, response){
-            var width = Ext4.get(dr.domId).getSize().width + 60;
-            var existingWidth = this.getWidth();
+            var width = Ext4.get(dr.domId) ? Ext4.get(dr.domId).getSize().width + 60 : 860;
+            var existingWidth = (this && Ext4.isFunction(this.getWidth) && this.el) ? this.getWidth() : width;
             if (width > existingWidth){
                 this.setWidth(width);
             }
