@@ -26,7 +26,6 @@
 Ext4.define('LDK.panel.WebpartPanel', {
     extend: 'Ext.container.Container',
     alias: 'widget.ldk-webpartpanel',
-    layout: 'webpart',
 
     initComponent: function(){
         this.renderData = this.renderData || {};
@@ -35,22 +34,23 @@ Ext4.define('LDK.panel.WebpartPanel', {
 
         Ext4.apply(this, {
             renderTpl: [
-                '<div id="{id}-body" class="ldk-wp">',
-                    '<table id="{id}-table" class="labkey-wp"><tbody>',
-                    '<tr class="labkey-wp-header">',
-                    '<th class="labkey-wp-title-left">{title}</th>',
-                    '<th class="labkey-wp-title-right">&nbsp;</th>',
-                    '</tr><tr>',
-                    '<td colspan=2 class="labkey-wp-body">',
-                        '<div id="{id}-innerDiv">',
-                        '{%this.renderContainer(out,values);%}',
-                        '</div>',
-                    '</td></tr></tbody></table>',
+                '<div name="webpart" id="{id}-body" class="labkey-portal-container">',
+                '<div class="panel panel-portal">',
+                '<div class="panel-heading clearfix">',
+                    '<h3 class="panel-title pull-left" title="{title}">',
+                        '<a name="{title}" class="labkey-anchor-disabled">',
+                            '<span class="labkey-wp-title-text">{title}</span>',
+                        '</a>',
+                    '</h3>',
+                    ' ',
+                '</div>',
+                '<div class="panel-body" id="{id}-innerDiv">',
+                    '{%this.renderContainer(out,values);%}',
+                '</div>',
+                '</div>',
                 '</div>'
-                //for some reason having this el causes issues w/ IE8
-                //'<div id="{id}-clearEl" class="', Ext4.baseCSSPrefix, 'clear" role="presentation"></div>',
             ],
-            childEls: ['table', 'innerDiv']
+            childEls: ['innerDiv']
         });
 
         this.callParent();
@@ -58,24 +58,5 @@ Ext4.define('LDK.panel.WebpartPanel', {
 
     getTargetEl: function() {
         return this.innerDiv;
-    }
-});
-
-/**
- * Slightly ugly.  Ext will not normally consider the WP borders when calculating layout.  Therefore
- * we override that calculation here and add an additional 50px;
- */
-Ext4.define('LDK.layout.container.WebPart', {
-    extend: 'Ext.layout.container.Auto',
-    alias: 'layout.webpart',
-
-    calculateContentSize: function (ownerContext, dimensions) {
-        var orig = ownerContext.getProp('contentHeight');
-        this.callParent(arguments);
-        var height = ownerContext.getProp('contentHeight');
-        //only append the extra padding if height changes
-        if (orig != height){
-            ownerContext.setProp('contentHeight', height + 50);
-        }
     }
 });
