@@ -33,7 +33,8 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         toAdd.push({
             width: 200,
             html: 'Enter ' + this.nounSingular + (Ext4.isDefined(this.multiSearchText)?
-                    this.multiSearchText:' IDs:<br><i>(Separated by commas, semicolons, space or line breaks)</i>')
+                    this.multiSearchText:' IDs:<br><div style="width: 175px;"><i>(Separated ' +
+                    'by commas, semicolons, space or line breaks)</i></div>')
         });
 
         toAdd.push({

@@ -45,6 +45,8 @@ Ext4.define('LDK.panel.NavPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ldk-navpanel',
 
+    autoResize: false,
+
     statics: {
         ITEM_STYLE_DEFAULT: 'padding: 2px;background-color: transparent;',
         ITEM_DEFAULTS: {
