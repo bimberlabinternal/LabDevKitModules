@@ -622,6 +622,16 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     displayReport: function(tab){
+        // If we have a status to show the user to help set expectations, display it at the top
+        if (tab.report.reportStatus) {
+            tab.add({
+                xtype: 'box',
+                html: '<div class="alert alert-warning" role="alert">Report Status: <strong>'
+                + Ext4.util.Format.htmlEncode(tab.report.reportStatus)
+                + '</strong></div>'
+            });
+        }
+
         switch (tab.report.reportType){
             case 'query':
                 this.loadQuery(tab);
