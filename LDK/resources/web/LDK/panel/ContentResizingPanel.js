@@ -46,19 +46,25 @@ Ext4.define('LDK.panel.ContentResizingPanel', {
         }
     },
 
-    createListeners: function(){
+    createListeners: function(isRetry){
         this.doLayout();
+
+        var el = Ext4.get(this.renderTarget);
+        if (!Ext4.isDefined(el) && !isRetry){
+            Ext4.defer(this.createListeners, 250, this, [true]);
+            return;
+        }
+
         if (Ext4.isIE){
             var panel = this;
-            var el = Ext4.get(this.renderTarget);
-            if (!el){
-                Ext4.defer(this.createListeners, 250, this);
+
+            el = el.query('*[name="webpart"]')[0];
+            if (!Ext4.isDefined(el) && !isRetry){
+                Ext4.defer(this.createListeners, 250, this, [true]);
                 return;
             }
 
-            el = el.query('table[name="webpart"]')[0];
-            if (!el){
-                Ext4.defer(this.createListeners, 250, this);
+            if (!el && isRetry) {
                 return;
             }
 
@@ -80,10 +86,25 @@ Ext4.define('LDK.panel.ContentResizingPanel', {
                 });
             }
         }
-        else {
-            Ext4.get(this.renderTarget).on('DOMSubtreeModified', function(){
+        else if (Ext4.isDefined(el)) {
+            el.on('DOMSubtreeModified', function(){
                 this.fireEvent('contentsizechange');
             }, this);
+
+            // Issue 31454: if the output has a clickable labkey-wp-header, also listen for that event
+            Ext4.each(el.query('.labkey-wp-header'), function(wpHeader) {
+                Ext4.get(wpHeader).on('click', function(){
+                    this.fireEvent('contentsizechange');
+                }, this);
+            }, this);
         }
+    },
+
+    getWidth: function() {
+        var el = Ext4.get(this.renderTarget);
+        if (Ext4.isDefined(el)) {
+            return el.getWidth();
+        }
+        return this.callParent();
     }
 });
