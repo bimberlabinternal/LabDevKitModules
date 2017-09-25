@@ -20,7 +20,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     showDiscvrLink: true,
     subjectColumns: 8,
     subjectMaxRows: 9,
-    rowHeight: 22,
+    rowHeight: 26,
 
     btnPanelPrefix: 'btnPanel',
     totalPanelPrefix: 'totalPanel',
@@ -98,6 +98,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             },{
                 xtype: 'tabpanel',
                 itemId: 'tabPanel',
+                minWidth: this.minWidth,
                 listeners: {
                     scope: this,
                     tabchange: this.onCategoryTabChange,
@@ -602,6 +603,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             var parentTab = this.activeReport.up('tabpanel');
             tabPanel.setActiveTab(parentTab);
             parentTab.setActiveTab(this.activeReport);
+            this.doResize(this.originalWidth, true);
             this.loadTab(this.activeReport);
         }
         else {
@@ -626,9 +628,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         if (tab.report.reportStatus) {
             tab.add({
                 xtype: 'box',
+                itemId: 'reportStatus',
                 html: '<div class="alert alert-warning" role="alert">Report Status: <strong>'
-                + Ext4.util.Format.htmlEncode(tab.report.reportStatus)
-                + '</strong></div>'
+                    + Ext4.util.Format.htmlEncode(tab.report.reportStatus)
+                    + '</strong></div>'
             });
         }
 
@@ -735,35 +738,36 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     onDataRegionLoad: function(dr){
-        var itemWidth = Ext4.get(dr.domId).getSize().width + 150;
-        this.doResize(itemWidth);
+        var domEl = Ext4.get(dr.domId);
+        if (domEl) {
+            var itemWidth = Ext4.get(dr.domId).getWidth() + 50;
+            this.doResize(itemWidth);
+        }
         LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
     },
 
     onTabChange: function(tab){
         if (tab.items.getCount()){
-            var item = tab.items.get(0);
-            if (item.onContentSizeChange){
-                item.onContentSizeChange();
+            var width = 0;
+            for (var i = 0; i < tab.items.getCount(); i++) {
+                var item = tab.items.get(i);
+                if (item.itemId != 'reportStatus') {
+                    if (item.onContentSizeChange){
+                        item.onContentSizeChange();
+                    }
+                    width = Math.max(width, item.getWidth());
+                }
             }
 
-            var width = item.getWidth();
             this.doResize(width);
         }
         LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
     },
 
-    doResize: function(itemWidth){
-        var width2 = this.getWidth();
-        if (itemWidth > width2){
+    doResize: function(itemWidth, forceResize){
+        if (forceResize || this.getWidth() < itemWidth) {
             this.setWidth(itemWidth);
             this.doLayout();
-        }
-        else if (itemWidth < width2) {
-            if (this.originalWidth && width2 != this.originalWidth){
-                this.setWidth(Math.max(this.originalWidth, itemWidth));
-                this.doLayout();
-            }
         }
     },
 
@@ -829,6 +833,16 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             success: function(result){
                 target.unmask();
                 Ext4.defer(target.createListeners, 200, target);
+
+                // Issue 31454: resize the tab panel width based on the report's rendered output
+                if (target.getEl()) {
+                    target.on('resize', function() {
+                        Ext4.each(target.getEl().query('.labkey-output'), function(el) {
+                            this.doResize(Ext4.get(el).getWidth() + 33);
+                        }, this);
+                    }, this, {delay: 200, single: true});
+                }
+
                 LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
             },
             failure: LDK.Utils.getErrorCallback(),
@@ -1087,7 +1101,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             if (!tabPanel.down('panel[itemId="' + category + '"]')){
                 tabPanel.add({
                     xtype: 'tabpanel',
-                    style: 'margin-bottom: 10px;',
+                    border: false,
                     itemId: category,
                     title: category,
                     enableTabScroll: true,
@@ -1096,8 +1110,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                         tabchange: function(panel, tab, oldTab){
                             this.activeReport = tab;
                             this.silentlySetActiveTab(this.activeReport);
-                            //jQuery(".report-tab-bar").removeClass("report-tab-bar");
-                            //panel.getTabBar().addCls("report-tab-bar");
+                            this.doResize(this.originalWidth, true);
                             this.onSubmit();
                         },
                         added: function(panel) {
@@ -1114,16 +1127,22 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             if (!subTab.down('panel[itemId="' + reportId + '"]')){
                 var theTab = subTab.add({
                     xtype: 'panel',
-                    style: 'margin-bottom: 10px;',
                     title: report.label,
                     itemId: reportId,
                     report: report,
-                    bodyStyle:'padding:5px',
+                    padding: '10px 0',
                     border: false,
                     subjectArray: [],
                     filterArray: {},
-                    tbar: {
-                        style: 'padding-left:10px'
+                    listeners: {
+                        scope: this,
+                        add: function(panel, component) {
+                            // make sure any query web part being added has a chance to resize the panel
+                            if (Ext4.isObject(component.queryConfig) && !Ext4.isFunction(component.queryConfig.success)) {
+                                component.queryConfig.scope = this;
+                                component.queryConfig.success = this.onDataRegionLoad;
+                            }
+                        }
                     }
                 });
 
