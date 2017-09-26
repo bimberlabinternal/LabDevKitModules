@@ -77,6 +77,7 @@ Ext4.define('LDK.panel.MultiRecordDetailsPanel', {
             Ext4.applyIf(config, {
                 allowChooseQuery: false,
                 allowChooseView: true,
+                showReports: false,
                 showInsertNewButton: false,
                 showDeleteButton: false,
                 showDetailsColumn: true,
@@ -93,7 +94,7 @@ Ext4.define('LDK.panel.MultiRecordDetailsPanel', {
             }
 
             this.add({
-                xtype: 'ldk-querypanel',
+                xtype: 'ldk-querycmp',
                 queryConfig: config
             });
         }

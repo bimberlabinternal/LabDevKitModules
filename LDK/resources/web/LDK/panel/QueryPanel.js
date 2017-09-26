@@ -1,27 +1,13 @@
 /**
- * Experimental.  This is designed to simplify the process of rendering a QWP in an Ext4 panel, since the panel will not normally
+ * This is designed to simplify the process of rendering a QWP in an Ext4 panel, since the panel will not normally
  * resize itself to accommodate the QWP.  It also defers loading the QWP until after the panel is rendered, which can be convenient since
  * the QWP will fail unless the target element is actually present.  See LDK.panel.ContentResizingPanel for additional information.
  *
  * @cfg queryConfig A config object passed directly to create the QWP
  */
-Ext4.define('LDK.panel.QueryPanel', {
-    extend: 'LDK.panel.ContentResizingPanel',
-    alias: 'widget.ldk-querypanel',
-    divPrefix: 'queryPanel',
 
-    initComponent: function(){
-        Ext4.apply(this, {
-            minHeight: 20,
-            listeners: {
-                scope: this,
-                afterrender: this.loadQuery
-            }
-        });
-
-        this.callParent(arguments);
-    },
-
+// The mixin defines the functionality to be used by both the Panel and Component versions below.
+Ext4.define('LDK.mixin.Query', {
     loadQuery: function(){
         var panel = this;
         if(panel.qwp){
@@ -60,5 +46,59 @@ Ext4.define('LDK.panel.QueryPanel', {
             panel.on('afterrender', panel.createListeners, panel, {single: true});
 
         panel.qwp = LDK.Utils.getBasicQWP(qwpConfig);
+    }
+});
+
+Ext4.define('LDK.panel.QueryPanel', {
+    extend: 'LDK.panel.ContentResizingPanel',
+    alias: 'widget.ldk-querypanel',
+    divPrefix: 'queryPanel',
+
+    mixins: {
+        helper: 'LDK.mixin.Query'
+    },
+
+    constructor: function(config){
+        this.mixins.helper.constructor.apply(this, arguments);
+        this.callParent([config]);
+    },
+
+    initComponent: function(){
+        Ext4.apply(this, {
+            minHeight: 20,
+            listeners: {
+                scope: this,
+                afterrender: this.loadQuery
+            }
+        });
+
+        this.callParent(arguments);
+    }
+});
+
+Ext4.define('LDK.cmp.QueryComponent', {
+    extend: 'LDK.cmp.ContentResizingComponent',
+    alias: 'widget.ldk-querycmp',
+    divPrefix: 'queryComponent',
+
+    mixins: {
+        helper: 'LDK.mixin.Query'
+    },
+
+    constructor: function(config){
+        this.mixins.helper.constructor.apply(this, arguments);
+        this.callParent([config]);
+    },
+
+    initComponent: function(){
+        Ext4.apply(this, {
+            minHeight: 20,
+            listeners: {
+                scope: this,
+                afterrender: this.loadQuery
+            }
+        });
+
+        this.callParent(arguments);
     }
 });

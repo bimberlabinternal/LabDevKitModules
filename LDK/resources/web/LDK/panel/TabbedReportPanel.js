@@ -98,7 +98,8 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             },{
                 xtype: 'tabpanel',
                 itemId: 'tabPanel',
-                minWidth: this.minWidth,
+                minWidth: this.minTabWidth,
+                minHeight: this.minTabHeight,
                 listeners: {
                     scope: this,
                     tabchange: this.onCategoryTabChange,
@@ -731,7 +732,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
 
         tab.add({
-            xtype: 'ldk-querypanel',
+            xtype: 'ldk-querycmp',
             itemId: 'queryPanel',
             queryConfig: queryConfig
         });

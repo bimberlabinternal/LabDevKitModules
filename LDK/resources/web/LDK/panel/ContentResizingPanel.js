@@ -1,33 +1,17 @@
 /**
  * This is designed to help with the problem of rendering dynamic content into Ext4 panels.  It's a little ugly, but this
- * panel provides a div into which you render the webpart or report.  On load, it will listen for that element's DOMSubtreeModified
+ * component provides a div into which you render the webpart or report.  On load, it will listen for that element's DOMSubtreeModified/DOMNodeInserted
  * event, and resize the Ext containers if needed.  It attempts to batch these events and only actually trigger a layout when a resize
  * is needed.
  *
- * NOTE: this currently handles the problem by adding DOMSubtreeModified listeners and manually resizing on change.
+ * NOTE: this currently handles the problem by adding DOMSubtreeModified/DOMNodeInserted listeners and manually resizing on change.
  * A more elegant solution would be to dig into Ext's layout engine and make a custom layout that will
  * auto-size itself based on the width of our target element.  We'd need to override the methods that calculate weight and height.
  * Figuring that out will make WebPartPanel work better too.
  */
-Ext4.define('LDK.panel.ContentResizingPanel', {
-    extend: 'Ext.panel.Panel', //note: extending panel is required
-    alias: 'widget.ldk-contentresizingpanel',
-    divPrefix: 'contentPanel',
 
-    initComponent: function(){
-        this.renderTarget = this.divPrefix + '-' + Ext4.id();
-
-        Ext4.apply(this, {
-            border: false,
-            html: '<div class="ldk-wp" id="'+this.renderTarget+'"></div>'
-        });
-
-        this.callParent(arguments);
-
-        this.addEvents('contentsizechange');
-        this.on('contentsizechange', this.onContentSizeChange, this, {buffer: 200});
-        this.on('afterrender', this.onAfterPanelRender, this);
-    },
+// The mixin defines the functionality to be used by both the Panel and Component versions below.
+Ext4.define('LDK.mixin.ContentResizing', {
 
     onAfterPanelRender: function() {
         // Room for horizontal scrollbar
@@ -39,15 +23,16 @@ Ext4.define('LDK.panel.ContentResizingPanel', {
     onContentSizeChange: function(){
         var el = Ext4.get(this.renderTarget);
         var size = el.getSize();
-        var mySize = this.previousSize || this.body.getSize();
-        if (mySize.height != size.height || mySize.width != size.width){
+        if (!Ext4.isDefined(this.previousSize) || this.previousSize.height != size.height || this.previousSize.width != size.width){
             this.setSize(size);
             this.previousSize = size;
         }
     },
 
     createListeners: function(isRetry){
-        this.doLayout();
+        if (this.doLayout) {
+            this.doLayout();
+        }
 
         var el = Ext4.get(this.renderTarget);
         if (!Ext4.isDefined(el) && !isRetry){
@@ -56,7 +41,7 @@ Ext4.define('LDK.panel.ContentResizingPanel', {
         }
 
         if (Ext4.isIE){
-            var panel = this;
+            var cmp = this;
 
             el = el.query('*[name="webpart"]')[0];
             if (!Ext4.isDefined(el) && !isRetry){
@@ -70,12 +55,12 @@ Ext4.define('LDK.panel.ContentResizingPanel', {
 
             if (el.addEventListener){
                 el.addEventListener('DOMSubtreeModified', function(){
-                    panel.fireEvent('contentsizechange');
+                    cmp.fireEvent('contentsizechange');
                 }, false);
             }
             else if (el.attachEvent){
                 el.attachEvent('DOMSubtreeModified', function(){
-                    panel.fireEvent('contentsizechange');
+                    cmp.fireEvent('contentsizechange');
                 });
             }
             else {
@@ -87,7 +72,7 @@ Ext4.define('LDK.panel.ContentResizingPanel', {
             }
         }
         else if (Ext4.isDefined(el)) {
-            el.on('DOMSubtreeModified', function(){
+            el.on('DOMNodeInserted', function(){
                 this.fireEvent('contentsizechange');
             }, this);
 
@@ -100,11 +85,79 @@ Ext4.define('LDK.panel.ContentResizingPanel', {
         }
     },
 
+    getHeight: function() {
+        var el = Ext4.get(this.renderTarget);
+        if (Ext4.isDefined(el)) {
+            return el.getHeight();
+        }
+        return this.callParent();
+    },
+
     getWidth: function() {
         var el = Ext4.get(this.renderTarget);
         if (Ext4.isDefined(el)) {
             return el.getWidth();
         }
         return this.callParent();
+    }
+});
+
+Ext4.define('LDK.panel.ContentResizingPanel', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.ldk-contentresizingpanel',
+    divPrefix: 'contentPanel',
+
+    mixins: {
+        helper: 'LDK.mixin.ContentResizing'
+    },
+
+    constructor: function(config){
+        this.mixins.helper.constructor.apply(this, arguments);
+        this.callParent([config]);
+    },
+
+    initComponent: function () {
+        this.renderTarget = this.divPrefix + '-' + Ext4.id();
+
+        Ext4.apply(this, {
+            border: false,
+            html: '<div class="ldk-wp" id="' + this.renderTarget + '"></div>'
+        });
+
+        this.callParent(arguments);
+
+        this.addEvents('contentsizechange');
+        this.on('contentsizechange', this.onContentSizeChange, this, {delay: 500, buffer: 500});
+        this.on('afterrender', this.onAfterPanelRender, this);
+    }
+});
+
+Ext4.define('LDK.cmp.ContentResizingComponent', {
+    extend: 'Ext.Component',
+    alias: 'widget.ldk-contentresizingcmp',
+    divPrefix: 'contentComponent',
+
+    mixins: {
+        helper: 'LDK.mixin.ContentResizing'
+    },
+
+    constructor: function(config){
+        this.mixins.helper.constructor.apply(this, arguments);
+        this.callParent([config]);
+    },
+
+    initComponent: function () {
+        this.renderTarget = this.divPrefix + '-' + Ext4.id();
+
+        Ext4.apply(this, {
+            border: false,
+            html: '<div class="ldk-wp" id="' + this.renderTarget + '"></div>'
+        });
+
+        this.callParent(arguments);
+
+        this.addEvents('contentsizechange');
+        this.on('contentsizechange', this.onContentSizeChange, this, {delay: 500, buffer: 500});
+        this.on('afterrender', this.onAfterPanelRender, this);
     }
 });
