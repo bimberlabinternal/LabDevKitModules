@@ -11,7 +11,7 @@
 
 /* provide slight padding around text and headers */
 .ldk-grid .x4-grid-cell {
-    padding: 4px;
+    padding: 4px 0;
 }
 
 .x4-reset .x4-grid-row-focused .x4-grid-cell .labkey-grid-cell-invalid {

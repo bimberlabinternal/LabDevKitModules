@@ -788,6 +788,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
             showInsertNewButton: false,
+            showImportDataButton: false,
             showDeleteButton: false,
             showDetailsColumn: true,
             showUpdateColumn: false
