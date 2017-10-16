@@ -1284,7 +1284,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 }
             }
         }
-        Ext4.History.add(token.join('&'));
+
+        // Since we're not listening for URL navigation events and updating the selected tabs to match, update
+        // the URL with the current set of filters and reports in a way that doesn't add to the browser's history
+        location.replace("#" + token.join('&'));
 
         return filters;
     },
