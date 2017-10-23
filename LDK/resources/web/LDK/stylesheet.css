@@ -25,7 +25,10 @@ span.closeicon {
     height: 15px !important; width: 15px !important;
 }
 
-
+/* For the tabs in TabbedReportPanel */
+.ldk-tabbed-report-panel .x4-tab-default-top {
+    border-bottom: 1px solid transparent;
+}
 
 /* Possibly also add header padding? */
 /*.ldk-grid .x4-column-header {*/

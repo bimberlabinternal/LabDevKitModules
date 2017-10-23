@@ -16,6 +16,7 @@
 Ext4.define('LDK.panel.TabbedReportPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ldk-tabbedreportpanel',
+    cls: 'ldk-tabbed-report-panel',
     allowEditing: true,
     showDiscvrLink: true,
     subjectColumns: 8,
