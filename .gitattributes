@@ -837,9 +837,9 @@ maccoss/SkylineToolsStore/src/org/labkey/skylinetoolsstore/view/SkylineToolSuppl
 maccoss/SkylineToolsStore/src/org/labkey/skylinetoolsstore/view/SkylineToolsStoreUpload.jsp -text
 maccoss/SkylineToolsStore/src/org/labkey/skylinetoolsstore/view/SkylineToolsStoreWebPart.java -text
 maccoss/SkylineToolsStore/src/org/labkey/skylinetoolsstore/view/SkylineToolsStoreWebPart.jsp -text
-maccoss/SkylineToolsStore/test/src/org.labkey.test.tests/ToolStoreRatingsTest.java -text
-maccoss/SkylineToolsStore/test/src/org.labkey.test.tests/ToolStoreTest.java -text
-maccoss/SkylineToolsStore/test/src/org.labkey.test.tests/ToolStoreTestPart.java -text
+maccoss/SkylineToolsStore/test_disabled/src/org.labkey.test.tests/ToolStoreRatingsTest.java -text
+maccoss/SkylineToolsStore/test_disabled/src/org.labkey.test.tests/ToolStoreTest.java -text
+maccoss/SkylineToolsStore/test_disabled/src/org.labkey.test.tests/ToolStoreTestPart.java -text
 maccoss/SkylineToolsStore/webapp/SkylineToolsStore/css/jquery-ui.css -text
 maccoss/SkylineToolsStore/webapp/SkylineToolsStore/img/author.png -text
 maccoss/SkylineToolsStore/webapp/SkylineToolsStore/img/bg.jpg -text
@@ -909,6 +909,7 @@ maccoss/testresults/resources/schemas/dbscripts/postgresql/testresults-13.28-13.
 maccoss/testresults/resources/schemas/dbscripts/postgresql/testresults-13.29-13.30.sql -text
 maccoss/testresults/resources/schemas/dbscripts/postgresql/testresults-13.30-13.31.sql -text
 maccoss/testresults/resources/schemas/dbscripts/postgresql/testresults-13.31-13.32.sql -text
+maccoss/testresults/resources/schemas/dbscripts/postgresql/testresults-13.32-13.33.sql -text
 maccoss/testresults/resources/schemas/dbscripts/sqlserver/testresults-13.20-13.21.sql -text
 maccoss/testresults/resources/schemas/testresults.xml -text
 maccoss/testresults/src/org/labkey/testresults/RunDetail.java -text
