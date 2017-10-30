@@ -18,6 +18,7 @@ package org.labkey.ldk;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.exception.LdapException;
+import org.apache.directory.api.ldap.model.exception.LdapOperationException;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -838,10 +839,26 @@ public class LDKController extends SpringActionController
                 wrapper.connect();
                 resp.put("success", true);
             }
+            catch (LdapOperationException e)
+            {
+                _log.error("unable to connect to LDAP server: " + e.getMessage(), e);
+                if (e.getResultCode() != null)
+                {
+                    _log.error("Result code: " + e.getResultCode().name());
+                }
+
+                if (e.getResolvedDn() != null)
+                {
+                    _log.error("DN: " + e.getResolvedDn().getNormName() + " / " + e.getResolvedDn().getName());
+                }
+
+                errors.reject(ERROR_MSG, e.getMessage() == null ? "unable to connect to LDAP server" : e.getMessage());
+                return null;
+            }
             catch (Exception e)
             {
                 _log.error(e);
-                errors.reject(ERROR_MSG, e.getMessage());
+                errors.reject(ERROR_MSG, e.getMessage() == null ? "unable to connect to LDAP server" : e.getMessage());
                 return null;
             }
             finally

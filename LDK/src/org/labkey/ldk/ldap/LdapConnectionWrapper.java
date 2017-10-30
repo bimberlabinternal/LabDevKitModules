@@ -29,6 +29,7 @@ public class LdapConnectionWrapper
     private LdapConnection _connection = null;
     private LdapSettings _settings;
     private static final Logger _log = Logger.getLogger(LdapConnectionWrapper.class);
+    private boolean doLog = false;
 
     public LdapConnectionWrapper() throws LdapException
     {
@@ -99,6 +100,14 @@ public class LdapConnectionWrapper
         }
     }
 
+    private void possiblyLog(String msg)
+    {
+        if (doLog)
+        {
+            _log.info(msg);
+        }
+    }
+
     public List<LdapEntry> getGroupMembers(String dn) throws LdapException
     {
         ensureConnected();
@@ -107,6 +116,7 @@ public class LdapConnectionWrapper
         {
             String userFilter = _settings.getUserFilterString() == null ? "" : _settings.getUserFilterString();
             String filter = "(&(objectclass=user)(memberOf=" + dn + ")" + userFilter + ")";
+            possiblyLog("LDAP getGroupMembers, searching: " + getUserSearchString() + ", with filter: " + filter);
 
             EntryCursor cursor = _connection.search(getUserSearchString(), filter, SearchScope.SUBTREE, "*");
             List<LdapEntry> users = new ArrayList<>();
@@ -141,6 +151,8 @@ public class LdapConnectionWrapper
 
         try
         {
+            possiblyLog("LDAP getEntry: from " + dn + ", filter: " + filter);
+
             EntryCursor cursor = _connection.search(dn, filter, SearchScope.OBJECT, "*");
             while (cursor.next())
             {
@@ -259,6 +271,8 @@ public class LdapConnectionWrapper
             sb.append(delim).append(base);
         }
 
+        possiblyLog("LDAP group search string: " + sb.toString());
+
         return sb.toString();
     }
 
@@ -280,6 +294,8 @@ public class LdapConnectionWrapper
             sb.append(delim).append(base);
         }
 
+        possiblyLog("LDAP user search string: " + sb.toString());
+
         return sb.toString();
     }
 
@@ -293,5 +309,10 @@ public class LdapConnectionWrapper
         {
 
         }
+    }
+
+    public void setDoLog(boolean doLog)
+    {
+        this.doLog = doLog;
     }
 }

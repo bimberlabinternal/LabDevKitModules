@@ -92,6 +92,10 @@ public class LdapSyncRunner implements Job
 
         _settings.validateSettings();
         _wrapper = new LdapConnectionWrapper();
+        if (_previewOnly)
+        {
+            _wrapper.setDoLog(true);
+        }
 
         try
         {

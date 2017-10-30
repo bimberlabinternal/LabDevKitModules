@@ -1260,7 +1260,6 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     filterHistory: function (tab, filters) {
-
         Ext4.apply(filters, {
             inputType : this.down('#inputType').getValue().selector,
             showReport: 1,
@@ -1279,6 +1278,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 // mean we cannot
                 if (filters[i].length > 200){
                     console.log('param is too long for URL: ' + i + '/' + filters[i].length);
+                }
+                else if (['removable', 'nonRemovable'].indexOf(i) !== -1){
+                    continue;
                 }
                 else {
                     token.push(i + ':' + filters[i]);
