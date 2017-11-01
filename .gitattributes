@@ -894,7 +894,7 @@ maccoss/signup/src/org/labkey/signup/SignUpSchema.java -text
 maccoss/signup/src/org/labkey/signup/TempUser.java -text
 maccoss/signup/src/org/labkey/signup/signupPage.jsp -text
 maccoss/testresults/TestResults.iml -text
-maccoss/testresults/distributions/skyline/build.gradle -text
+maccoss/testresults/distributions_disabled/skyline/build.gradle -text
 maccoss/testresults/lib/deploy -text
 maccoss/testresults/module.properties -text
 maccoss/testresults/resources/schemas/dbscripts/postgresql/testresults-13.20-13.21.sql -text
