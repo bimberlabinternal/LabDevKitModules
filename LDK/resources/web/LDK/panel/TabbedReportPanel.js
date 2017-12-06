@@ -36,6 +36,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     totalMessages: {},
     subjects: {},
     tooltips: {},
+    showFilterOptionsTitle: false,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -56,6 +57,14 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                     defaults: {
                         border: false
                     },
+                    cls: 'ldk-report-filter-options',
+                    title: this.showFilterOptionsTitle ? 'Filter Options' : undefined,
+                    titleCollapse: this.showFilterOptionsTitle,
+                    bodyStyle: this.showFilterOptionsTitle ? 'padding: 5px;' : undefined,
+                    collapsible: this.showFilterOptionsTitle,
+                    minWidth: this.showFilterOptionsTitle ? 600 : undefined,
+                    border: this.showFilterOptionsTitle,
+                    margin: this.showFilterOptionsTitle ? '0 20px 0 0' : undefined,
                     items: [{
                         xtype: 'panel',
                         defaults: {
@@ -72,6 +81,16 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                         },
                         itemId: 'filterPanel',
                         layout: 'hbox'
+                    },{
+                        xtype: 'button',
+                        border: true,
+                        text: 'Update Report',
+                        handler: this.onSubmit,
+                        forceRefresh: true,
+                        itemId: 'submitBtn',
+                        disabled: true,
+                        scope: this,
+                        style:'margin-left:200px;margin-top: 10px;'
                     }]
                 },{
                     itemId: 'idPanel',
@@ -80,16 +99,6 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                         border: false
                     }
                 }]
-            },{
-                xtype: 'button',
-                border: true,
-                text: 'Update Report',
-                handler: this.onSubmit,
-                forceRefresh: true,
-                itemId: 'submitBtn',
-                disabled: true,
-                scope: this,
-                style:'margin-left:200px;margin-top: 10px;'
             },{
                 xtype: 'container',
                 items: this.getIEWarning()
@@ -225,7 +234,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             if (shown < total)
                 shownMsg = ' (showing ' + shown + ')';
 
-            totalPanel.update('<div class="labkey-button">' + this.totalMessages[section] + ': ' + total + shownMsg + '</div>');
+            totalPanel.update('<div class="ldk-total-message-header">' + this.totalMessages[section] + ': ' + total + shownMsg + '</div>');
         }
         else {
             // If no more id's in that section, redisplay to remove section
@@ -400,7 +409,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             id: this.totalPanelPrefix + name,
             border: false,
             margins: first ? '0' : '10px 0 0 0',
-            html: '<div class="labkey-button">' + msg + ': ' + total + '</div>'
+            html: '<div class="ldk-total-message-header">' + msg + ': ' + total + '</div>'
         }
     },
 

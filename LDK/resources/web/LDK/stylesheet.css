@@ -29,6 +29,13 @@ span.closeicon {
 .ldk-tabbed-report-panel .x4-tab-default-top {
     border-bottom: 1px solid transparent;
 }
+.ldk-report-filter-options .x4-panel-header {
+    background-color: transparent;
+}
+.ldk-total-message-header, .ldk-report-filter-options .x4-panel-header-text-container-default {
+    color: #333333;
+    font-weight: bold;
+}
 
 /* Possibly also add header padding? */
 /*.ldk-grid .x4-column-header {*/
