@@ -98,9 +98,12 @@ public class DefaultTableCustomizer implements TableCustomizer
         {
             String keyField = keyFields.get(0);
             if (!AbstractTableInfo.LINK_DISABLER_ACTION_URL.equals(ti.getImportDataURL(ti.getUserSchema().getContainer())))
-                ti.setImportURL(DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField));
+                ti.setImportURL(DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&bulkImport=true"));
 
-            ti.setInsertURL(AbstractTableInfo.LINK_DISABLER);
+            //Note: switch to menu button to mirror new UI
+            //ti.setInsertURL(AbstractTableInfo.LINK_DISABLER);
+            if (!AbstractTableInfo.LINK_DISABLER_ACTION_URL.equals(ti.getInsertURL(ti.getUserSchema().getContainer())))
+                ti.setInsertURL(DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&bulkImport=false"));
 
             if (!AbstractTableInfo.LINK_DISABLER.equals(ti.getUpdateURL(null, ti.getUserSchema().getContainer())))
                 ti.setUpdateURL(DetailsURL.fromString("/ldk/manageRecord.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
@@ -278,9 +281,10 @@ public class DefaultTableCustomizer implements TableCustomizer
         boolean hasMoreActions = configureMoreActionsBtn(ti, buttons, cfg, scripts);
 
         //Reset default text back to 'Import Data', since this button does both single/bulk import
-        if (ti.getImportDataURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL && !hasImportDataBtn(cfg))
+        if (ti.getImportDataURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL && !hasImportDataBtn(cfg, ti))
         {
-            BuiltInButtonConfig importBtn = new BuiltInButtonConfig("Import" + (ti instanceof AssayResultTable ? "" : " Bulk") + " Data", "Import Data");
+            String name = getExpectedImportBtnName(ti);
+            BuiltInButtonConfig importBtn = new BuiltInButtonConfig(name, ("Import Bulk Data".equalsIgnoreCase(name) ? "Import Data" : name));
             if (ti.getDeleteURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL)
                 importBtn.setInsertBefore("Delete");
             else
@@ -298,23 +302,38 @@ public class DefaultTableCustomizer implements TableCustomizer
         ti.setButtonBarConfig(cfg);
     }
 
-    private static boolean hasImportDataBtn(ButtonBarConfig cfg)
+    private static String getExpectedImportBtnName(TableInfo ti)
+    {
+        if (ti instanceof AssayResultTable)
+        {
+            return "Import Data";
+        }
+        else if (ti.getInsertURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL && ti.getImportDataURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL)
+        {
+            return "Insert";
+        }
+
+        return "Import Bulk Data";
+    }
+
+    private static boolean hasImportDataBtn(ButtonBarConfig cfg, TableInfo ti)
     {
         if (cfg.getItems() == null)
             return false;
 
+        String expectedName = getExpectedImportBtnName(ti);
         for (ButtonConfig bc : cfg.getItems())
         {
             if (bc instanceof BuiltInButtonConfig)
             {
-                if (((BuiltInButtonConfig)bc).getOriginalCaption().equals("Import Data") || ((BuiltInButtonConfig) bc).getOriginalCaption().equals("Import Bulk Data"))
+                if (((BuiltInButtonConfig)bc).getOriginalCaption().equals(expectedName))
                 {
                     return true;
                 }
             }
             else if (bc instanceof UserDefinedButtonConfig)
             {
-                if (((UserDefinedButtonConfig)bc).getText().equals("Import Data") || ((UserDefinedButtonConfig) bc).getText().equals("Import Bulk Data"))
+                if (((UserDefinedButtonConfig)bc).getText().equals(expectedName))
                 {
                     return true;
                 }
