@@ -1,5 +1,6 @@
 package org.labkey.ldk;
 
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -62,6 +63,11 @@ public class LDKServiceImpl extends LDKService
     public TableCustomizer getDefaultTableCustomizer()
     {
         return new DefaultTableCustomizer();
+    }
+
+    public TableCustomizer getDefaultTableCustomizer(MultiValuedMap<String, String> props)
+    {
+        return new DefaultTableCustomizer(props);
     }
 
     public TableCustomizer getBuiltInColumnsCustomizer(boolean disableFacetingForNumericCols)

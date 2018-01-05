@@ -15,6 +15,10 @@
  */
 package org.labkey.ldk.query;
 
+import org.apache.commons.beanutils.ConversionException;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -44,6 +48,7 @@ import org.labkey.api.view.template.ClientDependency;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -62,12 +67,16 @@ public class DefaultTableCustomizer implements TableCustomizer
     private static final String MORE_ACTIONS = "More Actions";
 
     private static final Logger _log = Logger.getLogger(TableCustomizer.class);
-    private boolean _disableFacetingForNumericCols = true;
-    private AuditBehaviorType _auditMode = AuditBehaviorType.DETAILED;
+    private Settings _settings;
 
     public DefaultTableCustomizer()
     {
+        this(new ArrayListValuedHashMap());
+    }
 
+    public DefaultTableCustomizer(MultiValuedMap props)
+    {
+        _settings = new Settings(props);
     }
 
     public void customize(TableInfo table)
@@ -80,6 +89,27 @@ public class DefaultTableCustomizer implements TableCustomizer
 
     private void customizeAbstractTableInfo(AbstractTableInfo ti)
     {
+        customizeEditUI(ti);
+        setDetailsUrl(ti);
+
+        ti.setAuditBehavior(_settings.getAuditMode());
+
+        List<ButtonConfigFactory> buttons = LDKService.get().getQueryButtons(ti);
+        customizeButtonBar(ti, buttons);
+
+        //customize builtin columns
+        BuiltInColumnsCustomizer colCustomizer = new BuiltInColumnsCustomizer();
+        colCustomizer.setDisableFacetingForNumericCols(_settings.isDisableFacetingForNumericCols());
+        colCustomizer.customize(ti);
+    }
+
+    private void setDetailsUrl(AbstractTableInfo ti)
+    {
+        if (!_settings.isOverrideDetailsUrl())
+        {
+            return;
+        }
+
         String schemaName = ti.getUserSchema().getSchemaName();
         assert schemaName != null;
 
@@ -90,40 +120,57 @@ public class DefaultTableCustomizer implements TableCustomizer
         assert keyFields.size() > 0 : "No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName();
         if (keyFields.size() != 1)
         {
-            _log.warn("Table: " + schemaName + "." + queryName + " has more than 1 PK: " + StringUtils.join(keyFields, ";"));
+            _log.error("Table: " + ti.getUserSchema().getSchemaName() + "." + ti.getPublicName() + " has more than 1 PK: " + StringUtils.join(keyFields, ";") + ", cannot apply custom links - please update the TableCustomizer properties");
             return;
         }
 
-        if (schemaName != null && queryName != null && keyFields.size() > 0)
+        String keyField = keyFields.get(0);
+        StringExpression se = ti.getDetailsURL(null, ti.getUserSchema().getContainer());
+        if (se == null || se.toString().contains("detailsQueryRow"))
         {
-            String keyField = keyFields.get(0);
-            if (!AbstractTableInfo.LINK_DISABLER_ACTION_URL.equals(ti.getImportDataURL(ti.getUserSchema().getContainer())))
-                ti.setImportURL(DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&bulkImport=true"));
+            ti.setDetailsURL(DetailsURL.fromString("/query/recordDetails.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
+        }
+    }
 
-            //Note: switch to menu button to mirror new UI
-            //ti.setInsertURL(AbstractTableInfo.LINK_DISABLER);
-            if (!AbstractTableInfo.LINK_DISABLER_ACTION_URL.equals(ti.getInsertURL(ti.getUserSchema().getContainer())))
-                ti.setInsertURL(DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&bulkImport=false"));
+    private void customizeEditUI(AbstractTableInfo ti)
+    {
+        if (_settings.isDisableAllEditUI())
+        {
+            ti.setInsertURL(AbstractTableInfo.LINK_DISABLER);
+            ti.setImportURL(AbstractTableInfo.LINK_DISABLER);
+            ti.setDeleteURL(AbstractTableInfo.LINK_DISABLER);
+        }
+        else if (_settings.isSetEditLinkOverrides())
+        {
+            //otherwise apply custom urls
+            String schemaName = ti.getUserSchema().getSchemaName();
+            assert schemaName != null;
 
-            if (!AbstractTableInfo.LINK_DISABLER.equals(ti.getUpdateURL(null, ti.getUserSchema().getContainer())))
-                ti.setUpdateURL(DetailsURL.fromString("/ldk/manageRecord.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
+            String queryName = ti.getPublicName();
+            assert queryName != null;
 
-            StringExpression se = ti.getDetailsURL(null, ti.getUserSchema().getContainer());
-            if (se == null || se.toString().contains("detailsQueryRow"))
+            List<String> keyFields = ti.getPkColumnNames();
+            assert keyFields.size() > 0 : "No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName();
+            if (keyFields.size() != 1)
             {
-                ti.setDetailsURL(DetailsURL.fromString("/query/recordDetails.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
+                _log.error("Table: " + schemaName + "." + queryName + " has more than 1 PK: " + StringUtils.join(keyFields, ";") + ", cannot apply custom links - please update the TableCustomizer properties");
+                return;
+            }
+
+            if (schemaName != null && queryName != null && keyFields.size() > 0)
+            {
+                String keyField = keyFields.get(0);
+                if (!AbstractTableInfo.LINK_DISABLER_ACTION_URL.equals(ti.getImportDataURL(ti.getUserSchema().getContainer())))
+                    ti.setImportURL(DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&bulkImport=true"));
+
+                //Note: switch to menu button to mirror new UI, instead of using a single button
+                if (!AbstractTableInfo.LINK_DISABLER_ACTION_URL.equals(ti.getInsertURL(ti.getUserSchema().getContainer())))
+                    ti.setInsertURL(DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&bulkImport=false"));
+
+                if (!AbstractTableInfo.LINK_DISABLER.equals(ti.getUpdateURL(null, ti.getUserSchema().getContainer())))
+                    ti.setUpdateURL(DetailsURL.fromString("/ldk/manageRecord.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
             }
         }
-
-        ti.setAuditBehavior(_auditMode);
-
-        List<ButtonConfigFactory> buttons = LDKService.get().getQueryButtons(ti);
-        customizeButtonBar(ti, buttons);
-
-        //customize builtin columns
-        BuiltInColumnsCustomizer colCustomizer = new BuiltInColumnsCustomizer();
-        colCustomizer.setDisableFacetingForNumericCols(_disableFacetingForNumericCols);
-        colCustomizer.customize(ti);
     }
 
     public static void applyNaturalSort(AbstractTableInfo ti, String colName)
@@ -163,21 +210,6 @@ public class DefaultTableCustomizer implements TableCustomizer
         ti.addColumn(sortCol);
 
         col.setSortFieldKeys(Arrays.asList(sortCol.getFieldKey()));
-    }
-
-    public void setDisableFacetingForNumericCols(boolean disableFacetingForNumericCols)
-    {
-        _disableFacetingForNumericCols = disableFacetingForNumericCols;
-    }
-
-    public AuditBehaviorType getAuditMode()
-    {
-        return _auditMode;
-    }
-
-    public void setAuditMode(AuditBehaviorType auditMode)
-    {
-        _auditMode = auditMode;
     }
 
     public static void appendCalculatedDateColumns(AbstractTableInfo ti, @Nullable String dateColName, @Nullable String enddateColName)
@@ -410,5 +442,112 @@ public class DefaultTableCustomizer implements TableCustomizer
         moreActionsBtn.setMenuItems(menuItems);
 
         return true;
+    }
+
+    public static class Settings
+    {
+        private Map<PROPERIES, Object> propertyMap;
+
+        public static enum PROPERIES
+        {
+            disableAllEditUI(Boolean.class, false),
+            setEditLinkOverrides(Boolean.class, true),
+            auditMode(String.class, AuditBehaviorType.DETAILED.name()),
+            disableFacetingForNumericCols(Boolean.class, true),
+            overrideDetailsUrl(Boolean.class, true);
+
+            private Class _clazz;
+            private Object _defaultVal;
+
+            PROPERIES(Class clazz, Object defaultVal)
+            {
+                _clazz = clazz;
+                _defaultVal = defaultVal;
+            }
+
+            public Class getConvertClass()
+            {
+                return _clazz;
+            }
+
+            public Object getDefaultVal()
+            {
+                return _defaultVal;
+            }
+        }
+
+        public Settings(MultiValuedMap<String, String> props)
+        {
+            propertyMap = new HashMap<>();
+            for (PROPERIES p : PROPERIES.values())
+            {
+                if (props.get(p.name()) != null)
+                {
+                    if (props.get(p.name()).size() > 1)
+                    {
+                        _log.error("Multiple values provided for property: " + p.name() +  ", values: " + StringUtils.join(props.get(p.name()), ";"));
+                    }
+
+                    try
+                    {
+                        Collection<String> c = props.get(p.name());
+                        if (c.size() != 1)
+                        {
+                            _log.error("More than one value supplied for property: " + p.name() + " in table XML");
+                        }
+
+                        if (!c.isEmpty())
+                        {
+                            propertyMap.put(p, ConvertUtils.convert(c.iterator().next(), p.getConvertClass()));
+                        }
+                    }
+                    catch (ConversionException e)
+                    {
+                        _log.error("Unable to type convert property " + p.name() +  ", value: " + props.get(p.name()).iterator().next());
+                    }
+                }
+            }
+
+        }
+
+        private Object getProperty(PROPERIES p)
+        {
+            return (propertyMap.get(p) == null ? p.getDefaultVal() : propertyMap.get(p));
+        }
+
+        public boolean isDisableAllEditUI()
+        {
+            return (boolean)getProperty(PROPERIES.disableAllEditUI);
+        }
+
+        public boolean isSetEditLinkOverrides()
+        {
+            return (boolean)getProperty(PROPERIES.setEditLinkOverrides);
+        }
+
+        public AuditBehaviorType getAuditMode()
+        {
+            try
+            {
+                String auditMode = (String) getProperty(PROPERIES.auditMode);
+                return AuditBehaviorType.valueOf(auditMode);
+            }
+            catch (IllegalArgumentException e)
+            {
+                _log.error("Unable to parse auditMode in TableCustomizer: " + getProperty(PROPERIES.auditMode));
+            }
+
+            return AuditBehaviorType.DETAILED;
+        }
+
+        public boolean isDisableFacetingForNumericCols()
+        {
+            return (boolean)getProperty(PROPERIES.disableFacetingForNumericCols);
+        }
+
+        public boolean isOverrideDetailsUrl()
+        {
+            return (boolean)getProperty(PROPERIES.overrideDetailsUrl);
+        }
     }
 }

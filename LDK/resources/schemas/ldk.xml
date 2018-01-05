@@ -1,7 +1,7 @@
 <tables xmlns="http://labkey.org/data/xml">
     <description>Utility tables to make query authoring easier</description>
     <table tableName="metrics" tableDbType="TABLE">
-        <javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</javaCustomizer>
+        <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <columns>
             <column columnName="rowid"/>
             <column columnName="category"/>

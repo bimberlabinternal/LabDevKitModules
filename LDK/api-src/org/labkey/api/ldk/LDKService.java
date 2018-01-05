@@ -15,6 +15,7 @@
  */
 package org.labkey.api.ldk;
 
+import org.apache.commons.collections4.MultiValuedMap;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.Container;
@@ -50,6 +51,8 @@ abstract public class LDKService
     }
 
     abstract public TableCustomizer getDefaultTableCustomizer();
+
+    abstract public TableCustomizer getDefaultTableCustomizer(MultiValuedMap<String, String> props);
 
     abstract public TableCustomizer getBuiltInColumnsCustomizer(boolean disableFacetingForNumericCols);
 
