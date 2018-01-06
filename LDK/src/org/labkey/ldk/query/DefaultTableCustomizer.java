@@ -491,9 +491,9 @@ public class DefaultTableCustomizer implements TableCustomizer
                     try
                     {
                         Collection<String> c = props.get(p.name());
-                        if (c.size() != 1)
+                        if (c.size() > 1)
                         {
-                            _log.error("More than one value supplied for property: " + p.name() + " in table XML");
+                            _log.error("More than one value supplied for property: " + p.name() + " in table XML, values: " + StringUtils.join(c, ";"));
                         }
 
                         if (!c.isEmpty())
