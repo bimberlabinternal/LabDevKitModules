@@ -413,7 +413,7 @@ Ext4.define('LDK.panel.NavPanel', {
 
         return {
             xtype: 'ldk-linkbutton',
-            hidden: config.showSearch===false,
+            hidden: config.showSearch===false || (!config.url && Ext4.Object.isEmpty(config.urlConfig)),
             tooltip: config.searchTooltip || 'Click to display a search panel',
             href: config.url ? config.url : !Ext4.Object.isEmpty(config.urlConfig) ? LABKEY.ActionURL.buildURL(config.urlConfig.controller, config.urlConfig.action, null, config.urlConfig.params) : null,
             text: 'Search'
@@ -437,6 +437,7 @@ Ext4.define('LDK.panel.NavPanel', {
         return {
             xtype: 'ldk-linkbutton',
             text: config.text || 'Import Data',
+            href: 'javascript:void(0);',
             tooltip: config.importTooltip || 'Click to import new data',
             hidden: config.showImport===false || !LABKEY.Security.currentUser.canInsert,
             importIntoWorkbooks: config.importIntoWorkbooks,

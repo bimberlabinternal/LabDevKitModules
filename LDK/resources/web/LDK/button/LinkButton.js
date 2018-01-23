@@ -19,10 +19,11 @@ Ext4.define('LDK.button.LinkButton', {
         '<span id="{id}-wrap">',
         '<tpl if="linkPrefix">{linkPrefix}</tpl>',
         '<a id="{id}-linkEl"',
-        '<tpl if="href"> href="{href} " </tpl>',
+        '<tpl if="href"> href="{href}" </tpl>',
         '<tpl if="linkTarget"> target="{linkTarget}" </tpl>',
         '<tpl if="tooltip"> data-qtip="{tooltip}"</tpl>' +
         '<tpl if="linkCls"> class="{linkCls}"</tpl>' +
+        '<tpl if="linkStyle"> style="{linkStyle}"</tpl>' +
         '>{text}</a>',
         '<tpl if="linkSuffix">{linkSuffix}</tpl>',
         '</span>'
@@ -32,6 +33,7 @@ Ext4.define('LDK.button.LinkButton', {
     },
 
     childEls: ['linkEl'],
+    linkStyle: 'cursor: pointer;',
 
     initComponent: function() {
         if (this.menu) {
@@ -52,6 +54,7 @@ Ext4.define('LDK.button.LinkButton', {
             linkPrefix: this.linkPrefix,
             linkSuffix: this.linkSuffix,
             linkCls: this.linkCls,
+            linkStyle: this.linkStyle,
             tooltip: this.tooltip
         };
 

@@ -41,6 +41,7 @@ import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.study.assay.AssayResultTable;
 import org.labkey.api.util.StringExpression;
 import org.labkey.api.view.NavTree;
@@ -300,7 +301,7 @@ public class DefaultTableCustomizer implements TableCustomizer
         }
 
         //ensure client dependencies
-        Set<String> scripts = new LinkedHashSet<String>();
+        Set<String> scripts = new LinkedHashSet<>();
         String[] existingScripts = cfg.getScriptIncludes();
         if (existingScripts != null)
         {
@@ -311,21 +312,6 @@ public class DefaultTableCustomizer implements TableCustomizer
         }
 
         boolean hasMoreActions = configureMoreActionsBtn(ti, buttons, cfg, scripts);
-
-        //Reset default text back to 'Import Data', since this button does both single/bulk import
-        if (ti.getImportDataURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL && !hasImportDataBtn(cfg, ti))
-        {
-            String name = getExpectedImportBtnName(ti);
-            BuiltInButtonConfig importBtn = new BuiltInButtonConfig(name, ("Import Bulk Data".equalsIgnoreCase(name) ? "Import Data" : name));
-            if (ti.getDeleteURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL)
-                importBtn.setInsertBefore("Delete");
-            else
-                importBtn.setInsertBefore("Export");
-
-            List<ButtonConfig> existingBtns = cfg.getItems();
-            existingBtns.add(importBtn);
-            cfg.setItems(existingBtns);
-        }
 
         cfg.setScriptIncludes(scripts.toArray(new String[scripts.size()]));
         if (hasMoreActions)
@@ -408,6 +394,7 @@ public class DefaultTableCustomizer implements TableCustomizer
 
             moreActionsBtn = new UserDefinedButtonConfig();
             moreActionsBtn.setText(MORE_ACTIONS);
+            moreActionsBtn.setIconCls("ellipsis-h");
             moreActionsBtn.setInsertPosition(-1);
             existingBtns.add(moreActionsBtn);
             cfg.setItems(existingBtns);
