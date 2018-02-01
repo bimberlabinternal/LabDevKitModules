@@ -123,7 +123,7 @@ LDK.StoreUtils = new function(){
                 if (setDefaults){
                     if (field.getInitialValue){
                         if (!Ext4.isFunction(field.getInitialValue)){
-                            field.getInitialValue = eval(field.getInitialValue);
+                            field.getInitialValue = eval('(' + field.getInitialValue + ')');
                         }
                         val = field.getInitialValue(null, model, field);
                         model.set(field.name, val);
