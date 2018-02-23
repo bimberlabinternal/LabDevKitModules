@@ -37,6 +37,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     subjects: {},
     tooltips: {},
     showFilterOptionsTitle: false,
+    showReportsOption: false,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -713,7 +714,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             showDetailsColumn: true,
             showUpdateColumn: !!this.allowEditing,
             showRecordSelectors: true,
-            showReports: false,
+            showReports: this.showReportsOption,
             allowHeaderLock: false, //added b/c locking does not work well inside Ext4 panels
             tab: tab,
             frame: 'portal',
