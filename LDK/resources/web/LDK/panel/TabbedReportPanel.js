@@ -790,7 +790,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             showRecordSelectors: true,
             suppressRenderErrors: true,
             allowHeaderLock: false, //added b/c locking does not work well inside Ext4 panels
-            showReports: false,
+            showReports: this.showReportsOption,
             frame: 'portal',
             linkTarget: '_blank',
             buttonBarPosition: 'top',
