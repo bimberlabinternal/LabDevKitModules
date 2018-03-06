@@ -4,9 +4,19 @@ Ext4.define('LDK.field.ExpDataField', {
 
     triggerCls: 'x4-form-search-trigger',
 
+    baseChars : "0123456789",
+    autoStripChars: true,
+    allowDecimals : false,
+    decimalSeparator : ".",
+    decimalPrecision : 0,
+    allowNegative : false,
+
+    nanText : '{0} is not a valid number',
+
+    maskRe: /([0-9]+)$/,
+
     initComponent: function() {
         this.callParent(arguments);
-
     },
 
     onRender : function(ct, position){
@@ -79,6 +89,28 @@ Ext4.define('LDK.field.ExpDataField', {
         }
     },
 
+    rawToValue: function(rawValue) {
+        var value = this.parseValue(rawValue);
+        if (value === null) {
+            value = rawValue || null;
+        }
+        return  value;
+    },
+
+    valueToRaw: function(value) {
+        var me = this;
+        value = me.parseValue(value);
+        value = Ext4.isNumber(value) ? value : parseInt(String(value));
+        value = isNaN(value) ? '' : value;
+
+        return value;
+    },
+
+    parseValue : function(value) {
+        value = parseInt(String(value));
+        return isNaN(value) ? null : value;
+    },
+
     onDestroy : function() {
         if (this.fileDiv){
             this.fileDiv.removeAllListeners();
@@ -90,5 +122,30 @@ Ext4.define('LDK.field.ExpDataField', {
         }
 
         this.callParent(this);
+    },
+
+    beforeBlur : function() {
+        var me = this,
+            v = me.parseValue(me.getRawValue());
+
+        if (!Ext4.isEmpty(v)) {
+            me.setValue(v);
+        }
+    },
+
+    getErrors: function(value) {
+        var errors = this.callParent(arguments);
+
+        value = Ext4.isDefined(value) ? value : this.processRawValue(this.getRawValue());
+
+        if (value.length < 1) { // if it's blank and textfield didn't flag it then it's valid
+            return errors;
+        }
+
+        if(isNaN(value)){
+            errors.push(Ext4.String.format(this.nanText, value));
+        }
+
+        return errors;
     }
 });
