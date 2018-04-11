@@ -85,7 +85,7 @@ public class LDKServiceImpl extends LDKService
 
     public Map<String, Object> getContainerSizeJson(Container c, User u, boolean includeAllRootTypes, boolean includeFileCount)
     {
-        FileContentService svc = ServiceRegistry.get().getService(FileContentService.class);
+        FileContentService svc = FileContentService.get();
         Map<String, Object> json = c.toJSON(u);
 
         JSONArray fileRoots = new JSONArray();
