@@ -612,16 +612,9 @@ public class LdapSyncRunner implements Job
             log("Updating user settings: " + existing.getEmail());
             _usersModified++;
 
-            try
+            if (!_previewOnly)
             {
-                if (!_previewOnly)
-                {
-                    UserManager.updateUser(_settings.getLabKeyAdminUser(), existing);
-                }
-            }
-            catch (SQLException e)
-            {
-                throw new RuntimeSQLException(e);
+                UserManager.updateUser(_settings.getLabKeyAdminUser(), existing);
             }
         }
     }
