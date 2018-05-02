@@ -518,8 +518,8 @@ LDK.Utils = new function(){
                 }
 
                 //append non-removeable filters
-                if (LABKEY.DataRegions[dataRegionName].qwp && LABKEY.DataRegions[dataRegionName].qwp.filters){
-                    var array = LABKEY.DataRegions[dataRegionName].qwp.filters;
+                if (LABKEY.DataRegions[dataRegionName].getBaseFilters().length){
+                    var array = LABKEY.DataRegions[dataRegionName].getBaseFilters();
                     for (var i=0;i<array.length;i++){
                         var filter = array[i];
                         params[filter.getURLParameterName()] = filter.getURLParameterValue();
