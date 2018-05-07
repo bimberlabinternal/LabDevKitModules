@@ -3,7 +3,6 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-LABKEY.requiresScript('/extWidgets/ImportWizard.js');
 
 /**
  * This class extends Ext.panel.Panel.  The intent is to provide a flexible helper to create data-driven navigation.

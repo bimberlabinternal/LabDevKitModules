@@ -48,8 +48,11 @@
         <dependency path="clientapi"/>
         <dependency path="clientapi_core"/>
         <dependency path="Ext4ClientApi"/>
+        <dependency path="ux/CheckCombo/CheckCombo.js"/>
+        <dependency path="ux/CheckCombo/CheckCombo.css"/>
         <dependency path="extWidgets/SearchPanel.js"/>
         <dependency path="vis/vis"/>
         <dependency path="vischart"/>
+        <dependency path="extWidgets/ImportWizard.js"/>
     </dependencies>
 </libraries>
