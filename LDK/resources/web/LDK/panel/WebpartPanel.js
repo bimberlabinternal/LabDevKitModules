@@ -27,6 +27,8 @@ Ext4.define('LDK.panel.WebpartPanel', {
     extend: 'Ext.container.Container',
     alias: 'widget.ldk-webpartpanel',
 
+    useDefaultPanel: false,
+
     initComponent: function(){
         this.renderData = this.renderData || {};
         this.renderData.title = this.title;
@@ -35,7 +37,7 @@ Ext4.define('LDK.panel.WebpartPanel', {
         Ext4.apply(this, {
             renderTpl: [
                 '<div name="webpart" id="{id}-body" class="labkey-portal-container">',
-                '<div class="panel panel-portal">',
+                '<div class="panel ' + (this.useDefaultPanel ? 'panel-default' : 'panel-portal') + '">',
                 '<div class="panel-heading">',
                     '<h3 class="panel-title pull-left" title="{title}">',
                         '<a name="{title}" class="labkey-anchor-disabled">',
