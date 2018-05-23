@@ -59,7 +59,7 @@ gzip $TAR
 if [ ! -e ${LABKEY_DIR}/svn ];
 then
     echo "Checking out pipeline code"
-    su labkey -c "svn co --username cpas --password cpas --no-auth-cache https://hedgehog.fhcrc.org/tor/stedi/trunk/externalModules/labModules/SequenceAnalysis/pipeline_code ${LABKEY_DIR}/svn/trunk/pipeline_code/"
+    su labkey -c "svn co --username cpas --password cpas --no-auth-cache https://svn.mgt.labkey.host/stedi/trunk/externalModules/labModules/SequenceAnalysis/pipeline_code ${LABKEY_DIR}/svn/trunk/pipeline_code/"
 else
     echo "Updating pipeline code"
     su labkey -c "svn update --username cpas --password cpas --no-auth-cache ${LABKEY_DIR}/svn/trunk/pipeline_code/"
