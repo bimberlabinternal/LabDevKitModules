@@ -460,11 +460,17 @@ Ext4.define('LDK.panel.NavPanel', {
     getLabelItemCfg: function(item, config){
         config = config || {};
         Ext4.apply(config, item);
+
+        var displayLabel = config.label || config.name || config.queryName;
+        if (config.showQueryName && displayLabel !== config.queryName) {
+            displayLabel += ' (' + config.queryName + ')'
+        }
+
         return {
             tag: 'div',
             style: LDK.panel.NavPanel.ITEM_STYLE_DEFAULT,
-            html: '<span' + (config.description ? ' data-qtip="'+Ext4.htmlEncode(config.description)+'"' : '') + '>' + (config.label || config.name || config.queryName) + ':' + '</span>',
-            width: 250
+            html: '<span' + (config.description ? ' data-qtip="'+Ext4.htmlEncode(config.description)+'"' : '') + '>' + displayLabel + ':' + '</span>',
+            width: config.width || 250
         }
     }
 });
