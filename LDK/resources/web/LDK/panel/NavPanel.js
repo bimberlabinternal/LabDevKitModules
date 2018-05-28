@@ -462,7 +462,7 @@ Ext4.define('LDK.panel.NavPanel', {
         Ext4.apply(config, item);
 
         var displayLabel = config.label || config.name || config.queryName;
-        if (config.showQueryName && displayLabel !== config.queryName) {
+        if (config.showQueryName && displayLabel.toLowerCase() !== config.queryName.toLowerCase()) {
             displayLabel += ' (' + config.queryName + ')'
         }
 
