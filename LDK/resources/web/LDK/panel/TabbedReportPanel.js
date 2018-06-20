@@ -14,7 +14,7 @@
  * @cfg reports
  */
 Ext4.define('LDK.panel.TabbedReportPanel', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.ldk-tabbedreportpanel',
     cls: 'ldk-tabbed-report-panel',
     allowEditing: true,
@@ -22,6 +22,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     subjectColumns: 8,
     subjectMaxRows: 9,
     rowHeight: 26,
+    widthPadding: 35,
+    initializing: true,
+    filterFromUrl: false,
 
     btnPanelPrefix: 'btnPanel',
     totalPanelPrefix: 'totalPanel',
@@ -53,6 +56,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 defaults: {
                     border: false
                 },
+                bodyStyle: 'background-color : transparent;margin-bottom: 10px;',
                 items: [{
                     xtype: 'panel',
                     defaults: {
@@ -95,33 +99,12 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                     }]
                 },{
                     itemId: 'idPanel',
+                    cls: 'ldk-report-filter-id-panel',
                     border: false,
                     defaults: {
                         border: false
                     }
                 }]
-            },{
-                xtype: 'container',
-                items: this.getIEWarning()
-            },{
-                tag: 'span',
-                style: 'padding: 10px'
-            },{
-                xtype: 'tabpanel',
-                itemId: 'tabPanel',
-                minWidth: this.minTabWidth,
-                minHeight: this.minTabHeight,
-                listeners: {
-                    scope: this,
-                    tabchange: this.onCategoryTabChange,
-                    afterrender: function (panel) {
-                        panel.getTabBar().addCls("category-tab-bar");
-                    }
-                }
-            },{
-                hidden: !this.showDiscvrLink,
-                style: 'padding: 5px;padding-top: 0px;text-align: center',
-                html: 'Powered By DISCVR.  <a href="https://github.com/bbimber/discvr/wiki">Click here to learn more.</a>'
             }]
         });
 
@@ -145,54 +128,48 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         this.on('afterrender', this.onAfterRender);
     },
 
-    getDistinctCategories: function(){
-        var categories = [];
-        Ext4.each(this.reports, function(r){
-            if (r.category){
-                categories.push(r.category);
+    doResizeCmp: function(cmp, width, height, oldWidth, oldHeight) {
+        this.doLayout();
+
+        var max = window.innerWidth - this.widthPadding;
+
+        // Prevent infinite loop of resizing
+        if (width !== (oldWidth || 0) + this.widthPadding) {
+
+            // if old width is zero then a new webpart is being added so start over at normal window width
+            if (oldWidth) {
+                // Look at webpart headers to determine if any are wider than window
+                var hdrs = Ext4.select('.panel-heading');
+                var hdrWidth = 0;
+                hdrs.elements.forEach(function (hdr) {
+                    hdrWidth = hdr.offsetWidth + this.widthPadding;
+                    if (hdrWidth > max)
+                        max = hdrWidth;
+                }, this);
             }
-        }, this);
 
-        categories = Ext4.unique(categories);
-
-        return categories
+            this.resizeWidth(max);
+        }
     },
 
-    getIEWarning: function(){
-        var toAdd = [];
-
-        if (Ext4.isIE9m){
-            toAdd.push({
-                border: false,
-                html: '<span>NOTE: You are currently using Internet Explorer.  While this page will work on any browser, it may perform better in other browsers, such as Chrome or Firefox.  For the best experience, we recommend using one of these browsers.</span>',
-                style: 'padding-top: 20px;'
-            });
+    resizeWidth: function(newWidth, oldWidth){
+        var ul = Ext4.select('div#bs-category-tabs-list .nav-tabs');
+        var bsWidth = 0;
+        if (ul && ul.elements && ul.elements.length > 0) {
+            bsWidth = ul.elements[0].offsetWidth;
         }
 
-        return toAdd;
+        // If window narrower than top tabs
+        if (!newWidth || newWidth < bsWidth)
+            newWidth = bsWidth;
+
+        if (this.getWidth() !== newWidth) {
+            this.setWidth(newWidth);
+        }
     },
 
     onAfterRender: function(panel){
         this.originalWidth = this.getWidth();
-    },
-
-    onCategoryTabChange: function(panel, tab, oldTab){
-        //when we shift top-level tabs, it is possible for a previously loaded report to still show, yet
-        //not have the right IDs.  therefore when we change tabs, we force the child to fire tabchange.
-        //its listener should only reload if necessary
-
-        //NOTE: if we have a default tab set, it will initially be active.  if we loaded the page with a different
-        //top-level tab selected toggling tabs could result in loading that child tab unintentionally.
-        //if we toggle to a new top-level tab, but there is no previously loaded child, treat it like no tab is selected
-        var childTab = tab.getActiveTab();
-        if (oldTab && childTab && !childTab.hasLoaded){
-            tab.setActiveTab(null);
-            childTab = null;
-        }
-
-        if (childTab){
-            tab.fireEvent('tabchange', tab, childTab);
-        }
     },
 
     setSubjMsg: function(msg){
@@ -578,26 +555,51 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         return true;
     },
 
+    getActiveTab: function(tabPanel){
+        var activeId = tabPanel.activeTabId;
+        var activeTab = null;
+
+        for(var i=0; i < tabPanel.items.length; i++) {
+            if (tabPanel.items[i].id === activeId) {
+                activeTab = tabPanel.items[i];
+                break;
+            }
+        }
+
+        return activeTab;
+    },
+
     onSubmit: function(btn){
-        if (!this.checkValid())
+
+        if (this.initializing && !this.filterFromUrl) {
+            this.initializing = false;
             return;
+        }
+
+        this.initializing = false;
+
+        if (!this.checkValid()) {
+            return;
+        }
 
         if (btn)
             this.forceRefresh = true;
 
         this.activeReport = null;
-        var tabPanel = this.down('#tabPanel');
-        var categoryTab = tabPanel.getActiveTab();
+        this.activeCategory = null;
+        var tabPanel = this.getTabPanel();
+        var categoryTab = tabPanel.findItemForActiveTabId();
         if (categoryTab){
-            var subTab = categoryTab.getActiveTab();
+            var subTab = categoryTab.items[0].findItemForActiveTabId();
             if (subTab){
                 this.activeReport = subTab;
+                this.activeCategory = categoryTab;
             }
             else {
                 if (this.defaultReport){
                     var report = this.findReport(this.defaultReport);
                     if (report){
-                        var owner = report.up('tabpanel');
+                        var owner = this.getCategoryTab(report.id);
                         if (owner == categoryTab){
                             this.activeReport = report;
                         }
@@ -606,16 +608,12 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
                 //if a top-level tab is active, but no 2nd tier tab selected, use the left-most tab
                 if (!this.activeReport && categoryTab){
-                    this.activeReport = categoryTab.items.get(0);
+                    this.activeReport = categoryTab.items[0].items[0];
                 }
             }
         }
 
-        if (this.activeReport){
-            var parentTab = this.activeReport.up('tabpanel');
-            tabPanel.setActiveTab(parentTab);
-            parentTab.setActiveTab(this.activeReport);
-            this.doResize(this.originalWidth, true);
+        if (this.activeCategory && this.activeReport){
             this.loadTab(this.activeReport);
         }
         else {
@@ -624,13 +622,16 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     findReport: function(name){
-        var tabPanel = this.down('#tabPanel');
-        var panel;
-        tabPanel.items.each(function(tab){
-            panel = tab.down('panel[itemId="' + name + '"]');
-            if (panel)
-                return false;
-        }, this);
+        var tabPanel = this.getTabPanel();
+        var panel = null, check = null, tab = null;
+        for(var i = 0; i < tabPanel.items.length; i++) {
+            tab = tabPanel.items[i];
+            check = this.getReportPanel(tab, name);
+            if (check !== null) {
+                panel = check;
+                break;
+            }
+        }
 
         return panel;
     },
@@ -750,37 +751,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     onDataRegionLoad: function(dr){
-        var domEl = Ext4.get(dr.domId);
-        if (domEl) {
-            var itemWidth = Ext4.get(dr.domId).getWidth() + 50;
-            this.doResize(itemWidth);
-        }
         LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
-    },
-
-    onTabChange: function(tab){
-        if (tab.items.getCount()){
-            var width = 0;
-            for (var i = 0; i < tab.items.getCount(); i++) {
-                var item = tab.items.get(i);
-                if (item.itemId != 'reportStatus') {
-                    if (item.onContentSizeChange){
-                        item.onContentSizeChange();
-                    }
-                    width = Math.max(width, item.getWidth());
-                }
-            }
-
-            this.doResize(width);
-        }
-        LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
-    },
-
-    doResize: function(itemWidth, forceResize){
-        if (forceResize || this.getWidth() < itemWidth) {
-            this.setWidth(itemWidth);
-            this.doLayout();
-        }
     },
 
     getQWPConfig: function(config){
@@ -846,16 +817,6 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             success: function(result){
                 target.unmask();
                 Ext4.defer(target.createListeners, 200, target);
-
-                // Issue 31454: resize the tab panel width based on the report's rendered output
-                if (target.getEl()) {
-                    target.on('resize', function() {
-                        Ext4.each(target.getEl().query('.labkey-output'), function(el) {
-                            this.doResize(Ext4.get(el).getWidth() + 33);
-                        }, this);
-                    }, this, {delay: 200, single: true});
-                }
-
                 LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
             },
             failure: LDK.Utils.getErrorCallback(),
@@ -1017,8 +978,8 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         var ctx;
         if (this.activeFilterType){
             var tab = this.activeReport || this.findReport(this.defaultReport);
-            if (tab)
-                ctx = this.activeFilterType.getFilterArray(tab);
+            if (tab && tab.items && tab.items.length > 0)
+                ctx = this.activeFilterType.getFilterArray(tab.items[0]);
         }
 
         ctx = ctx || {};
@@ -1045,11 +1006,21 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
     getFiltersFromUrl: function(){
         var context = {};
+
+        // Handle parameter participantId (animal quicksearch)
+        if (document.location.search && document.location.search.indexOf('participantId') !== -1) {
+            context["subjects"] = document.location.search.split("=")[1];
+            context["inputType"] = "singleSubject";
+            this.loadOnRender = true;
+            this.filterFromUrl = true;
+        }
+
         if (document.location.hash){
             var token = document.location.hash.split('#');
             token = token[1].split('&');
 
             for (var i=0;i<token.length;i++){
+                this.filterFromUrl = true;
                 var t = token[i].split(':');
                 switch(t[0]){
                     case 'inputType':
@@ -1059,7 +1030,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                         this.loadOnRender = (t[1] == 1);
                         break;
                     case 'activeReport':
-                        this.report = t[1];
+                        this.report = decodeURI(t[1]);
                         var tab = this.reportMap[t[1]];
                         if (tab){
                             this.activeReport = tab;
@@ -1078,29 +1049,131 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         return context;
     },
 
+    getTabItem: function(id, items) {
+        var tab = null;
+
+        if (items) {
+            items.forEach(function (item) {
+                if (item.itemId === id) {
+                    tab = item;
+                }
+            }, this);
+        }
+
+        return tab;
+    },
+
+    updateTabItem: function(newItem, items) {
+        var found = false;
+
+        // Replace if exists
+        var newItems = items.map(function (item) {
+            if (item.itemId === newItem.itemId) {
+                found = true;
+                return newItem;
+            }
+
+            return item;
+        });
+
+        // Add if not exists
+        if (!found) {
+            newItems.push(newItem);
+        }
+
+        return newItems;
+    },
+
+    createReportTabPanels: function(items) {
+        var me = this;
+        return items.map(function(item) {
+            if (item.items && item.items.length > 0) {
+                item.items = [Ext4.create('LABKEY.ext4.BootstrapTabPanel', {
+                    usePills: true,
+                    items: item.items,
+                    updateHistory: false,
+                    listId: 'bs-report-tabs-list',
+                    changeHandler: me.changeHandler,
+                    resizeHandler: me.doResizeCmp,
+                    delayedLayout: false,
+                    scope: me
+                })];
+            }
+            return item;
+        })
+    },
+
+    getTabPanel: function() {
+        var tabPanel = null;
+        if (this.items && this.items.items && this.items.items.length > 0) {
+
+            for(var i=0; i<this.items.items.length; i++) {
+                if(this.items.items[i].itemId === 'tabPanel') {
+                    tabPanel = this.items.items[i];
+                    break;
+                }
+            }
+        }
+
+        return tabPanel;
+    },
+
+    getReportPanel: function(tab, itemId) {
+        var reportPanel = null;
+        if (tab && tab.items && tab.items.length > 0 && itemId) {
+
+            var items = tab.items[0].items;
+
+            for (var i=0; i<items.length; i++) {
+                if (items[i].itemId.toUpperCase() === itemId.toUpperCase()) {
+                    reportPanel = items[i];
+                    break;
+                }
+            }
+        }
+
+        return reportPanel;
+    },
+
+    getCategoryTab: function(reportTabId) {
+        var tabPanel = this.getTabPanel();
+        var tab = null;
+        var categoryTab = null;
+
+        for (var i=0; i<tabPanel.items.length; i++) {
+            tab = tabPanel.items[i];
+
+            if (tab.items && tab.items[0] && tab.items[0].items) {
+                for (var j=0; j<tab.items[0].items.length; j++) {
+                    if (tab.items[0].items[j].id === reportTabId) {
+                        categoryTab = tab;
+                        break;
+                    }
+                }
+            }
+
+            if (categoryTab !== null) {
+                break;
+            }
+        }
+
+        return categoryTab;
+    },
+
     createTabPanel: function(){
-        var tabPanel = this.down('#tabPanel');
 
         if (!this.reports || !this.reports.length){
-            tabPanel.add({
+            this.items.items.push(Ext4.create('Ext.container.Container', {
                 html: 'There are no reports enabled in this folder.  Please contact your administrator if you believe this is an error.',
-                style: 'padding: 10px;',
+                style: 'padding: 20px;',
                 border: false
-            });
+            }));
+
+            this.doLayout();
             return;
         }
 
-        //if there is only one category, simplify the output
-        if (this.getDistinctCategories().length == 1){
-            if (tabPanel.rendered){
-                tabPanel.down('tabbar').setVisible(false);
-            }
-            else {
-                tabPanel.tabBar = tabPanel.tabBar || {};
-                tabPanel.tabBar.hidden = true;
-            }
-        }
-        
+        var items = [];
         Ext4.each(this.reports, function(report){
             if (!report || !report.category)
                 return;
@@ -1109,63 +1182,65 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 return;
 
             var category = report.category;
+            var item = this.getTabItem(category, items);
 
-            //create top-level tab
-            if (!tabPanel.down('panel[itemId="' + category + '"]')){
-                tabPanel.add({
-                    xtype: 'tabpanel',
-                    border: false,
-                    itemId: category,
+            if (item === null) {
+                item = {
                     title: category,
-                    enableTabScroll: true,
-                    listeners: {
-                        scope: this,
-                        tabchange: function(panel, tab, oldTab){
-                            this.activeReport = tab;
-                            this.silentlySetActiveTab(this.activeReport);
-                            this.doResize(this.originalWidth, true);
-                            this.onSubmit();
-                        },
-                        added: function(panel) {
-                            panel.getTabBar().addCls("report-tab-bar");
-                        }
-                    }
-                });
+                    itemId: category,
+                    items: []
+                };
             }
 
-            var subTab = tabPanel.down('panel[itemId="' + category + '"]');
             var reportId = report.id || report.name;
 
             //create 2nd tier tab
-            if (!subTab.down('panel[itemId="' + reportId + '"]')){
-                var theTab = subTab.add({
-                    xtype: 'panel',
-                    title: report.label,
-                    itemId: reportId,
+            var reportItem = {
+                title: report.label,
+                itemId: reportId,
+                scope: this,
+                onReady: function (cmp) {
+                    if (this.activeFilterType) {
+                        this.onSubmit();
+                    }
+                    else {
+                        this.loadOnRender = true;
+                    }
+                },
+                items: [Ext4.create('Ext.container.Container', {
                     report: report,
                     padding: '10px 0',
                     border: false,
                     subjectArray: [],
-                    filterArray: {},
-                    listeners: {
-                        scope: this,
-                        add: function(panel, component) {
-                            // make sure any query web part being added has a chance to resize the panel
-                            if (Ext4.isObject(component.queryConfig) && !Ext4.isFunction(component.queryConfig.success)) {
-                                component.queryConfig.scope = this;
-                                component.queryConfig.success = this.onDataRegionLoad;
-                            }
-                        }
-                    }
-                });
+                    filterArray: {}
+                })]
+            };
+
+            item.items.push(reportItem);
+
 
                 if (this.report == reportId){
-                    this.activeReport = theTab;
+                    this.activeReport = reportItem;
                 }
 
-                this.reportMap[reportId] = theTab;
-            }
+                this.reportMap[reportId] = reportItem;
+
+            items = this.updateTabItem(item, items);
+
         }, this);
+
+        var me = this;
+        this.items.items.push(Ext4.create('LABKEY.ext4.BootstrapTabPanel', {
+            itemId: 'tabPanel',
+            usePills: false,
+            changeHandler: function(tab) {},  // don't handle history at this level
+            updateHistory: false,
+            scope: me,
+            listId: 'bs-category-tabs-list',
+            containerCls: 'bs-tabpanel-content-container',
+            delayedLayout: false,
+            items: this.createReportTabPanels(items)
+        }));
 
         if (this.activeReport){
             this.silentlySetActiveTab(this.activeReport);
@@ -1212,6 +1287,23 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
     },
 
+    changeHandler: function(tab, initializing, doNotSubmit) {
+        if (!this.findReport || !this.getFilterContext) {
+            console.warn("There is a problem in the tab panel change handler. Scope is incorrect.");
+            return;
+        }
+
+        this.activeReport = tab || (this.findReport && this.findReport(this.defaultReport));
+        var filters = this.getFilterContext();
+
+        this.filterHistory(tab, filters);
+
+        if (!doNotSubmit && this.activeFilterType && !initializing)
+            this.onSubmit(tab);
+
+        LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
+    },
+
     createKeyListener: function(el){
         Ext4.create('Ext.util.KeyNav', el, {
             scope: this,
@@ -1220,18 +1312,23 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     silentlySetActiveTab: function(tab){
-        var tabPanel = this.down('#tabPanel');
+        var tabPanel = this.getTabPanel();
+        var categoryTab = this.getCategoryTab(tab.id);
 
         tabPanel.suspendEvents();
-        tab.suspendEvents();
-        tab.ownerCt.suspendEvents();
+        if (categoryTab && categoryTab.items) {
+            categoryTab.items[0].suspendEvents();
+        }
 
-        tab.ownerCt.setActiveTab(tab);
-        tabPanel.setActiveTab(tab.ownerCt);
+        tabPanel.setActiveTab(categoryTab.id);
+        if (categoryTab && categoryTab.items) {
+            categoryTab.items[0].setActiveTab(tab.id);
+        }
 
-        tab.resumeEvents();
-        tab.ownerCt.resumeEvents();
         tabPanel.resumeEvents();
+        if (categoryTab && categoryTab.items) {
+            categoryTab.items[0].resumeEvents();
+        }
     },
 
     updateTab: function (filters) {
@@ -1240,9 +1337,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
         filters = this.filterHistory(tab, filters);
 
-        if (tab.filters){
+        var reportTab = tab.items[0];
+        if (reportTab.filters){
             for (var i in filters){
-                if (JSON.stringify(filters[i]) !== JSON.stringify(tab.filters[i])){
+                if (JSON.stringify(filters[i]) !== JSON.stringify(reportTab.filters[i])){
                     reload = true;
                     break;
                 }
@@ -1253,28 +1351,30 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
 
         //indicates tab already has up to date content
-        if (reload == false && !this.forceRefresh){
-            this.onTabChange(tab);
+        if (reload === false && !this.forceRefresh){
+            this.changeHandler(tab, false, true);
             console.log('no reload needed');
             return;
         }
         this.forceRefresh = null;
 
-        tab.filters = filters;
-        tab.removeAll();
+        reportTab.filters = filters;
+        reportTab.removeAll();
 
         this.activeReport = tab;
-        tab.hasLoaded = true;
+        reportTab.hasLoaded = true;
         this.hasLoaded = true;
-        this.displayReport(tab);
+        this.displayReport(reportTab);
     },
 
     filterHistory: function (tab, filters) {
-        Ext4.apply(filters, {
-            inputType : this.down('#inputType').getValue().selector,
-            showReport: 1,
-            activeReport: tab.report.id
-        });
+        if (tab && tab.items && tab.items.length > 0) {
+            Ext4.apply(filters, {
+                inputType: this.down('#inputType').getValue().selector,
+                showReport: 1,
+                activeReport: tab.items[0].report.id
+            });
+        }
 
         //set history
         var token = [];
