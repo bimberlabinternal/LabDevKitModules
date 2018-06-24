@@ -1096,6 +1096,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                     changeHandler: me.changeHandler,
                     resizeHandler: me.doResizeCmp,
                     delayedLayout: false,
+                    clearBetweenClicks: true,
                     scope: me
                 })];
             }
