@@ -666,6 +666,11 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                     message: 'Improper Report Type'
                 });
         }
+
+        tab.add({
+            html:"<div id='reporttype-" + tab.report.reportType + "' style=\"display: none;\"/>",
+            hidden:true
+        })
     },
 
     getFilterArray: function(tab){
