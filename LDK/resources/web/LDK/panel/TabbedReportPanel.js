@@ -639,13 +639,14 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     displayReport: function(tab){
         // If we have a status to show the user to help set expectations, display it at the top
         if (tab.report.reportStatus) {
-            tab.add({
-                xtype: 'box',
+            var status = Ext4.create('Ext.Component',{
                 itemId: 'reportStatus',
                 html: '<div class="alert alert-warning" role="alert">Report Status: <strong>'
-                    + Ext4.util.Format.htmlEncode(tab.report.reportStatus)
-                    + '</strong></div>'
+                + Ext4.util.Format.htmlEncode(tab.report.reportStatus)
+                + '</strong></div>'
             });
+
+            tab.add(status);
         }
 
         switch (tab.report.reportType){
@@ -801,10 +802,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             return;
 
         filterArray = filterArray.nonRemovable.concat(filterArray.removable);
-        var target = tab.add({
-            xtype: 'ldk-contentresizingpanel',
-            minHeight: 50
-        });
+
+        var target = Ext4.create('LDK.panel.ContentResizingPanel', {minHeight: 50});
+        tab.add(target);
 
         target.mask('Loading...');
 
@@ -878,7 +878,8 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
         filterArray = filterArray.nonRemovable.concat(filterArray.removable);
 
-        target = tab.add({tag: 'span', html: 'Loading', cls: 'loading-indicator'});
+        target = Ext4.create('Ext.Component', {tag: 'span', html: 'Loading', cls: 'loading-indicator'});
+        tab.add(target);
 
         var config = {
             schemaName: tab.report.schemaName,
