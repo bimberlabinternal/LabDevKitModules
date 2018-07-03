@@ -81,4 +81,9 @@ abstract public class AbstractNotification implements Notification
     {
         return new SimpleDateFormat(LookAndFeelProperties.getInstance(c).getDefaultDateTimeFormat());
     }
+
+    public Module getOwnerModule()
+    {
+        return _owner;
+    }
 }

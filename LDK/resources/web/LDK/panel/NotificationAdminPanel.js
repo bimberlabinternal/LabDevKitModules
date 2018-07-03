@@ -48,7 +48,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                     cls: 'ldk-notificationlabel',
                     width: 200
                 },{
-                    width: 350,
+                    width: 500,
                     html: ['Schedule: ' + notification.schedule,
                         'Last Run: ' + (notification.lastRun == 0 ? 'Never' : Ext4.Date.format(new Date(notification.lastRun), LABKEY.extDefaultDateTimeFormat)),
                         'Next Fire Time: ' + (notification.nextFireTime ? Ext4.Date.format(new Date(notification.nextFireTime), LABKEY.extDefaultDateTimeFormat) : ''),
