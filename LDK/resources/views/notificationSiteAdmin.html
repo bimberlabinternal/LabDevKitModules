@@ -16,6 +16,7 @@
                         xtype: 'combo',
                         fieldLabel: 'Status of Notification Service',
                         labelWidth: 200,
+                        editable: false,
                         displayField: 'display',
                         valueField: 'value',
                         queryMode: 'local',
@@ -31,6 +32,8 @@
                     },{
                         xtype: 'button',
                         text: 'Save',
+                        height: 22,
+                        margin: '0 0 0 10px',
                         handler: function(btn){
                             var val = btn.up('panel').down('combo').getValue();
 
@@ -39,7 +42,7 @@
                                 scope: this,
                                 failure: LDK.Utils.getErrorCallback(),
                                 success: function(response){
-                                    Ext4.Msg.alert('Success', 'Settings saved', function(){
+                                    Ext4.Msg.alert('Success', 'Settings saved successfully.', function(){
                                         window.location.reload();
                                     }, this);
                                 }
