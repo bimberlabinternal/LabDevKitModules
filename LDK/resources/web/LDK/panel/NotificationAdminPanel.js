@@ -34,6 +34,9 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
 
             var notificationItems = notificationMap[notification.category];
 
+            // value to be used for automated tests based on the key
+            var notificationKeyName = notification.key.substring(notification.key.lastIndexOf('.') + 1);
+
             notificationItems.push({
                 layout: 'hbox',
                 border: false,
@@ -63,6 +66,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                     style:'margin: 5px;',
                     displayField: 'status',
                     valueField: 'status',
+                    name: 'status_' + notificationKeyName,
                     store: Ext4.create('Ext.data.ArrayStore', {
                         fields: ['status', 'rawValue'],
                         data: [
