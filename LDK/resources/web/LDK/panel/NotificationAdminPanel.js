@@ -37,6 +37,16 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
             // value to be used for automated tests based on the key
             var notificationKeyName = notification.key.substring(notification.key.lastIndexOf('.') + 1);
 
+            var notificationInfo = [];
+            notificationInfo.push('Schedule: ' + notification.schedule);
+            if (notification.cronString != null) {
+                notificationInfo.push('Last Run: ' + (notification.lastRun === 0 ? 'Never' : Ext4.Date.format(new Date(notification.lastRun), LABKEY.extDefaultDateTimeFormat)));
+                notificationInfo.push('Next Fire Time: ' + (notification.nextFireTime ? Ext4.Date.format(new Date(notification.nextFireTime), LABKEY.extDefaultDateTimeFormat) : ''));
+                notificationInfo.push('Time Since: ' + (notification.durationString ? notification.durationString : ''));
+            }
+            notificationInfo.push('Description: ' + (notification.description ? notification.description: ''));
+            notificationInfo.push('You are ' + (notification.subscriptions.length ? '' : 'not ') +  'subscribed to this notification');
+
             notificationItems.push({
                 layout: 'hbox',
                 border: false,
@@ -52,13 +62,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                     width: 200
                 },{
                     width: 500,
-                    html: ['Schedule: ' + notification.schedule,
-                        'Last Run: ' + (notification.lastRun == 0 ? 'Never' : Ext4.Date.format(new Date(notification.lastRun), LABKEY.extDefaultDateTimeFormat)),
-                        'Next Fire Time: ' + (notification.nextFireTime ? Ext4.Date.format(new Date(notification.nextFireTime), LABKEY.extDefaultDateTimeFormat) : ''),
-                        'Time Since: ' + (notification.durationString ? notification.durationString : ''),
-                        'Description: ' + (notification.description ? notification.description: ''),
-                        'You are ' + (notification.subscriptions.length ? '' : 'not ') +  'subscribed to this notification'
-                    ].join('<br>')
+                    html: notificationInfo.join('<br>')
                 },{
                     xtype: 'combo',
                     editable: false,
