@@ -93,6 +93,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                     },{
                         xtype: 'ldk-linkbutton',
                         text: 'Manually Trigger Email',
+                        id: 'trigger_' + notificationKeyName,
                         linkCls: 'labkey-text-link',
                         notificationKey: notification.key,
                         handler: function(btn){
@@ -108,6 +109,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                     },{
                         xtype: 'ldk-linkbutton',
                         text: 'Manage Subscribed Users/Groups',
+                        id: 'manageUser_' + notificationKeyName,
                         target: '_self',
                         linkCls: 'labkey-text-link',
                         notification: notification,
