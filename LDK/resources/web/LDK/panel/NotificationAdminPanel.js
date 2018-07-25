@@ -39,7 +39,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
 
             var notificationInfo = [];
             notificationInfo.push('Schedule: ' + notification.schedule);
-            if (notification.cronString != null) {
+            if (notification.cronString != null || notification.lastRun !== 0) {
                 notificationInfo.push('Last Run: ' + (notification.lastRun === 0 ? 'Never' : Ext4.Date.format(new Date(notification.lastRun), LABKEY.extDefaultDateTimeFormat)));
                 notificationInfo.push('Next Fire Time: ' + (notification.nextFireTime ? Ext4.Date.format(new Date(notification.nextFireTime), LABKEY.extDefaultDateTimeFormat) : ''));
                 notificationInfo.push('Time Since: ' + (notification.durationString ? notification.durationString : ''));
