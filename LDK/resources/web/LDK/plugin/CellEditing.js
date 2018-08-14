@@ -67,7 +67,13 @@ Ext4.define('LDK.grid.plugin.CellEditing', {
                     field.assertValue();
                 }
 
-                value = me.getValue();
+                if (me.field.useDisplayValue) {
+                    value = me.field.getDisplayValue();
+                }
+                else {
+                    value = me.getValue();
+                }
+
                 if (!field.isValid()) {
                     if (me.revertInvalid !== false) {
                         me.cancelEdit(remainVisible);
@@ -82,7 +88,13 @@ Ext4.define('LDK.grid.plugin.CellEditing', {
 
                 if (me.fireEvent('beforecomplete', me, value, me.startValue) !== false) {
                     // Grab the value again, may have changed in beforecomplete
-                    value = me.getValue();
+                    if (me.field.useDisplayValue) {
+                        value = me.field.getDisplayValue();
+                    }
+                    else {
+                        value = me.getValue();
+                    }
+
                     if (me.updateEl && me.boundEl) {
                         me.boundEl.update(value);
                     }
