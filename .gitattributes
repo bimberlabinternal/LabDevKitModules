@@ -942,6 +942,7 @@ maccoss/testresults/resources/schemas/dbscripts/postgresql/testresults-13.29-13.
 maccoss/testresults/resources/schemas/dbscripts/postgresql/testresults-13.30-13.31.sql -text
 maccoss/testresults/resources/schemas/dbscripts/postgresql/testresults-13.31-13.32.sql -text
 maccoss/testresults/resources/schemas/dbscripts/postgresql/testresults-13.32-13.33.sql -text
+maccoss/testresults/resources/schemas/dbscripts/postgresql/testresults-13.33-13.34.sql -text
 maccoss/testresults/resources/schemas/dbscripts/sqlserver/testresults-13.20-13.21.sql -text
 maccoss/testresults/resources/schemas/testresults.xml -text
 maccoss/testresults/src/org/labkey/testresults/RunDetail.java -text
