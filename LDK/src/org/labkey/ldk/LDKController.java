@@ -27,6 +27,7 @@ import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
+import org.labkey.api.action.ExportAction;
 import org.labkey.api.action.SimpleErrorView;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
@@ -36,10 +37,12 @@ import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSequenceManager;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.SqlExecutor;
+import org.labkey.api.data.SqlScriptRunner;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.Notification;
 import org.labkey.api.ldk.notification.NotificationService;
+import org.labkey.api.module.AllowedDuringUpgrade;
 import org.labkey.api.module.ModuleHtmlView;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.DetailsURL;
@@ -66,7 +69,9 @@ import org.labkey.api.settings.AppProps;
 import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.GUID;
+import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Path;
+import org.labkey.api.util.StringUtilsLabKey;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
@@ -82,10 +87,12 @@ import org.labkey.ldk.ldap.LdapEntry;
 import org.labkey.ldk.ldap.LdapSettings;
 import org.labkey.ldk.ldap.LdapSyncRunner;
 import org.labkey.ldk.notification.NotificationServiceImpl;
+import org.labkey.ldk.sql.LDKNaturalizeInstallationManager;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1608,4 +1615,16 @@ public class LDKController extends SpringActionController
         }
     }
 
+    @RequiresPermission(AdminOperationsPermission.class)
+    @AllowedDuringUpgrade
+    public class DownloadNaturalizeInstallScriptAction extends ExportAction<Object>
+    {
+        @Override
+        public void export(Object o, HttpServletResponse response, BindException errors) throws Exception
+        {
+            SqlScriptRunner.SqlScript installScript = LDKNaturalizeInstallationManager.get().getInstallScript();
+            response.setCharacterEncoding(StringUtilsLabKey.DEFAULT_CHARSET.name());
+            PageFlowUtil.streamFileBytes(response, "naturalizeInstall.sql", installScript.getContents().getBytes(StringUtilsLabKey.DEFAULT_CHARSET), true);
+        }
+    }
 }

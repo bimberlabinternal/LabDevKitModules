@@ -21,6 +21,7 @@ import org.labkey.api.audit.AuditLogService;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.UpgradeCode;
+import org.labkey.api.data.bigiron.ClrAssemblyManager;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationService;
@@ -38,6 +39,7 @@ import org.labkey.ldk.notification.NotificationServiceImpl;
 import org.labkey.ldk.notification.SiteSummaryNotification;
 import org.labkey.ldk.query.LookupsUserSchema;
 import org.labkey.ldk.query.MssqlUtilsUserSchema;
+import org.labkey.ldk.sql.LDKNaturalizeInstallationManager;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -89,14 +91,23 @@ public class LDKModule extends ExtendedSimpleModule
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "ldap sync admin", DetailsURL.fromString("/ldk/ldapSettings.view").getActionURL(), AdminOperationsPermission.class);
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "file root usage summary", DetailsURL.fromString("/ldk/folderSizeSummary.view").getActionURL(), ReadPermission.class);
 
-        if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
+        if (isSqlServer())
         {
             AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "sql server DB index usage", DetailsURL.fromString("/query/executeQuery.view?schemaName=mssqlutils&query.queryName=index_stats").getActionURL(), AdminPermission.class);
+
+            ClrAssemblyManager.registerInstallationManager(LDKNaturalizeInstallationManager.get());
         }
 
         LdapScheduler.get().schedule();
 
         NotificationService.get().registerNotification(new SiteSummaryNotification());
+    }
+
+    @Override
+    public void afterUpdate(ModuleContext moduleContext)
+    {
+        if (isSqlServer())
+            LDKNaturalizeInstallationManager.get().ensureInstalled(moduleContext);
     }
 
     @NotNull
@@ -124,11 +135,16 @@ public class LDKModule extends ExtendedSimpleModule
     {
         super.registerSchemas();
 
-        if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
+        if (isSqlServer())
         {
             MssqlUtilsUserSchema.register(this);
         }
 
         LookupsUserSchema.register(this);
+    }
+
+    public static boolean isSqlServer()
+    {
+        return DbScope.getLabKeyScope().getSqlDialect().isSqlServer();
     }
 }

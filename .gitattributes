@@ -341,6 +341,7 @@ labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.34-12.35.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.35-12.36.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.36-12.37.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.37-12.38.sql -text
+labModules/LDK/resources/schemas/dbscripts/sqlserver/Naturalize_install_1.0.1.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-0.00-0.01.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-0.01-0.02.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-0.02-12.30.sql -text
@@ -352,7 +353,6 @@ labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.34-12.35.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.35-12.36.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.36-12.37.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.37-12.38.sql -text
-labModules/LDK/resources/schemas/dbscripts/sqlserver/naturalize_install.sql -text
 labModules/LDK/resources/schemas/ldk.xml -text
 labModules/LDK/resources/scripts/ldk/Assert.js -text
 labModules/LDK/resources/scripts/ldk/Utils.js -text
@@ -503,6 +503,7 @@ labModules/LDK/src/org/labkey/ldk/query/LookupValidationHelper.java -text
 labModules/LDK/src/org/labkey/ldk/query/LookupsUserSchema.java -text
 labModules/LDK/src/org/labkey/ldk/query/MssqlUtilsUserSchema.java -text
 labModules/LDK/src/org/labkey/ldk/query/UniqueConstraintHelper.java -text
+labModules/LDK/src/org/labkey/ldk/sql/LDKNaturalizeInstallationManager.java -text
 labModules/LDK/tools/naturalize/naturalize.cs -text
 labModules/LDK/tools/server/tomcat_log_cleanup.sh -text
 labModules/build.gradle -text

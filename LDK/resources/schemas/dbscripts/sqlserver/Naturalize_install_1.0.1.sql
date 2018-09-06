@@ -96,6 +96,21 @@ IF @@TRANCOUNT = 0
 GO
 
 -------------------------------------------------------------------------------------------------------------------
+-- Create (or replace) a simple function that returns the version number of the newly installed assembly
+IF EXISTS (SELECT  *
+    FROM  sys.objects
+      WHERE   object_id = OBJECT_ID(N' ldk.NaturalizeVersion')
+        AND type = N'FN')
+  DROP FUNCTION  ldk.NaturalizeVersion;
+GO
+
+CREATE FUNCTION ldk.NaturalizeVersion()
+  RETURNS VARCHAR(100)
+  BEGIN
+    RETURN '1.0.1';
+  END;
+GO
+
 IF EXISTS (SELECT * FROM #tmpErrors) ROLLBACK TRANSACTION
 GO
 IF @@TRANCOUNT>0 BEGIN
