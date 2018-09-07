@@ -51,7 +51,7 @@ public class LDKUpgradeCode implements UpgradeCode
 
                 DbSchema schema = LDKSchema.getInstance().getSchema();
                 FileSqlScriptProvider provider = new FileSqlScriptProvider(ModuleLoader.getInstance().getModule(LDKModule.class));
-                SqlScriptRunner.SqlScript script = new FileSqlScriptProvider.FileSqlScript(provider, schema, "naturalize_install.sql", "LDK");
+                SqlScriptRunner.SqlScript script = new FileSqlScriptProvider.FileSqlScript(provider, schema, "Naturalize_install_1.0.1.sql", "LDK");
 
                 try (Connection conn = schema.getScope().getUnpooledConnection())
                 {

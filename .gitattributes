@@ -342,6 +342,7 @@ labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.35-12.36.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.36-12.37.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.37-12.38.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/Naturalize_install_1.0.1.sql -text
+labModules/LDK/resources/schemas/dbscripts/sqlserver/Naturalize_uninstall.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-0.00-0.01.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-0.01-0.02.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-0.02-12.30.sql -text
