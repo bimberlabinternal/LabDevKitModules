@@ -49,7 +49,7 @@ Ext4.define('LDK.field.ExpDataField', {
         }
 
         LABKEY.Query.selectRows({
-            containerFilter: 'WorkbookAssay',
+            containerFilter: 'AssayLocation',
             containerPath: Laboratory.Utils.getQueryContainerPath(),
             schemaName: 'exp',
             queryName: 'data',

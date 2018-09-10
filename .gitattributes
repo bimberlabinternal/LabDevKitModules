@@ -674,6 +674,7 @@ labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.299-12
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.300-12.301.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.301-12.302.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.302-12.303.sql -text
+labModules/laboratory/resources/schemas/dbscripts/sqlserver/laboratory-12.303-12.304.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/obsolete/laboratory-0.00-11.12.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/obsolete/laboratory-11.12-11.14.sql -text
 labModules/laboratory/resources/schemas/dbscripts/sqlserver/obsolete/laboratory-11.14-11.15.sql -text

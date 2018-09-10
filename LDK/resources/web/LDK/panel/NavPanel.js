@@ -347,9 +347,8 @@ Ext4.define('LDK.panel.NavPanel', {
                 ,
                     this.getBrowseItemCfg(item, {
                         urlConfig: {
-                            controller: 'query',
-                            action: 'executeQuery',
-                            params: {'schemaName': 'laboratory', 'queryName': 'workbooks'}
+                            controller: 'laboratory',
+                            action: 'labWorkbooks'
                         },
                         tooltip: 'Click to display a table of all workbooks'
                     })
