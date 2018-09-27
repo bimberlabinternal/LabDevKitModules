@@ -225,7 +225,7 @@ LDK.StoreUtils = new function(){
                 if (date){
                     var mills = Date.parse(Ext4.Date.format(date, 'm/d/Y H:i'));
                     if (!mills == date.getTime()){
-                        console.error('Date doesnt match: ' + val + '/' + date.toString());
+                        console.error('Date doesn\'t match: ' + val + '/' + date.toString());
                         return null;
                     }
                     else {
