@@ -4,9 +4,9 @@
     </permissions>
     <dependencies>
         <dependency path="ldk.context"/>
-        <dependency path="ldk/ux/MultiSelect.js"/>
-        <dependency path="ldk/ux/ItemSelector.css"/>
-        <dependency path="ldk/ux/ItemSelector.js"/>
+        <dependency path="ux/ItemSelector/MultiSelect.js"/>
+        <dependency path="ux/ItemSelector/ItemSelector.css"/>
+        <dependency path="ux/ItemSelector/ItemSelector.js"/>
         <dependency path="ldk/panel/LdapSettingsPanel.js"/>
     </dependencies>
 </view>
