@@ -45,7 +45,7 @@ Ext4.define('LDK.data.CaseInsensitiveModel', {
         if (!resolved){
             console.error('Unable to resolve field: ' + name);
         }
-        if (resolved != name){
+        if (resolved && resolved !== name){
             console.log('differing field name: ' + name + '/' + resolved);
         }
 
