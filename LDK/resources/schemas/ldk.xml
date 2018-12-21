@@ -85,25 +85,6 @@
             </column>
         </columns>
     </table>
-    <table tableName="ldapSyncMap" tableDbType="TABLE" hidden="false">
-        <tableTitle>LDAP Sync Map</tableTitle>
-        <importUrl></importUrl>
-        <insertUrl></insertUrl>
-        <updateUrl></updateUrl>
-        <deleteUrl></deleteUrl>
-        <pkColumnName>rowid</pkColumnName>
-        <columns>
-            <column columnName="rowid">
-                <shownInInsertView>false</shownInInsertView>
-                <isAutoInc>true</isAutoInc>
-            </column>
-            <column columnName="provider"/>
-            <column columnName="sourceId"/>
-            <column columnName="labkeyId"/>
-            <column columnName="type"/>
-            <column columnName="created"/>
-        </columns>
-    </table>
     <table tableName="daysOfWeek" tableDbType="TABLE" hidden="false">
         <description>Full names for the days of the week. 1-indexed, with Sunday as the first day</description>
         <tableTitle>Days Of The Week</tableTitle>

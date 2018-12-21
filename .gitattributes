@@ -25,8 +25,6 @@ labModules/LDK/resources/queries/core/SiteUsagePerGroup.query.xml -text
 labModules/LDK/resources/queries/core/SiteUsagePerGroup.sql -text
 labModules/LDK/resources/queries/core/containers.query.xml -text
 labModules/LDK/resources/queries/ldk/dateRange.sql -text
-labModules/LDK/resources/queries/ldk/ldapSyncDiscrepancies.query.xml -text
-labModules/LDK/resources/queries/ldk/ldapSyncDiscrepancies.sql -text
 labModules/LDK/resources/queries/ldk/monthRange.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-0.00-0.01.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-0.01-0.02.sql -text
@@ -39,6 +37,7 @@ labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.34-12.35.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.35-12.36.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.36-12.37.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.37-12.38.sql -text
+labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-12.38-12.39.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/Naturalize_install_1.0.1.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/Naturalize_uninstall.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-0.00-0.01.sql -text
@@ -52,6 +51,7 @@ labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.34-12.35.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.35-12.36.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.36-12.37.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.37-12.38.sql -text
+labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.38-12.39.sql -text
 labModules/LDK/resources/schemas/ldk.xml -text
 labModules/LDK/resources/scripts/ldk/Assert.js -text
 labModules/LDK/resources/scripts/ldk/Utils.js -text
@@ -61,8 +61,6 @@ labModules/LDK/resources/views/calendar.html -text
 labModules/LDK/resources/views/calendar.view.xml -text
 labModules/LDK/resources/views/folderSizeSummary.html -text
 labModules/LDK/resources/views/folderSizeSummary.view.xml -text
-labModules/LDK/resources/views/ldapSettings.html -text
-labModules/LDK/resources/views/ldapSettings.view.xml -text
 labModules/LDK/resources/views/manageRecord.html -text
 labModules/LDK/resources/views/manageRecord.view.xml -text
 labModules/LDK/resources/views/notificationAdmin.html -text
@@ -153,7 +151,6 @@ labModules/LDK/resources/web/LDK/panel/CalendarPanel.js -text
 labModules/LDK/resources/web/LDK/panel/ContentResizingPanel.js -text
 labModules/LDK/resources/web/LDK/panel/DetailsPanel.js -text
 labModules/LDK/resources/web/LDK/panel/GraphPanel.js -text
-labModules/LDK/resources/web/LDK/panel/LdapSettingsPanel.js -text
 labModules/LDK/resources/web/LDK/panel/MultiRecordDetailsPanel.js -text
 labModules/LDK/resources/web/LDK/panel/MultiSubjectFilterType.js -text
 labModules/LDK/resources/web/LDK/panel/NavPanel.js -text
@@ -180,13 +177,6 @@ labModules/LDK/src/org/labkey/ldk/LDKModule.java -text
 labModules/LDK/src/org/labkey/ldk/LDKSchema.java -text
 labModules/LDK/src/org/labkey/ldk/LDKServiceImpl.java -text
 labModules/LDK/src/org/labkey/ldk/LDKUpgradeCode.java -text
-labModules/LDK/src/org/labkey/ldk/ldap/LdapConnectionConfigFactory.java -text
-labModules/LDK/src/org/labkey/ldk/ldap/LdapConnectionWrapper.java -text
-labModules/LDK/src/org/labkey/ldk/ldap/LdapEntry.java -text
-labModules/LDK/src/org/labkey/ldk/ldap/LdapScheduler.java -text
-labModules/LDK/src/org/labkey/ldk/ldap/LdapSettings.java -text
-labModules/LDK/src/org/labkey/ldk/ldap/LdapSyncAuditProvider.java -text
-labModules/LDK/src/org/labkey/ldk/ldap/LdapSyncRunner.java -text
 labModules/LDK/src/org/labkey/ldk/notification/NotificationJob.java -text
 labModules/LDK/src/org/labkey/ldk/notification/NotificationServiceImpl.java -text
 labModules/LDK/src/org/labkey/ldk/notification/SiteSummaryNotification.java -text

@@ -17,7 +17,6 @@
 package org.labkey.ldk;
 
 import org.jetbrains.annotations.NotNull;
-import org.labkey.api.audit.AuditLogService;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.UpgradeCode;
@@ -33,8 +32,6 @@ import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.settings.AdminConsole;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
-import org.labkey.ldk.ldap.LdapScheduler;
-import org.labkey.ldk.ldap.LdapSyncAuditProvider;
 import org.labkey.ldk.notification.NotificationServiceImpl;
 import org.labkey.ldk.notification.SiteSummaryNotification;
 import org.labkey.ldk.query.LookupsUserSchema;
@@ -58,7 +55,7 @@ public class LDKModule extends ExtendedSimpleModule
     @Override
     public double getVersion()
     {
-        return 12.38;
+        return 12.39;
     }
 
     @Override
@@ -85,10 +82,7 @@ public class LDKModule extends ExtendedSimpleModule
     @Override
     protected void doStartupAfterSpringConfig(ModuleContext moduleContext)
     {
-        AuditLogService.get().registerAuditType(new LdapSyncAuditProvider());
-
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "notification service admin", DetailsURL.fromString("/ldk/notificationSiteAdmin.view").getActionURL(), AdminOperationsPermission.class);
-        AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "ldap sync admin", DetailsURL.fromString("/ldk/ldapSettings.view").getActionURL(), AdminOperationsPermission.class);
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "file root usage summary", DetailsURL.fromString("/ldk/folderSizeSummary.view").getActionURL(), ReadPermission.class);
 
         if (isSqlServer())
@@ -97,8 +91,6 @@ public class LDKModule extends ExtendedSimpleModule
 
             ClrAssemblyManager.registerInstallationManager(LDKNaturalizeInstallationManager.get());
         }
-
-        LdapScheduler.get().schedule();
 
         NotificationService.get().registerNotification(new SiteSummaryNotification());
     }
