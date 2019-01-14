@@ -34,9 +34,6 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
 
             var notificationItems = notificationMap[notification.category];
 
-            // value to be used for automated tests based on the key
-            var notificationKeyName = notification.key.substring(notification.key.lastIndexOf('.') + 1);
-
             var notificationInfo = [];
             notificationInfo.push('Schedule: ' + notification.schedule);
             if (notification.cronString != null || notification.lastRun !== 0) {
@@ -70,7 +67,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                     style:'margin: 5px;',
                     displayField: 'status',
                     valueField: 'status',
-                    name: 'status_' + notificationKeyName,
+                    name: 'status_' + notification.key, //ex. this will be "status_org.
                     store: Ext4.create('Ext.data.ArrayStore', {
                         fields: ['status', 'rawValue'],
                         data: [
@@ -93,7 +90,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                     },{
                         xtype: 'ldk-linkbutton',
                         text: 'Manually Trigger Email',
-                        id: 'trigger_' + notificationKeyName,
+                        id: 'trigger_' + notification.key,
                         linkCls: 'labkey-text-link',
                         notificationKey: notification.key,
                         handler: function(btn){
@@ -109,7 +106,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                     },{
                         xtype: 'ldk-linkbutton',
                         text: 'Manage Subscribed Users/Groups',
-                        id: 'manageUser_' + notificationKeyName,
+                        id: 'manageUser_' + notification.key,
                         target: '_self',
                         linkCls: 'labkey-text-link',
                         notification: notification,
