@@ -132,6 +132,10 @@ Ext4.define('LDK.panel.NavPanel', {
                         renderer = this.renderers[renderer];
 
                     item = renderer.call(this, sectionCfg.items[j], sectionCfg);
+                    if (!item){
+                        continue;
+                    }
+
                     item.cls = 'ldk-navpanel-section-row';
 
                     section.add(item);
@@ -220,6 +224,10 @@ Ext4.define('LDK.panel.NavPanel', {
         },
 
         importingNavItem: function(item){
+            if (!item.browseUrl || Ext4.Object.isEmpty(item.browseUrl)){
+                return;
+            }
+
             var cfg = {
                 layout: 'hbox',
                 bodyStyle: 'background-color: transparent;',

@@ -43,14 +43,23 @@ div#bs-category-tabs-list .nav > li > a{
 div#bs-report-tabs-list .nav-pills,
 div#bs-category-tabs-list .nav-pills{
     background-color: white;
-    margin: -5px 0 0 5px;
+    margin: -5px 0 0 0;
+    padding-left: 5px;
 }
 div#bs-report-tabs-list .nav-tabs,
 div#bs-category-tabs-list .nav-tabs {
-    display:inline-flex;
     border-bottom: 0px;
 }
-div#bs-report-tabs-list .nav-tabs > li > a,
+
+div#bs-category-tabs-list {
+    border: 2px solid #DDDDDD;
+}
+
+div#bs-category-tabs-list div.nav-bg {
+    background: #E0E6EA;
+    margin-top: -1px !important;
+}
+
 div#bs-category-tabs-list .nav-tabs > li > a {
     border-bottom: 0px;
 }

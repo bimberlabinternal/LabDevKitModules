@@ -1,0 +1,183 @@
+<script type="text/javascript">
+    Ext4.onReady(function(){
+        Ext4.define('LDK.panel.BulkUpdatePanel', {
+            extend: 'Ext.form.Panel',
+            initComponent: function () {
+                Ext4.apply(this, {
+                    border: false,
+                    bodyStyle: 'padding: 5px;',
+                    defaults: {
+                        border: false
+                    },
+                    items: [{
+                        html: 'This is an admin page designed to allow bulk insert or update into table using the client API.',
+                        style: 'padding-bottom: 20px;'
+                    },{
+                        xtype: 'textfield',
+                        fieldLabel: 'Container Path',
+                        isFormField: true,
+                        name: 'containerPath',
+                        allowBlank: false,
+                        value: LABKEY.Security.currentContainer.path
+                    },{
+                        xtype: 'textfield',
+                        fieldLabel: 'Schema Name',
+                        name: 'schemaName',
+                        allowBlank: false,
+                        value: 'core'
+                    }, {
+                        xtype: 'textfield',
+                        fieldLabel: 'Query Name',
+                        name: 'queryName',
+                        allowBlank: false,
+                        value: 'containers'
+                    }, {
+                        xtype: 'ldk-simplecombo',
+                        fieldLabel: 'Mode',
+                        name: 'mode',
+                        storeValues: 'Insert;Update',
+                        value: 'Update',
+                        forceSelection: true,
+                        allowBlank: false
+                    }, {
+                        xtype: 'checkbox',
+                        fieldLabel: 'Skip Empty Values',
+                        name: 'skipEmpty',
+                        checked: true,
+                        inputValue: true,
+                        helpPopup: 'If selected, empty values will be skipped.  Otherwise, empty values will be interpreted as null and will overwrite existing values'
+                    }, {
+                        xtype: 'textarea',
+                        labelAlign: 'top',
+                        fieldLabel: 'Tab-delimited Data, With Header',
+                        height: 200,
+                        width: 800,
+                        name: 'rows',
+                        allowBlank: false
+                    }, {
+                        xtype: 'button',
+                        text: 'Preview',
+                        border: true,
+                        scope: this,
+                        handler: function (btn) {
+                            var form = btn.up('form');
+                            if (!form.isValid()) {
+                                Ext4.Msg.alert('Error', 'One or more fields are missing');
+                                return;
+                            }
+
+                            var values = form.getValues(false, false);
+                            var text = Ext4.String.trim(values.rows);
+                            var rows = LDK.Utils.CSVToArray(text, '\t');
+                            var colArray = rows.shift();
+                            var parsedRows = this.parseRows(colArray, rows, !!values.skipEmpty);
+
+                            //keep this for validation
+                            console.log(parsedRows);
+
+                            this.generatePreview(colArray, parsedRows);
+
+                        }
+                    }, {
+                        style: 'margin-top: 20px;margin-bottom: 10px;',
+                        itemId: 'previewArea',
+                        autoEl: 'table',
+                        cls: 'stripe hover'
+                    }]
+                });
+
+                this.callParent(arguments);
+            },
+
+            parseRows: function(header, rows, skipEmpty){
+                var ret = [];
+                Ext4.Array.forEach(rows, function(row) {
+                    var data = {};
+                    Ext4.Array.forEach(header, function(field, dataIdx){
+                        if (Ext4.isDefined(row[dataIdx])){
+                            if (!skipEmpty || !Ext4.isEmpty(row[dataIdx])){
+                                data[field] = row[dataIdx];
+                            }
+                        }
+                    }, this);
+
+                    ret.push(data);
+                }, this);
+
+                return ret;
+            },
+
+            generatePreview: function(colArray, parsedRows){
+                var target = this.down('#previewArea');
+                target.removeAll();
+
+                var columns = [{title: 'Row #'}];
+                var colIdxs = [];
+                Ext4.Array.forEach(colArray, function(col, idx){
+                    columns.push({title: col, className: 'dt-center'});
+                    colIdxs.push(idx);
+                }, this);
+
+                var data = [];
+                var missingValues = false;
+                Ext4.Array.forEach(parsedRows, function(row, rowIdx){
+                    var toAdd = [rowIdx + 1];
+                    Ext4.Array.forEach(colIdxs, function(colIdx){
+                        var propName = colArray[colIdx];
+                        toAdd.push(Ext4.isDefined(row[propName]) ? (Ext4.isEmpty(row[propName]) ? 'null' : row[propName]) : '*Not Included*');
+                    }, this);
+
+                    data.push(toAdd);
+                }, this);
+
+                var id = '#' + target.getId();
+                if ( jQuery.fn.dataTable.isDataTable(id) ) {
+                    jQuery(id).DataTable().destroy();
+                }
+
+                jQuery(id).DataTable({
+                    data: data,
+                    pageLength: 500,
+                    dom: 'rt<"bottom"BS><"clear">',
+                    buttons: missingValues ? [] : [{
+                        text: 'Submit',
+                        action: this.onSubmit,
+                        context: {
+                            parsedRows: parsedRows,
+                            panel: this
+                        }
+                    }],
+                    columns: columns
+                });
+
+                target.doLayout();
+            },
+
+            onSubmit: function(e, dt, node, config){
+                Ext4.Msg.wait('Saving...');
+
+                var values = config.context.panel.getValues();
+                var func = values.mode === 'Insert' ? LABKEY.Query.insertRows : LABKEY.Query.updateRows;
+
+                var config = {
+                    containerPath: values.containerPath,
+                    schemaName: values.schemaName,
+                    queryName: values.queryName,
+                    rows: config.context.parsedRows,
+                    scope: this,
+                    success: function(){
+                        Ext4.Msg.hide();
+                        Ext4.Msg.alert('Success', 'Data Saved');
+                    },
+                    failure: LDK.Utils.getErrorCallback()
+                };
+
+                func(config);
+            }
+        });
+
+        var webpart = <%=webpartContext%>;
+        Ext4.create('LDK.panel.BulkUpdatePanel').render(webpart.wrapperDivId);
+    });
+
+</script>

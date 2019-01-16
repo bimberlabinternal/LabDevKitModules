@@ -55,6 +55,8 @@ labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.38-12.39.sql -text
 labModules/LDK/resources/schemas/ldk.xml -text
 labModules/LDK/resources/scripts/ldk/Assert.js -text
 labModules/LDK/resources/scripts/ldk/Utils.js -text
+labModules/LDK/resources/views/apiBulkEdit.html -text
+labModules/LDK/resources/views/apiBulkEdit.view.xml -text
 labModules/LDK/resources/views/begin.html -text
 labModules/LDK/resources/views/begin.view.xml -text
 labModules/LDK/resources/views/calendar.html -text
