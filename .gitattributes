@@ -46,7 +46,6 @@ labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-0.02-12.30.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.30-12.31.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.31-12.32.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.32-12.33.sql -text
-labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.33-12.34.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.34-12.35.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.35-12.36.sql -text
 labModules/LDK/resources/schemas/dbscripts/sqlserver/ldk-12.36-12.37.sql -text
@@ -178,7 +177,6 @@ labModules/LDK/src/org/labkey/ldk/LDKManager.java -text
 labModules/LDK/src/org/labkey/ldk/LDKModule.java -text
 labModules/LDK/src/org/labkey/ldk/LDKSchema.java -text
 labModules/LDK/src/org/labkey/ldk/LDKServiceImpl.java -text
-labModules/LDK/src/org/labkey/ldk/LDKUpgradeCode.java -text
 labModules/LDK/src/org/labkey/ldk/notification/NotificationJob.java -text
 labModules/LDK/src/org/labkey/ldk/notification/NotificationServiceImpl.java -text
 labModules/LDK/src/org/labkey/ldk/notification/SiteSummaryNotification.java -text

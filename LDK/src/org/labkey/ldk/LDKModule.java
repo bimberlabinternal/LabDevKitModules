@@ -117,12 +117,6 @@ public class LDKModule extends ExtendedSimpleModule
     }
 
     @Override
-    public UpgradeCode getUpgradeCode()
-    {
-        return new LDKUpgradeCode();
-    }
-
-    @Override
     protected void registerSchemas()
     {
         super.registerSchemas();
