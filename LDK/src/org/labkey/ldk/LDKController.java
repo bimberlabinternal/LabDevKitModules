@@ -21,11 +21,12 @@ import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
 import org.labkey.api.action.ExportAction;
+import org.labkey.api.action.MutatingApiAction;
+import org.labkey.api.action.ReadOnlyApiAction;
 import org.labkey.api.action.SimpleErrorView;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
@@ -110,7 +111,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetNotificationsAction extends ApiAction<Object>
+    public class GetNotificationsAction extends ReadOnlyApiAction<Object>
     {
         @Override
         public ApiResponse execute(Object form, BindException errors) throws Exception
@@ -134,7 +135,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetFileRootSizesAction extends ApiAction<FileRootSizeForm>
+    public class GetFileRootSizesAction extends ReadOnlyApiAction<FileRootSizeForm>
     {
         @Override
         public ApiResponse execute(FileRootSizeForm form, BindException errors) throws Exception
@@ -210,7 +211,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(AdminOperationsPermission.class)
-    public class GetSiteNotificationDetailsAction extends ApiAction<Object>
+    public class GetSiteNotificationDetailsAction extends ReadOnlyApiAction<Object>
     {
         @Override
         public ApiResponse execute(Object form, BindException errors) throws Exception
@@ -240,7 +241,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(UpdatePermission.class)
-    public class UpdateNotificationSubscriptionsAction extends ApiAction<UpdateNotificationSubscriptionsForm>
+    public class UpdateNotificationSubscriptionsAction extends MutatingApiAction<UpdateNotificationSubscriptionsForm>
     {
         @Override
         public ApiResponse execute(UpdateNotificationSubscriptionsForm form, BindException errors) throws Exception
@@ -399,7 +400,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class SendNotificationAction extends ApiAction<RunNotificationForm>
+    public class SendNotificationAction extends MutatingApiAction<RunNotificationForm>
     {
         public ApiResponse execute(RunNotificationForm form, BindException errors) throws Exception
         {
@@ -453,7 +454,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class GetNotificationSubscriptionsAction extends ApiAction<RunNotificationForm>
+    public class GetNotificationSubscriptionsAction extends ReadOnlyApiAction<RunNotificationForm>
     {
         public ApiResponse execute(RunNotificationForm form, BindException errors) throws Exception
         {
@@ -502,7 +503,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class SetNotificationSettingsAction extends ApiAction<NotificationSettingsForm>
+    public class SetNotificationSettingsAction extends MutatingApiAction<NotificationSettingsForm>
     {
         public ApiResponse execute(NotificationSettingsForm form, BindException errors)
         {
@@ -633,7 +634,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class LogMetricAction extends ApiAction<LogMetricForm>
+    public class LogMetricAction extends MutatingApiAction<LogMetricForm>
     {
         @Override
         public ApiResponse execute(LogMetricForm form, BindException errors) throws Exception
@@ -1087,7 +1088,7 @@ public class LDKController extends SpringActionController
     public static final String REDIRECT_URL_PROP = "redirectURL";
 
     @RequiresPermission(AdminPermission.class)
-    public class SetRedirectUrlAction extends ApiAction<SetRedirectUrlForm>
+    public class SetRedirectUrlAction extends MutatingApiAction<SetRedirectUrlForm>
     {
         @Override
         public ApiResponse execute(SetRedirectUrlForm form, BindException errors) throws Exception
@@ -1122,7 +1123,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class GetRedirectUrlAction extends ApiAction<Object>
+    public class GetRedirectUrlAction extends ReadOnlyApiAction<Object>
     {
         @Override
         public ApiResponse execute(Object form, BindException errors) throws Exception
