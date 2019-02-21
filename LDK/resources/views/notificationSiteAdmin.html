@@ -38,7 +38,11 @@
                             var val = btn.up('panel').down('combo').getValue();
 
                             LABKEY.Ajax.request({
-                                url: LABKEY.ActionURL.buildURL('ldk', 'setNotificationSettings', '/', {enabled: val}),
+                                url: LABKEY.ActionURL.buildURL('ldk', 'setNotificationSettings', '/'),
+                                method: 'POST',
+                                jsonData: {
+                                    enabled: val
+                                },
                                 scope: this,
                                 failure: LDK.Utils.getErrorCallback(),
                                 success: function(response){

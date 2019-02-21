@@ -6,6 +6,7 @@
         Ext4.Msg.wait('Loading...');
         LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ldk', 'getRedirectUrl'),
+            method: 'POST',
             scope: this,
             success: LABKEY.Utils.getCallbackWrapper(function(results){
                 Ext4.Msg.hide();
@@ -36,7 +37,11 @@
 
                             Ext4.Msg.wait('Saving...');
                             LABKEY.Ajax.request({
-                                url: LABKEY.ActionURL.buildURL('ldk', 'setRedirectUrl', null, {url: val}),
+                                url: LABKEY.ActionURL.buildURL('ldk', 'setRedirectUrl', null),
+                                method: 'POST',
+                                jsonData: {
+                                    url: val
+                                },
                                 scope: this,
                                 success: function(){
                                     Ext4.Msg.hide();

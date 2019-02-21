@@ -95,9 +95,13 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                         notificationKey: notification.key,
                         handler: function(btn){
                             Ext4.Msg.confirm('Send Email', 'You are about to manually trigger this notification email to send, which will go to all subscribed users.  Are you sure you want to do this?', function(val){
-                                if (val == 'yes'){
+                                if (val === 'yes'){
                                     LABKEY.Ajax.request({
-                                        url: LABKEY.ActionURL.buildURL('ldk', 'sendNotification', null, {key: btn.notificationKey}),
+                                        url: LABKEY.ActionURL.buildURL('ldk', 'sendNotification', null),
+                                        method: 'POST',
+                                        jsonData: {
+                                            key: btn.notificationKey
+                                        },
                                         failure: LDK.Utils.getErrorCallback()
                                     });
                                 }
@@ -233,6 +237,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                         }
                         LABKEY.Ajax.request({
                             url: LABKEY.ActionURL.buildURL('ldk', 'setNotificationSettings'),
+                            method: 'POST',
                             params: obj,
                             scope: this,
                             success: function(response){
@@ -297,6 +302,7 @@ Ext4.define('LDK.window.ManageNotificationWindow', {
     doLoad: function(){
         LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ldk', 'getNotificationSubscriptions', null, {key: this.notification.key}),
+            method: 'POST',
             scope: this,
             failure: LDK.Utils.getErrorCallback(),
             success: LABKEY.Utils.getCallbackWrapper(this.onLoad, this)
@@ -328,6 +334,7 @@ Ext4.define('LDK.window.ManageNotificationWindow', {
                     Ext4.Msg.wait('Updating...');
                     LABKEY.Ajax.request({
                         url: LABKEY.ActionURL.buildURL('ldk', 'updateNotificationSubscriptions'),
+                        method: 'POST',
                         params: {
                             toAdd: [userId],
                             key: this.notification.key
@@ -377,6 +384,7 @@ Ext4.define('LDK.window.ManageNotificationWindow', {
                             Ext4.Msg.wait('Updating...');
                             LABKEY.Ajax.request({
                                 url: LABKEY.ActionURL.buildURL('ldk', 'updateNotificationSubscriptions'),
+                                method: 'POST',
                                 params: {
                                     toRemove: [btn.userPrincipal.userId],
                                     key: this.notification.key
