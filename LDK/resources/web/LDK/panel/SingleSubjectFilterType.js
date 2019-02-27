@@ -81,18 +81,21 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         return filterArray;
     },
 
-    checkValid: function () {
+    isValid: function () {
         var val = this.down('#subjArea').getValue();
         val = Ext4.String.trim(val);
         if (!val) {
-            Ext4.Msg.alert('Error', 'Must enter at least one ' + this.nounSingular + ' ID');
             return false;
         }
 
         return true;
     },
 
-    validateReport: function (report) {
+    getFilterInvalidMessage: function(){
+        return 'Must enter at least one ' + this.nounSingular + ' ID';
+    },
+
+    validateReportForFilterType: function (report) {
         if (!report.subjectFieldName)
             return 'This report cannot be used with the selected filter type, because the report does not contain a ' + this.nounSingular + ' Id field';
 
@@ -110,7 +113,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         return '';
     },
     
-    loadReport: function(tab, callback, panel){
+    loadReport: function(tab, callback, panel, forceRefresh){
         var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
 
         if (subjectArray.length > 0){
@@ -120,10 +123,10 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         this.subjects = subjectArray;
         this.aliases = {};
         if (Ext4.isDefined(this.aliasTable)) {
-            this.getAlias(subjectArray, callback, panel, tab);
+            this.getAlias(subjectArray, callback, panel, tab, forceRefresh);
         }
         else {
-            callback.call(panel, this.handleFilters(tab, this.subjects));
+            callback.call(panel, this.handleFilters(tab, this.subjects), forceRefresh);
         }
     },
 
@@ -156,13 +159,13 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         this.aliasTable.columns = this.aliasTable.idColumn + (Ext4.isDefined(this.aliasTable.aliasColumn) ? ',' + this.aliasTable.aliasColumn : '');
     },
 
-    getAlias: function (subjectArray, callback, panel, tab) {
+    getAlias: function (subjectArray, callback, panel, tab, forceRefresh) {
         this.aliasTableConfig(subjectArray);
 
         this.aliasTable.success = function (results) {
             this.handleAliases(results);
             this.getSubjectMessages();
-            callback.call(panel, this.handleFilters(tab, this.subjects));
+            callback.call(panel, this.handleFilters(tab, this.subjects), forceRefresh);
         };
 
         LABKEY.Query.selectRows(this.aliasTable);

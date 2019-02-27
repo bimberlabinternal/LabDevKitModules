@@ -24,7 +24,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     rowHeight: 26,
     widthPadding: 35,
     initializing: true,
-    filterFromUrl: false,
+    isReportTabSelected: false,
+    autoLoadDefaultTab: false,
+    clearBetweenClicks: true,
 
     btnPanelPrefix: 'btnPanel',
     totalPanelPrefix: 'totalPanel',
@@ -90,8 +92,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                         xtype: 'button',
                         border: true,
                         text: 'Update Report',
-                        handler: this.onSubmit,
-                        forceRefresh: true,
+                        handler: this.userInitiatedOnSubmit,
                         itemId: 'submitBtn',
                         disabled: true,
                         scope: this,
@@ -107,6 +108,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 }]
             }]
         });
+
+        this.addEvents('tabchange');
+        this.on('tabchange', this.afterTabChange, this, {buffer: 50});
 
         if(!Ext4.isDefined(this.maxSubjectsToShow))
             this.maxSubjectsToShow = this.subjectColumns * this.subjectMaxRows;
@@ -538,7 +542,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         var subjects = [];
 
         for (var section in this.subjects) {
-            if (this.subjects.hasOwnProperty(section) && section != this.btnTypes.notfound) {
+            if (this.subjects.hasOwnProperty(section) && section !== this.btnTypes.notfound) {
                 Ext4.each(this.subjects[section], function (subject) {
                     subjects.push(subject);
                 }, this);
@@ -548,77 +552,121 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         return subjects;
     },
 
-    checkValid: function(){
+    checkFiltersValid: function(){
         if (this.activeFilterType)
-            return this.activeFilterType.checkValid();
+            return this.activeFilterType.isValid();
 
         return true;
     },
 
-    getActiveTab: function(tabPanel){
-        var activeId = tabPanel.activeTabId;
-        var activeTab = null;
-
-        for(var i=0; i < tabPanel.items.length; i++) {
-            if (tabPanel.items[i].id === activeId) {
-                activeTab = tabPanel.items[i];
-                break;
-            }
-        }
-
-        return activeTab;
-    },
-
-    onSubmit: function(btn){
-
-        if (this.initializing && !this.filterFromUrl) {
-            this.initializing = false;
-            return;
-        }
-
-        this.initializing = false;
-
-        if (!this.checkValid()) {
-            return;
-        }
-
-        if (btn)
-            this.forceRefresh = true;
-
-        this.activeReport = null;
-        this.activeCategory = null;
+    determineActiveReport: function(){
+        var activeReport = null;
         var tabPanel = this.getTabPanel();
         var categoryTab = tabPanel.findItemForActiveTabId();
-        if (categoryTab){
+        if (categoryTab) {
             var subTab = categoryTab.items[0].findItemForActiveTabId();
-            if (subTab){
-                this.activeReport = subTab;
-                this.activeCategory = categoryTab;
+            if (subTab) {
+                activeReport = subTab;
             }
             else {
-                if (this.defaultReport){
+                if (this.defaultReport) {
                     var report = this.findReport(this.defaultReport);
-                    if (report){
+                    if (report) {
                         var owner = this.getCategoryTab(report.id);
-                        if (owner == categoryTab){
-                            this.activeReport = report;
+                        if (owner === categoryTab) {
+                            activeReport = report;
                         }
                     }
                 }
 
                 //if a top-level tab is active, but no 2nd tier tab selected, use the left-most tab
-                if (!this.activeReport && categoryTab){
-                    this.activeReport = categoryTab.items[0].items[0];
+                if (!activeReport && categoryTab) {
+                    activeReport = categoryTab.items[0].items[0];
                 }
             }
         }
 
-        if (this.activeCategory && this.activeReport){
-            this.loadTab(this.activeReport);
+        return activeReport;
+    },
+
+    possiblySetActiveTabAndLoad: function(forceRefresh){
+        this.activeReport = this.determineActiveReport();
+        if (!this.activeReport) {
+            Ext4.Msg.alert('Error', 'You must select a report to display by clicking the one of the 2nd tier tabs below.');
+            return;
+        }
+
+        //assuming the user has not yet intiated any report loading, dont try to load, which might cause
+        //alters if they havent filled out fields.  however, if the filters are valid, go ahead and load.
+        var filtersValid = this.checkFiltersValid();
+        if (!filtersValid && !this.isReportTabSelected) {
+            return;
+        }
+
+        if (!filtersValid) {
+            Ext4.Msg.alert('Error', this.activeFilterType.getFilterInvalidMessage());
+            return;
+        }
+
+        if (!this.activeFilterType) {
+            return;
+        }
+
+        this.generateFiltersAndLoadTab(forceRefresh);
+    },
+
+    generateFiltersAndLoadTab: function (forceRefresh) {
+        var tab = this.activeReport;
+        if (!tab){
+            return;
+        }
+
+        forceRefresh = !!forceRefresh;
+
+        if (this.activeFilterType.loadReport) {
+            this.activeFilterType.loadReport(tab, this.possiblyUpdateActiveReport, this, forceRefresh);
         }
         else {
-            Ext4.Msg.alert('Error', 'You must select a report to display by clicking the one of the 2nd tier tabs below.')
+            this.possiblyUpdateActiveReport(this.activeFilterType.getFilters() || {}, forceRefresh);
         }
+    },
+
+    //updates the provided tab, unless already up-to-date
+    possiblyUpdateActiveReport: function (filters, forceRefresh) {
+        var tab = this.activeReport;
+        var reload = false;
+
+        filters = this.filterHistory(tab, filters);
+
+        var reportTab = tab.items[0];
+        if (reportTab.filters){
+            for (var i in filters){
+                if (JSON.stringify(filters[i]) !== JSON.stringify(reportTab.filters[i])){
+                    reload = true;
+                    break;
+                }
+            }
+        }
+        else {
+            reload = true;
+        }
+
+        //indicates tab already has up to date content
+        if (reload === false && !forceRefresh && !this.clearBetweenClicks){
+            //TODO: fix or remove
+            if (reportTab.down('ldk-contentresizingcmp')) {
+                //reportTab.down('ldk-contentresizingcmp').onContentSizeChange();
+                this.doLayout();
+            }
+            this.signalWebdriverReportTabLoaded();
+            return;
+        }
+
+        reportTab.filters = filters;
+        reportTab.removeAll();
+
+        //note: this will signal to webdriver when content actually loads
+        this.displayReport(reportTab);
     },
 
     findReport: function(name){
@@ -671,30 +719,12 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         tab.add({
             html:"<div id='reporttype-" + tab.report.reportType + "' style=\"display: none;\"/>",
             hidden:true
-        })
+        });
     },
 
     getFilterArray: function(tab){
-        var report = tab.report;
-        var filterArray = this.activeFilterType.getFilterArray(tab);
-
-        return filterArray;
+        return this.activeFilterType.getFilterArray(tab);
     },
-
-    getCombinedFilterArray: function(tab){
-        var fa = this.getFilterArray(tab);
-        var ret = [];
-        if (fa && fa.removable){
-            ret = ret.concat(fa.removable);
-        }
-
-        if (fa && fa.nonRemovable){
-            ret = ret.concat(fa.nonRemovable);
-        }
-        
-        return ret;
-    },
-
 
     getTitleSuffix: function(tab){
         var title = this.activeFilterType.getTitle(tab);
@@ -702,11 +732,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     loadQuery: function(tab){
-        var filterArray = this.getFilterArray(tab);
-
-        if (!this.validateReportForFilterType(tab, filterArray))
+        if (!this.validateReportForFilterType(tab))
             return;
 
+        var filterArray = this.getFilterArray(tab);
         var title = this.getTitleSuffix(tab);
 
         var queryConfig = {
@@ -730,7 +759,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             filters: filterArray.nonRemovable,
             removeableFilters: filterArray.removable,
             linkTarget: '_blank',
-            success: this.onDataRegionLoad,
+            success: this.onReportSuccessfulLoad,
             failure: LDK.Utils.getErrorCallback(),
             scope: this
         };
@@ -756,8 +785,8 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         });
     },
 
-    onDataRegionLoad: function(dr){
-        LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
+    onReportSuccessfulLoad: function(dr){
+        this.signalWebdriverReportTabLoaded();
     },
 
     getQWPConfig: function(config){
@@ -772,7 +801,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             linkTarget: '_blank',
             buttonBarPosition: 'top',
             timeout: 0,
-            success: this.onDataRegionLoad,
+            success: this.onReportSuccessfulLoad,
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
             showInsertNewButton: false,
@@ -796,11 +825,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     loadReport: function(tab){
-        var filterArray = this.getFilterArray(tab);
-
-        if (!this.validateReportForFilterType(tab, filterArray))
+        if (!this.validateReportForFilterType(tab))
             return;
 
+        var filterArray = this.getFilterArray(tab);
         filterArray = filterArray.nonRemovable.concat(filterArray.removable);
 
         var target = Ext4.create('LDK.panel.ContentResizingPanel', {minHeight: 50});
@@ -816,13 +844,13 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 title: tab.report.label + this.getTitleSuffix(),
                 schemaName: tab.report.schemaName,
                 reportId : tab.report.reportId,
-                'query.queryName': tab.report.queryName
+                'query.queryName': tab.report.queryName,
             },
             filters: filterArray,
             success: function(result){
                 target.unmask();
                 Ext4.defer(target.createListeners, 200, target);
-                LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
+                this.signalWebdriverReportTabLoaded();
             },
             failure: LDK.Utils.getErrorCallback(),
             scope: this
@@ -856,26 +884,31 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             jsFunction = ns ? ns[tab.report.jsHandler] : this[tab.report.jsHandler];
         }
 
-        if (!jsFunction)
-        {
-            var message = "Could not find JavaScript function '" + tab.report.jsHandler + "' to load tab in Animal History. The report is misconfigured.";
+        if (!jsFunction) {
+            var message = "Could not find JavaScript function '" + tab.report.jsHandler + "' to load tab in TabbedReportPanel. The report is misconfigured.";
             LDK.Utils.logError(message);
             alert(message);
         }
-        else
-        {
+        else {
             jsFunction(this, tab);
         }
-        LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
+
+        this.signalWebdriverReportTabLoaded();
+    },
+
+    signalWebdriverReportTabLoaded: function(){
+        Ext4.defer(function(){
+            LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
+        }, 200, this);
+
     },
 
     loadDetails: function(tab, target){
-        var filterArray = this.getFilterArray(tab);
-
-        if (~this.validateReportForFilterType(tab, filterArray)){
+        if (this.validateReportForFilterType(tab)){
             return;
         }
 
+        var filterArray = this.getFilterArray(tab);
         filterArray = filterArray.nonRemovable.concat(filterArray.removable);
 
         target = Ext4.create('Ext.Component', {tag: 'span', html: 'Loading', cls: 'loading-indicator'});
@@ -887,9 +920,8 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             title: tab.report.label + this.getTitleSuffix(),
             titleField: 'Id',
             renderTo: target.id,
-            success: function(){
-                LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
-            },
+            scope: this,
+            success: this.signalWebdriverReportTabLoaded,
             filterArray: filterArray,
             multiToGrid: this.multiToGrid
         };
@@ -901,8 +933,8 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         Ext4.create('LDK.ext.MultiDetailsPanel', config);
     },
 
-    validateReportForFilterType: function(tab, filterArray){
-        var message = this.activeFilterType.validateReport(tab.report);
+    validateReportForFilterType: function(tab){
+        var message = this.activeFilterType.validateReportForFilterType(tab.report);
         if (!message) {
             return true;
         }
@@ -945,7 +977,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 name: 'selector',
                 inputAttrTpl: 'name = ' + t.inputValue,
                 inputValue: t.inputValue,
-                checked: idx == 0,
+                checked: idx === 0,
                 boxLabel: t.label,
                 hidden: t.hidden,
                 value: t.initialValue
@@ -973,10 +1005,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             LABKEY.Utils.signalWebDriverTest('filterTypeUpdate', this.activeFilterType.inputValue);
         }
 
-        if (this.loadOnRender || this.autoLoadDefaultTab){
-            this.onSubmit();
-            this.loadOnRender = null;
-            this.autoLoadDefaultTab = null;
+        //clear report so it forces content reload
+        if (this.activeReport) {
+            this.activeReport.filters = null;
         }
     },
 
@@ -984,8 +1015,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         var ctx;
         if (this.activeFilterType){
             var tab = this.activeReport || this.findReport(this.defaultReport);
-            if (tab && tab.items && tab.items.length > 0)
-                ctx = this.activeFilterType.getFilterArray(tab.items[0]);
+            if (tab && tab.items && tab.items.length > 0) {
+                //if a message is returned, this indicates it is not supported
+                ctx = !this.activeFilterType.validateReportForFilterType(this.activeReport) ? this.activeFilterType.getFilterArray(tab.items[0]) : null;
+            }
         }
 
         ctx = ctx || {};
@@ -1001,7 +1034,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     getFilterType: function(inputValue){
         var filter;
         Ext4.each(this.filterTypes, function(f){
-            if (f.inputValue == inputValue){
+            if (f.inputValue === inputValue){
                 filter = f;
                 return false;
             }
@@ -1013,31 +1046,22 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     getFiltersFromUrl: function(){
         var context = {};
 
-        // Handle parameter participantId (animal quicksearch)
-        if (document.location.search && document.location.search.indexOf('participantId') !== -1) {
-            context["subjects"] = document.location.search.split("=")[1];
-            context["inputType"] = "singleSubject";
-            this.loadOnRender = true;
-            this.filterFromUrl = true;
-        }
-
         if (document.location.hash){
             var token = document.location.hash.split('#');
             token = token[1].split('&');
 
             for (var i=0;i<token.length;i++){
-                this.filterFromUrl = true;
                 var t = token[i].split(':');
                 switch(t[0]){
                     case 'inputType':
                         context.inputType = t[1];
                         break;
                     case 'showReport':
-                        this.loadOnRender = (t[1] == 1);
+                        this.isReportTabSelected = (t[1] === 1);
                         break;
                     case 'activeReport':
-                        this.report = decodeURI(t[1]);
-                        var tab = this.reportMap[t[1]];
+                        var report = decodeURI(t[1]);
+                        var tab = this.reportMap[report];
                         if (tab){
                             this.activeReport = tab;
                             this.silentlySetActiveTab(this.activeReport);
@@ -1099,10 +1123,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                     items: item.items,
                     updateHistory: false,
                     listId: 'bs-report-tabs-list',
-                    changeHandler: me.changeHandler,
+                    changeHandler: me.onTabChange,
                     resizeHandler: me.doResizeCmp,
                     delayedLayout: false,
-                    clearBetweenClicks: true,
+                    clearBetweenClicks: this.clearBetweenClicks,
                     scope: me
                 })];
             }
@@ -1168,7 +1192,6 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     },
 
     createTabPanel: function(){
-
         if (!this.reports || !this.reports.length){
             this.items.items.push(Ext4.create('Ext.container.Container', {
                 html: 'There are no reports enabled in this folder.  Please contact your administrator if you believe this is an error.',
@@ -1195,6 +1218,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 item = {
                     title: category,
                     itemId: category,
+                    tabType: 'categoryTab',
                     items: []
                 };
             }
@@ -1205,15 +1229,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             var reportItem = {
                 title: report.label,
                 itemId: reportId,
+                tabType: 'reportTab',
+                category: report.category,
                 scope: this,
-                onReady: function (cmp) {
-                    if (this.activeFilterType) {
-                        this.onSubmit();
-                    }
-                    else {
-                        this.loadOnRender = true;
-                    }
-                },
                 items: [Ext4.create('Ext.container.Container', {
                     report: report,
                     padding: '10px 0',
@@ -1225,12 +1243,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
             item.items.push(reportItem);
 
-
-                if (this.report == reportId){
-                    this.activeReport = reportItem;
-                }
-
-                this.reportMap[reportId] = reportItem;
+            this.reportMap[reportId] = reportItem;
 
             items = this.updateTabItem(item, items);
 
@@ -1240,7 +1253,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         this.items.items.push(Ext4.create('LABKEY.ext4.BootstrapTabPanel', {
             itemId: 'tabPanel',
             usePills: false,
-            changeHandler: function(tab) {},  // don't handle history at this level
+            changeHandler: me.onTabChange,
             updateHistory: false,
             scope: me,
             listId: 'bs-category-tabs-list',
@@ -1278,7 +1291,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 selector: filterType
             });
 
-            if (filterType != val)
+            if (filterType !== val)
                 shouldChange = false;
         }
 
@@ -1294,31 +1307,16 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
     },
 
-    changeHandler: function(tab, initializing, doNotSubmit) {
-        if (!this.findReport || !this.getFilterContext) {
-            console.warn("There is a problem in the tab panel change handler. Scope is incorrect.");
-            return;
-        }
-
-        this.activeReport = tab || (this.findReport && this.findReport(this.defaultReport));
-        var filters = this.getFilterContext();
-
-        this.filterHistory(tab, filters);
-
-        if (!doNotSubmit && this.activeFilterType && !initializing)
-            this.onSubmit(tab);
-
-        LABKEY.Utils.signalWebDriverTest("LDK_reportTabLoaded");
-    },
-
     createKeyListener: function(el){
         Ext4.create('Ext.util.KeyNav', el, {
             scope: this,
-            enter: this.onSubmit
+            enter: this.userInitiatedOnSubmit
         });
     },
 
     silentlySetActiveTab: function(tab){
+        this.isReportTabSelected = false;
+
         var tabPanel = this.getTabPanel();
         var categoryTab = this.getCategoryTab(tab.id);
 
@@ -1338,47 +1336,42 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         }
     },
 
-    updateTab: function (filters) {
-        var tab = this.activeReport || this.findReport(this.defaultReport);
-        var reload = false;
-
-        filters = this.filterHistory(tab, filters);
-
-        var reportTab = tab.items[0];
-        if (reportTab.filters){
-            for (var i in filters){
-                if (JSON.stringify(filters[i]) !== JSON.stringify(reportTab.filters[i])){
-                    reload = true;
-                    break;
-                }
-            }
-        }
-        else {
-            reload = true;
-        }
-
-        //indicates tab already has up to date content
-        if (reload === false && !this.forceRefresh){
-            this.changeHandler(tab, false, true);
-            console.log('no reload needed');
+    //called when either a top-level of report tab changes:
+    onTabChange: function(tab, initializing, evt){
+        if (!tab){
             return;
         }
-        this.forceRefresh = null;
 
-        reportTab.filters = filters;
-        reportTab.removeAll();
+        // If the user actively clicks on a report tab, set to true, forcing report load
+        // otherwise the report will only load if filters are valid.  this avoids excess alerts
+        this.isReportTabSelected = false;
+        if (tab.items[0] && tab.tabType === 'reportTab' && evt) {
+            this.isReportTabSelected = true;
+        }
 
-        this.activeReport = tab;
-        reportTab.hasLoaded = true;
-        this.hasLoaded = true;
-        this.displayReport(reportTab);
+        if (!this.findReport || !this.getFilterContext) {
+            console.warn("There is a problem in the tab panel change handler. Scope is incorrect.");
+            return;
+        }
+
+        this.fireEvent('tabchange');
+    },
+
+    //find the active report and possibly trigger reload.  this allows events to be buffered
+    afterTabChange: function(){
+        this.possiblySetActiveTabAndLoad();
+    },
+
+    userInitiatedOnSubmit: function(){
+        this.isReportTabSelected = true;
+        this.possiblySetActiveTabAndLoad(true);
     },
 
     filterHistory: function (tab, filters) {
         if (tab && tab.items && tab.items.length > 0) {
             Ext4.apply(filters, {
                 inputType: this.down('#inputType').getValue().selector,
-                showReport: 1,
+                showReport: this.isReportTabSelected ? '1' : '0',
                 activeReport: tab.items[0].report.id
             });
         }
@@ -1410,14 +1403,5 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         location.replace("#" + token.join('&'));
 
         return filters;
-    },
-
-    loadTab: function (tab) {
-        if (this.activeFilterType.loadReport) {
-            this.activeFilterType.loadReport(tab, this.updateTab, this);
-        }
-        else {
-            this.updateTab(this.activeFilterType.getFilters() || {});
-        }
     }
 });

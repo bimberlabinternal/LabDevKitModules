@@ -20,8 +20,14 @@ Ext4.define('LDK.panel.AbstractFilterType', {
             this.add(toAdd);
     },
 
-    checkValid: function(){
+    isValid: function(){
         return true;
+    },
+
+    getFilterInvalidMessage: function(){
+        if (!this.isValid()){
+            console.error('subclasses must implement getFilterInvalidMessage()');
+        }
     },
 
     getFilterArray: function(tab, subject){
@@ -35,7 +41,7 @@ Ext4.define('LDK.panel.AbstractFilterType', {
         alert('Error: FilterType should implement getTitle()');
     },
 
-    validateReport: function(report){
+    validateReportForFilterType: function(report){
         return null;  //subclasses should implement this
     },
 

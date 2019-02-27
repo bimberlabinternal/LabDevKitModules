@@ -186,20 +186,19 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         this.subjects = this.subjects.concat(panel.subjects[panel.btnTypes.conflicted]);
     },
 
-    loadReport: function (tab, callback, panel) {
-
+    loadReport: function (tab, callback, panel, forceRefresh) {
         var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
 
         if(subjectArray.length > 0) {
             this.addId(function(){
                 this.updateSubjects();
                 this.handleReport(panel);
-                callback.call(panel, this.handleFilters(tab, this.subjects));
+                callback.call(panel, this.handleFilters(tab, this.subjects), forceRefresh);
             }, this);
         }
         else {
             this.handleReport(panel);
-            callback.call(panel, this.handleFilters(tab, this.subjects));
+            callback.call(panel, this.handleFilters(tab, this.subjects), forceRefresh);
         }
     },
 
@@ -216,15 +215,18 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         return '';
     },
 
-    checkValid: function(){
+    isValid: function(){
         var otherSubjects = this.tabbedReportPanel.getSubjects();
         var subjects = this.getSubjects(otherSubjects);
 
         if (!subjects.length){
-            Ext4.Msg.alert('Error', 'Must enter at least one valid ' + this.nounSingular + ' ID');
             return false;
         }
 
         return true;
+    },
+
+    getFilterInvalidMessage: function(){
+        return 'Error', 'Must enter at least one valid ' + this.nounSingular + ' ID';
     }
 });
