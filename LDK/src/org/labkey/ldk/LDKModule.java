@@ -19,7 +19,6 @@ package org.labkey.ldk;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbScope;
-import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.data.bigiron.ClrAssemblyManager;
 import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.LDKService;
