@@ -1,0 +1,21 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <!--This is used by LookupSetTableIntegrationTest to verify metadata is applied correctly-->
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="" tableDbType="TABLE">
+                <columns>
+                    <column columnName="value">
+                        <validators>
+                            <validator>
+                                <name>Validator1</name>
+                                <typeURI>urn:lsid:labkey.com:PropertyValidator:regex</typeURI>
+                                <expression>^[ABC]+$</expression>
+                                <errorMessage>Improper Value</errorMessage>
+                            </validator>
+                        </validators>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

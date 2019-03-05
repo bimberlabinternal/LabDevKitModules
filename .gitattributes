@@ -26,6 +26,7 @@ labModules/LDK/resources/queries/core/SiteUsagePerGroup.sql -text
 labModules/LDK/resources/queries/core/containers.query.xml -text
 labModules/LDK/resources/queries/ldk/dateRange.sql -text
 labModules/LDK/resources/queries/ldk/monthRange.sql -text
+labModules/LDK/resources/queries/lookups/TestLookupSet.query.xml -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-0.00-0.01.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-0.01-0.02.sql -text
 labModules/LDK/resources/schemas/dbscripts/postgresql/ldk-0.02-12.30.sql -text
