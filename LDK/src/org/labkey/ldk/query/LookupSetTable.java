@@ -15,14 +15,32 @@
  */
 package org.labkey.ldk.query;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.SchemaTableInfo;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.AbstractDataDefinedTable;
+import org.labkey.api.ldk.test.AbstractIntegrationTest;
+import org.labkey.api.module.Module;
+import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.query.BatchValidationException;
+import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
+import org.labkey.ldk.LDKModule;
+import org.labkey.ldk.LDKSchema;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -92,6 +110,180 @@ public class LookupSetTable extends AbstractDataDefinedTable
         LDKService.get().getDefaultTableCustomizer().customize(this);
 
         return this;
+    }
+
+    public static class TestCase extends AbstractIntegrationTest
+    {
+        public static final String PROJECT_NAME = "LookupSetTableTestProject";
+
+        @BeforeClass
+        public static void setup() throws Exception
+        {
+            doInitialSetUp(PROJECT_NAME);
+
+            Container project = ContainerManager.getForPath(PROJECT_NAME);
+            Set<Module> active = new HashSet<>(project.getActiveModules());
+            active.add(ModuleLoader.getInstance().getModule(LDKModule.NAME));
+
+            project.setActiveModules(active);
+
+            populateTables();
+        }
+
+        private static final String TABLE1 = "TestLookupSet";
+        private static final String TABLE2 = "TestLookupSet2";
+
+        private static void populateTables() throws Exception
+        {
+            Container project = ContainerManager.getForPath(PROJECT_NAME);
+
+            UserSchema us = QueryService.get().getUserSchema(getUser(), project, LookupsUserSchema.NAME);
+            TableInfo lookupSets = us.getTable(LDKSchema.TABLE_LOOKUP_SETS);
+
+            assertEquals("Extra tables present", 0, us.getTableNames().size());
+
+            List<Map<String, Object>> rows1 = new ArrayList<>();
+            Map<String, Object> row1 = new CaseInsensitiveHashMap<>();
+            row1.put("setname", TABLE1);
+            row1.put("label", "Test Lookup Set");
+            row1.put("description", "This is the description");
+            row1.put("keyField", "value");
+            row1.put("titleColumn", "rowId");
+            rows1.add(row1);
+
+            Map<String, Object> row2 = new CaseInsensitiveHashMap<>();
+            row2.put("setname", TABLE2);
+            row2.put("label", "Test Lookup Set2");
+            row2.put("description", "This is the description");
+            row2.put("keyField", "value");
+            row2.put("titleColumn", "rowId");
+            rows1.add(row2);
+
+            BatchValidationException bve = new BatchValidationException();
+            lookupSets.getUpdateService().insertRows(getUser(), project, rows1, bve, null, null);
+            if (bve.hasErrors())
+            {
+                throw bve;
+            }
+
+            LookupsUserSchema.clearCache();
+
+            assertEquals("Tables not present", 2, us.getTableNames().size());
+        }
+
+        @AfterClass
+        public static void cleanup()
+        {
+            doCleanup(PROJECT_NAME);
+        }
+
+        @Test
+        public void basicTest() throws Exception
+        {
+            Container project = ContainerManager.getForPath(PROJECT_NAME);
+            UserSchema us = QueryService.get().getUserSchema(getUser(), project, LookupsUserSchema.NAME);
+            assertNotNull("Lookup table not found", us.getTable(TABLE1));
+            assertNotNull("Lookup table not found", us.getTable(TABLE2));
+
+            assertEquals("Extra tables present", 2, us.getTableNames().size());
+
+            insertDataAndValidate(TABLE1, us, "Test Lookup Set");
+            insertDataAndValidate(TABLE2, us, "Test Lookup Set2");
+        }
+
+        private void insertDataAndValidate(String tableName, UserSchema us, String tableTitle) throws Exception
+        {
+            Container project = ContainerManager.getForPath(PROJECT_NAME);
+
+            TableInfo ti = us.getTable(tableName);
+            assertEquals("Incorrect description", "This is the description", ti.getDescription());
+            assertEquals("Incorrect keyField", 1, ti.getPkColumnNames().size());
+            assertEquals("Incorrect keyField", "value", ti.getPkColumnNames().get(0));
+            assertEquals("Incorrect titleColumn", "rowid", ti.getTitleColumn());
+            assertEquals("Incorrect tableTitle", tableTitle, ti.getTitle());
+
+            List<Map<String, Object>> toInsert = new ArrayList<>();
+            Map<String, Object> row1 = new CaseInsensitiveHashMap<>();
+            row1.put("vaLuE", "ABC");  //This uses non-canonical case, and also should pass the Table1 RegEx
+            row1.put("displayValue", "DisplayValue1");
+            row1.put("category", "MyCategory");
+            toInsert.add(row1);
+
+            Map<String, Object> row2 = new CaseInsensitiveHashMap<>();
+            row2.put("vaLuE", "AB");
+            row2.put("displayValue", "DisplayValue2");
+            row2.put("category", "MyCategory");
+            toInsert.add(row2);
+
+            //expect success
+            BatchValidationException errors1 = new BatchValidationException();
+            ti.getUpdateService().insertRows(getUser(), project, toInsert, errors1, null, null);
+            if (errors1.hasErrors())
+            {
+                throw errors1;
+            }
+
+            //Test duplicate keys, expect failure
+            ti.getUpdateService().insertRows(getUser(), project, Arrays.asList(row1), errors1, null, null);
+            if (errors1.hasErrors())
+            {
+                String msg = errors1.getRowErrors().get(0).getMessage();
+                assertEquals("Duplicate key insert should be blocked", "There is already a record in the table " + tableName + " where value equals ABC", msg);
+            }
+            else
+            {
+                throw new Exception("Expected duplicate key insert to fail");
+            }
+        }
+
+        @Test
+        public void insertFailedValidationTest() throws Exception
+        {
+            Container project = ContainerManager.getForPath(PROJECT_NAME);
+            UserSchema us = QueryService.get().getUserSchema(getUser(), project, LookupsUserSchema.NAME);
+
+            Map<String, Object> row1 = new CaseInsensitiveHashMap<>();
+            row1.put("vaLuE", "1234"); //this will fail the validation regex set up in TestLookupSet.query.xml
+            row1.put("displayValue", "DisplayValue1");
+            row1.put("category", "Category");
+
+            // Expect failure
+            BatchValidationException errors1 = new BatchValidationException();
+            us.getTable(TABLE1).getUpdateService().insertRows(getUser(), project, Arrays.asList(row1), errors1, null, null);
+            if (errors1.hasErrors())
+            {
+                String msg = errors1.getRowErrors().get(0).getMessage();
+                assertEquals("Insert should be blocked by validator", "value: Value '1234' for field 'value' is invalid. Improper Value", msg);
+            }
+            else
+            {
+                throw new Exception("Expected insert to fail");
+            }
+
+            //this will pass
+            row1.put("vaLuE", "CBA");
+            errors1 = new BatchValidationException();
+            us.getTable(TABLE1).getUpdateService().insertRows(getUser(), project, Arrays.asList(row1), errors1, null, null);
+            if (errors1.hasErrors())
+            {
+                throw errors1;
+            }
+
+            //now try update:
+            List<Map<String, Object>> oldKeys = new ArrayList<>();
+            Map<String, Object> oldKey = new CaseInsensitiveHashMap<>();
+            oldKey.put("VaLUE", row1.get("value"));
+            oldKeys.add(oldKey);
+
+            row1.put("vaLuE", "12345");  //back to failure
+
+            us.getTable(TABLE1).getUpdateService().updateRows(getUser(), project, Arrays.asList(row1), oldKeys, null, null);
+            if (!errors1.hasErrors())
+            {
+                //TODO: this should fail, but is not.  This is due to a core bug, not our overrides.
+                //throw new ValidationException("Expected update to fail because of row validators");
+            }
+        }
     }
 }
 

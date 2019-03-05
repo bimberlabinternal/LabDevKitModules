@@ -86,6 +86,11 @@ public class LookupsUserSchema extends SimpleUserSchema
         return Collections.unmodifiableSet(available);
     }
 
+    public static void clearCache()
+    {
+        _cache.clear();
+    }
+
     private Map<String, Map<String, Object>> getPropertySetNames()
     {
         Map<String, Map<String, Object>> nameMap = (Map<String, Map<String, Object>>) _cache.get(LookupSetTable.getCacheKey(getContainer()));

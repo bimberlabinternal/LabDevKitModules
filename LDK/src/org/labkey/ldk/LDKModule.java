@@ -33,6 +33,7 @@ import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.ldk.notification.NotificationServiceImpl;
 import org.labkey.ldk.notification.SiteSummaryNotification;
+import org.labkey.ldk.query.LookupSetTable;
 import org.labkey.ldk.query.LookupsUserSchema;
 import org.labkey.ldk.query.MssqlUtilsUserSchema;
 import org.labkey.ldk.sql.LDKNaturalizeInstallationManager;
@@ -131,5 +132,11 @@ public class LDKModule extends ExtendedSimpleModule
     public static boolean isSqlServer()
     {
         return DbScope.getLabKeyScope().getSqlDialect().isSqlServer();
+    }
+
+    @Override
+    public @NotNull Set<Class> getIntegrationTests()
+    {
+        return PageFlowUtil.set(LookupSetTable.TestCase.class);
     }
 }
