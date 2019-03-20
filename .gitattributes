@@ -227,8 +227,6 @@ labModules/laboratory/resources/folderTypes/Study[!!-~]Workbook.folderType.xml -
 labModules/laboratory/resources/module.xml -text
 labModules/laboratory/resources/queries/core/workbooks.query.xml -text
 labModules/laboratory/resources/queries/core/workbooks/.qview.xml -text
-labModules/laboratory/resources/queries/exp/Files.sql -text
-labModules/laboratory/resources/queries/exp/Files/.qview.xml -text
 labModules/laboratory/resources/queries/laboratory/96well_plate.query.xml -text
 labModules/laboratory/resources/queries/laboratory/96well_plate.sql -text
 labModules/laboratory/resources/queries/laboratory/assay_run_templates.query.xml -text
