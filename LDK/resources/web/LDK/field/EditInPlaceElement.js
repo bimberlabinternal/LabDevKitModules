@@ -85,7 +85,7 @@ Ext4.define('LDK.field.EditInPlaceElement', {
                     item.focus();
                 },
                 specialkey: function(field, event){
-                    if (event.getKey() == Ext4.EventObject.ESC)
+                    if (event.getKey() === Ext4.EventObject.ESC)
                         this.cancelEdit();
                 }
             }
