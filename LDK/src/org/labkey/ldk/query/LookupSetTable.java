@@ -32,6 +32,7 @@ import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.query.ValidationException;
 import org.labkey.ldk.LDKModule;
 import org.labkey.ldk.LDKSchema;
 
@@ -277,11 +278,16 @@ public class LookupSetTable extends AbstractDataDefinedTable
 
             row1.put("vaLuE", "12345");  //back to failure
 
-            us.getTable(TABLE1).getUpdateService().updateRows(getUser(), project, Arrays.asList(row1), oldKeys, null, null);
-            if (!errors1.hasErrors())
+            try
             {
-                //TODO: this should fail, but is not.  This is due to a core bug, not our overrides.
-                //throw new ValidationException("Expected update to fail because of row validators");
+                us.getTable(TABLE1).getUpdateService().updateRows(getUser(), project, Arrays.asList(row1), oldKeys, null, null);
+
+                //Ben's change
+                throw new ValidationException("Expected update to fail because of row validators");
+            }
+            catch (BatchValidationException e)
+            {
+                assertEquals("Update should fail", "lookups:TestLookupSet: value: Value '12345' for field 'value' is invalid. Improper Value", e.getMessage());
             }
         }
     }
