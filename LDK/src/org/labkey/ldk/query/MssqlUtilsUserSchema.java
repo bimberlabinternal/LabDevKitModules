@@ -1,6 +1,7 @@
 package org.labkey.ldk.query;
 
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.TableInfo;
@@ -51,14 +52,14 @@ public class MssqlUtilsUserSchema extends SimpleUserSchema
     }
 
     @Override
-    public TableInfo createTable(String name)
+    public TableInfo createTable(String name, ContainerFilter cf)
     {
         if (!getTableNames().contains(name))
             return null;
 
         if (IndexStatsTable.NAME.equalsIgnoreCase(name))
         {
-            return new IndexStatsTable(LDKSchema.getInstance().getSchema(), this);
+            return new IndexStatsTable(LDKSchema.getInstance().getSchema(), this, cf);
         }
 
         throw new UnsupportedOperationException("No table configured for: " + name);

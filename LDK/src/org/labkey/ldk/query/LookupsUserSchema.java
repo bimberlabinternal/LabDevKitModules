@@ -5,6 +5,7 @@ import org.labkey.api.cache.StringKeyCache;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveTreeSet;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.SchemaTableInfo;
@@ -119,13 +120,13 @@ public class LookupsUserSchema extends SimpleUserSchema
     }
 
     @Override
-    public TableInfo createTable(String name)
+    public TableInfo createTable(String name, ContainerFilter cf)
     {
         Set<String> available = super.getTableNames();
 
         if (LDKSchema.TABLE_LOOKUP_SETS.equalsIgnoreCase(name))
         {
-            ContainerScopedTable ret = new ContainerScopedTable<>(this, createSourceTable(name), "setname");
+            ContainerScopedTable ret = new ContainerScopedTable<>(this, createSourceTable(name), cf, "setname");
             ret.addPermissionMapping(InsertPermission.class, AdminPermission.class);
             ret.addPermissionMapping(UpdatePermission.class, AdminPermission.class);
             ret.addPermissionMapping(DeletePermission.class, AdminPermission.class);
@@ -134,23 +135,23 @@ public class LookupsUserSchema extends SimpleUserSchema
         }
 
         if (available.contains(name))
-            return super.createTable(name);
+            return super.createTable(name, cf);
 
         //try to find it in propertySets
         Map<String, Map<String, Object>> nameMap = getPropertySetNames();
         if (nameMap.containsKey(name))
         {
-            return createForPropertySet(this, name, nameMap.get(name));
+            return createForPropertySet(this, cf, name, nameMap.get(name));
         }
 
         return null;
     }
 
-    private LookupSetTable createForPropertySet(UserSchema us, String setName, Map<String, Object> map)
+    private LookupSetTable createForPropertySet(UserSchema us, ContainerFilter cf, String setName, Map<String, Object> map)
     {
         SchemaTableInfo table = _dbSchema.getTable(LDKSchema.TABLE_LOOKUPS);
 
-        return new LookupSetTable(us, table, setName, map).init();
+        return new LookupSetTable(us, table, cf, setName, map).init();
     }
 
     public static void clearCacheForContainer(Container c)

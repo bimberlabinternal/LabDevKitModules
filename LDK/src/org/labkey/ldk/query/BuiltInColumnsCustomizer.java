@@ -1,6 +1,7 @@
 package org.labkey.ldk.query;
 
 import org.apache.log4j.Logger;
+import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
@@ -28,11 +29,11 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
     {
         for (ColumnInfo col : table.getColumns())
         {
-            COL_ENUM.processColumn(col);
+            COL_ENUM.processColumn( (BaseColumnInfo)col );
 
             if (_disableFacetingForNumericCols && col.isNumericType() && col.getFk() == null)
             {
-                col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                ((BaseColumnInfo)col).setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             }
         }
 
@@ -42,7 +43,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
     private enum COL_ENUM
     {
         created(Timestamp.class){
-            public void customizeColumn(ColumnInfo col)
+            public void customizeColumn(BaseColumnInfo col)
             {
                 setNonEditable(col);
                 col.setHidden(true);
@@ -51,7 +52,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             }
         },
         createdby(Integer.class){
-            public void customizeColumn(ColumnInfo col)
+            public void customizeColumn(BaseColumnInfo col)
             {
                 setNonEditable(col);
                 col.setHidden(true);
@@ -60,7 +61,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             }
         },
         modified(Timestamp.class){
-            public void customizeColumn(ColumnInfo col)
+            public void customizeColumn(BaseColumnInfo col)
             {
                 setNonEditable(col);
                 col.setHidden(true);
@@ -69,7 +70,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             }
         },
         modifiedby(Integer.class){
-            public void customizeColumn(ColumnInfo col)
+            public void customizeColumn(BaseColumnInfo col)
             {
                 setNonEditable(col);
                 col.setHidden(true);
@@ -78,21 +79,21 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             }
         },
         container(String.class){
-            public void customizeColumn(ColumnInfo col)
+            public void customizeColumn(BaseColumnInfo col)
             {
                 setNonEditable(col);
                 col.setLabel("Folder");
             }
         },
         rowid(Integer.class){
-            public void customizeColumn(ColumnInfo col)
+            public void customizeColumn(BaseColumnInfo col)
             {
                 setNonEditable(col);
                 col.setAutoIncrement(true);
             }
         },
         entityid(String.class){
-            public void customizeColumn(ColumnInfo col)
+            public void customizeColumn(BaseColumnInfo col)
             {
                 setNonEditable(col);
                 col.setShownInDetailsView(false);
@@ -100,7 +101,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             }
         },
         objectid(String.class){
-            public void customizeColumn(ColumnInfo col)
+            public void customizeColumn(BaseColumnInfo col)
             {
                 setNonEditable(col);
                 col.setShownInDetailsView(false);
@@ -114,16 +115,16 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             this.dataType = dataType;
         }
 
-        private static void setNonEditable(ColumnInfo col)
+        private static void setNonEditable(BaseColumnInfo col)
         {
             col.setUserEditable(false);
             col.setShownInInsertView(false);
             col.setShownInUpdateView(false);
         }
 
-        abstract public void customizeColumn(ColumnInfo col);
+        abstract public void customizeColumn(BaseColumnInfo col);
 
-        public static void processColumn(ColumnInfo col)
+        public static void processColumn(BaseColumnInfo col)
         {
             for (COL_ENUM colEnum : COL_ENUM.values())
             {

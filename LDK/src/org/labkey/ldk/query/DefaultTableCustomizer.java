@@ -176,7 +176,7 @@ public class DefaultTableCustomizer implements TableCustomizer
 
     public static void applyNaturalSort(AbstractTableInfo ti, String colName)
     {
-        ColumnInfo col = ti.getColumn(FieldKey.fromString(colName));
+        var col = ti.getMutableColumn(FieldKey.fromString(colName));
         if (col == null)
             return;
 
@@ -192,7 +192,7 @@ public class DefaultTableCustomizer implements TableCustomizer
 
         //first add the sort col
         String name = colName + "_sortValue";
-        ColumnInfo sortCol = ti.getColumn(name);
+        var sortCol = ti.getMutableColumn(name);
         if (sortCol != null)
         {
             // We need to swap out the placeholder version

@@ -2,6 +2,7 @@ package org.labkey.ldk.query;
 
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.CrosstabMeasure;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.JdbcType;
@@ -18,9 +19,9 @@ public class IndexStatsTable extends VirtualTable
 {
     public static final String NAME = "index_stats";
 
-    public IndexStatsTable(DbSchema schema, UserSchema userSchema)
+    public IndexStatsTable(DbSchema schema, UserSchema userSchema, ContainerFilter cf)
     {
-        super(schema, NAME, userSchema);
+        super(schema, NAME, userSchema, cf);
         setTitle("SQL Server Index Usage");
         setupColumns();
     }

@@ -663,13 +663,11 @@ public class SiteSummaryNotification implements Notification
             if (protocolMap == null)
                 protocolMap = new TreeMap<>();
 
-            ExpRunTable tiRun = AssayService.get().createRunTable(p, ap, u, p.getContainer());
-            tiRun.setContainerFilter(ContainerFilter.EVERYTHING);
+            ExpRunTable tiRun = AssayService.get().createRunTable(p, ap, u, p.getContainer(), ContainerFilter.EVERYTHING);
             TableSelector tsRun = new TableSelector(tiRun);
 
             AssayProtocolSchema schema = ap.createProtocolSchema(u, p.getContainer(), p, null);
-            ContainerFilterable tiResult = schema.createDataTable();
-            tiResult.setContainerFilter(ContainerFilter.EVERYTHING);
+            TableInfo tiResult = schema.createDataTable(ContainerFilter.EVERYTHING);
             TableSelector tsResult = new TableSelector(tiResult);
 
             protocolMap.put(p, new Long[]{tsRun.getRowCount(), tsResult.getRowCount()});
