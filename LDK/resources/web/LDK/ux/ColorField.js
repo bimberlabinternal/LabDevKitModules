@@ -10,7 +10,7 @@
         requires: ['Ext.form.field.VTypes', 'Ext.layout.component.field.Text'],
 
         lengthText: "Color hex values must be either 3 or 6 characters.",
-        blankText: "Must have a hexidecimal value in the format ABCDEF.",
+        blankText: "Must have a hexadecimal value in the format ABCDEF.",
 
         regex: /^[0-9a-f]{3,6}$/i,
 
