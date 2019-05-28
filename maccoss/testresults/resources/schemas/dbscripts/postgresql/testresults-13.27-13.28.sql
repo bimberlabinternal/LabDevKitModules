@@ -1,1 +1,0 @@
-ALTER TABLE testresults.user ADD COLUMN active BOOLEAN DEFAULT FALSE;

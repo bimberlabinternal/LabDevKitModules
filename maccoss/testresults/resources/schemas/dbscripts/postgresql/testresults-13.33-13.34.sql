@@ -1,1 +1,0 @@
-ALTER TABLE testresults.testruns ADD gitHash VARCHAR(16);

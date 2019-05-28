@@ -1,1 +1,0 @@
-ALTER TABLE testresults.testruns ADD flagged BOOLEAN DEFAULT FALSE NOT NULL;

@@ -1,1 +1,0 @@
-ALTER TABLE testresults.testruns RENAME COLUMN containerId TO Container;
