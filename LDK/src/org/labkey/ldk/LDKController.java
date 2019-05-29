@@ -991,7 +991,7 @@ public class LDKController extends SpringActionController
             //{
                 //first rename workbook to make unique
                 String tempName = new GUID().toString();
-                Integer sortOrder = DbSequenceManager.get(target, ContainerManager.WORKBOOK_DBSEQUENCE_NAME).next();
+                int sortOrder = (int)DbSequenceManager.get(target, ContainerManager.WORKBOOK_DBSEQUENCE_NAME).next();
                 _log.info("renaming workbook to in preparation for move from: " + toMove.getPath() + "  to: " + tempName);
                 ContainerManager.rename(toMove, getUser(), tempName);
                 toMove = ContainerManager.getForId(toMove.getId());
@@ -1002,8 +1002,8 @@ public class LDKController extends SpringActionController
                 toMove = ContainerManager.getForId(toMove.getId());
 
                 //finally move to correct name
-                _log.info("renaming workbook from: " + toMove.getPath() + "  to: " + sortOrder.toString());
-                ContainerManager.rename(toMove, getUser(), sortOrder.toString());
+                _log.info("renaming workbook from: " + toMove.getPath() + "  to: " + sortOrder);
+                ContainerManager.rename(toMove, getUser(), String.valueOf(sortOrder));
                 toMove.setSortOrder(sortOrder);
                 new SqlExecutor(CoreSchema.getInstance().getSchema()).execute("UPDATE core.containers SET SortOrder = ? WHERE EntityId = ?", toMove.getSortOrder(), toMove.getId());
                 toMove = ContainerManager.getForId(toMove.getId());
