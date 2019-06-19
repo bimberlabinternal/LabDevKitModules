@@ -1071,7 +1071,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                         }
                         break;
                     default:
-                        context[t[0]] = t[1];
+                        context[t[0]] = decodeURI(t[1]);
                 }
             }
         }

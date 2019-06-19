@@ -10,7 +10,7 @@
                         border: false
                     },
                     items: [{
-                        html: 'This is an admin page designed to allow bulk insert or update into table using the client API.',
+                        html: 'This is an admin page designed to allow bulk insert or update into table using the client API.  Please exercise extreme caution as it is very easy to make large changes that can be difficult to correct.',
                         style: 'padding-bottom: 20px;'
                     },{
                         xtype: 'textfield',
@@ -24,13 +24,13 @@
                         fieldLabel: 'Schema Name',
                         name: 'schemaName',
                         allowBlank: false,
-                        value: null
+                        value: LABKEY.ActionURL.getParameter('schemaName')
                     }, {
                         xtype: 'textfield',
                         fieldLabel: 'Query Name',
                         name: 'queryName',
                         allowBlank: false,
-                        value: null
+                        value: LABKEY.ActionURL.getParameter('queryName')
                     }, {
                         xtype: 'ldk-simplecombo',
                         fieldLabel: 'Mode',
