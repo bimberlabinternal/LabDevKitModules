@@ -192,6 +192,9 @@ labModules/LDK/src/org/labkey/ldk/query/LookupsUserSchema.java -text
 labModules/LDK/src/org/labkey/ldk/query/MssqlUtilsUserSchema.java -text
 labModules/LDK/src/org/labkey/ldk/query/UniqueConstraintHelper.java -text
 labModules/LDK/src/org/labkey/ldk/sql/LDKNaturalizeInstallationManager.java -text
+labModules/LDK/test/src/org/labkey/test/tests/external/labModules/AbstractLabModuleAssayTest.java -text
+labModules/LDK/test/src/org/labkey/test/tests/external/labModules/LabModulesTest.java -text
+labModules/LDK/test/src/org/labkey/test/util/external/labModules/LabModuleHelper.java -text
 labModules/LDK/tools/naturalize/naturalize.cs -text
 labModules/LDK/tools/server/tomcat_log_cleanup.sh -text
 labModules/build.gradle -text
