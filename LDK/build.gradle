@@ -1,10 +1,5 @@
 import org.labkey.gradle.util.BuildUtils;
 
-// This conditional is needed only until we merge initial fb_4713_assay_refactor branch into develop
-if (project.findProject(BuildUtils.getPlatformModuleProjectPath(project.gradle, "assay")) != null) {
-   BuildUtils.addLabKeyDependency(project: project, config: "compile", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "assay"), depProjectConfig: "apiCompile")
-}
-
 dependencies {
-
+   BuildUtils.addLabKeyDependency(project: project, config: "compile", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "assay"), depProjectConfig: "apiCompile")
 }
