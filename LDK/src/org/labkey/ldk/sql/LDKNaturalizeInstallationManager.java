@@ -1,10 +1,8 @@
 package org.labkey.ldk.sql;
 
-import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.bigiron.AbstractClrInstallationManager;
-import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.Warnings;
 import org.labkey.ldk.LDKController;
 import org.labkey.ldk.LDKModule;
@@ -15,7 +13,7 @@ public class LDKNaturalizeInstallationManager extends AbstractClrInstallationMan
 {
     private static final String INITIAL_VERSION = "1.0.0";
     private static final String CURRENT_VERSION = "1.0.1";
-    private static final String DESCRIPTION = "This function helps with applying more human-friendly sorting of mixed numeric/text values. ";
+    private static final String DESCRIPTION = "This function helps with applying more human-friendly sorting of mixed numeric/text values.";
 
     private static final LDKNaturalizeInstallationManager _instance = new LDKNaturalizeInstallationManager();
 
@@ -85,7 +83,6 @@ public class LDKNaturalizeInstallationManager extends AbstractClrInstallationMan
     @Override
     protected void addAdminWarningMessages(Warnings warnings)
     {
-        ActionURL downloadURL = new ActionURL(LDKController.DownloadNaturalizeInstallScriptAction.class, ContainerManager.getRoot());
-        warnings.add("The LDK naturalize function is not installed. " + DESCRIPTION + "<a href=\"" + downloadURL + "\">Download installation script.</a>");
+        addAdminWarningMessage(warnings, "The LDK naturalize function is not installed. " + DESCRIPTION, LDKController.DownloadNaturalizeInstallScriptAction.class, null);
     }
 }
