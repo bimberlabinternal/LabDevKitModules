@@ -22,8 +22,6 @@ Ext4.define('LDK.panel.MultiRecordDetailsPanel', {
         });
 
         this.callParent();
-        this.showLoadMask();
-
         this.store = this.getStore();
         this.mon(this.store, 'load', this.onStoreLoad, this);
         this.mon(this.store, 'exception', function(store, msg){
@@ -33,20 +31,27 @@ Ext4.define('LDK.panel.MultiRecordDetailsPanel', {
             alert(msg);
         }, this);
 
-        if (!this.store.getCount() || this.store.isLoading)
+        if (!this.store.getCount() || this.store.isLoading())
             this.store.load();
         else
             this.onStoreLoad();
+
+        this.possiblyShowLoadMask();
     },
 
-    showLoadMask: function(){
+    possiblyShowLoadMask: function(){
+        //If the store has already loaded, dont show the mask
+        if (!this.store.isLoading()) {
+            return;
+        }
+        
         this.loadMask = this.loadMask || new Ext4.LoadMask(this, {msg: 'Loading...'});
 
         if (this.rendered){
             this.loadMask.show();
         }
         else {
-            this.on('afterrender', this.showLoadMask, this, {single: true, delay: 100});
+            this.on('afterrender', this.possiblyShowLoadMask, this, {single: true, delay: 100});
         }
     },
 
@@ -61,7 +66,9 @@ Ext4.define('LDK.panel.MultiRecordDetailsPanel', {
 
     onStoreLoad: function(){
         this.removeAll();
-        this.loadMask.hide();
+        if (this.loadMask) {
+            this.loadMask.hide();
+        }
 
         if (!this.store.getCount()){
             this.add({
