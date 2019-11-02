@@ -808,7 +808,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
     private void dataSourcesTest() throws Exception
     {
-        goToAdminConsole().goToAdminConsoleLinksSection();
+        goToAdminConsole().goToSettingsSection();
         waitAndClickAndWait(Locator.linkContainingText("discvr admin"));
         waitAndClickAndWait(Locator.linkContainingText("Manage Default Data and Demographics Sources"));
         waitForText("You are currently editing the data and demographics sources for the Shared project");  //proxy for data loading
@@ -944,7 +944,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         _customizeViewsHelper.revertUnsavedViewGridClosed();
 
         //now validate site-summary reports
-        goToAdminConsole().goToAdminConsoleLinksSection();
+        goToAdminConsole().goToSettingsSection();
         waitAndClickAndWait(Locator.linkContainingText("discvr admin"));
         waitAndClickAndWait(Locator.linkContainingText("Manage Default Data and Demographics Sources"));
 
@@ -1132,7 +1132,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     private void siteSettingsTest()
     {
         log("Testing Site Settings");
-        goToAdminConsole().goToAdminConsoleLinksSection();
+        goToAdminConsole().goToSettingsSection();
         waitAndClickAndWait(Locator.linkContainingText("discvr admin"));
 
         waitForText("Reference Sequences"); //proxy for page load
