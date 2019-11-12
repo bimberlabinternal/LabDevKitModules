@@ -63,7 +63,7 @@ public class LabModuleHelper
         _test.goToProjectHome();
 
         _test.goToManageAssays();
-        new UIAssayHelper(_test).createAssayWithDefaults(provider, label);
+        new UIAssayHelper(_test).createAssayDesignWithDefaults(provider, label);
     }
 
     public static Locator getNavPanelItem(String label, @Nullable String itemText)
