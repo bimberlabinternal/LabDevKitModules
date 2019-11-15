@@ -40,6 +40,7 @@ import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.LabModule;
 import org.labkey.test.components.CustomizeView;
+import org.labkey.test.components.ext4.ComboBox;
 import org.labkey.test.components.ext4.RadioButton;
 import org.labkey.test.util.APIContainerHelper;
 import org.labkey.test.util.AdvancedSqlTest;
@@ -1782,7 +1783,9 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitAndClickAndWait(Locator.linkContainingText("Set Assay Defaults"));
         String defaultVal = "UC Davis STR";
         _helper.waitForField(GENOTYPING_ASSAYNAME);
-        Ext4FieldRef.getForLabel(this, GENOTYPING_ASSAYNAME).setValue(defaultVal);
+        ComboBox.ComboBox(getDriver()).withLabelContaining(GENOTYPING_ASSAYNAME)
+                .find(getDriver())
+                .selectComboBoxItem(defaultVal);
         waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
 
         waitForElement(Ext4Helper.Locators.window("Success"));
