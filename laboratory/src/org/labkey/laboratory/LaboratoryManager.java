@@ -18,6 +18,8 @@ package org.labkey.laboratory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.labkey.api.assay.AssayProvider;
+import org.labkey.api.assay.AssayService;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.Aggregate;
@@ -50,10 +52,7 @@ import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
-import org.labkey.api.assay.AssayProvider;
-import org.labkey.api.assay.AssayService;
 import org.labkey.api.util.PageFlowUtil;
-import org.labkey.api.util.ResultSetUtil;
 import org.labkey.api.view.Portal;
 import org.labkey.laboratory.query.ContainerIncrementingTable;
 import org.labkey.laboratory.query.LaboratoryWorkbooksTable;
@@ -529,18 +528,13 @@ public class LaboratoryManager
 
             Set<String> indexNames = new CaseInsensitiveHashSet();
             DatabaseMetaData meta = schema.getScope().getConnection().getMetaData();
-            ResultSet rs = null;
-            try
+
+            try (ResultSet rs = meta.getIndexInfo(schema.getScope().getDatabaseName(), schema.getName(), realTable.getName(), false, false))
             {
-                rs = meta.getIndexInfo(schema.getScope().getDatabaseName(), schema.getName(), realTable.getName(), false, false);
                 while (rs.next())
                 {
                     indexNames.add(rs.getString("INDEX_NAME"));
                 }
-            }
-            finally
-            {
-                ResultSetUtil.close(rs);
             }
 
             boolean exists = indexNames.contains(indexName);
