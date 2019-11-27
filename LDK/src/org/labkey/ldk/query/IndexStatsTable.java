@@ -1,16 +1,13 @@
 package org.labkey.ldk.query;
 
 import org.jetbrains.annotations.NotNull;
-import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.ContainerFilter;
-import org.labkey.api.data.CrosstabMeasure;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.VirtualTable;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.UserSchema;
-import org.labkey.ldk.LDKSchema;
 
 /**
 
