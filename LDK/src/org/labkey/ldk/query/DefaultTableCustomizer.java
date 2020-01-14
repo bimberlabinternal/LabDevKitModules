@@ -126,7 +126,8 @@ public class DefaultTableCustomizer implements TableCustomizer
 
         String keyField = keyFields.get(0);
         StringExpression se = ti.getDetailsURL(null, ti.getUserSchema().getContainer());
-        if (se == null || se.toString().contains("detailsQueryRow"))
+        // Handle a null source string, which you get when the URL is a AbstractTableInfo.LINK_DISABLER. See issue 39403
+        if (se == null || se.toString() == null || se.toString().contains("detailsQueryRow"))
         {
             ti.setDetailsURL(DetailsURL.fromString("/query/recordDetails.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}"));
         }
