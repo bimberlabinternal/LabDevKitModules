@@ -2,4 +2,13 @@
     <clientDependencies>
         <dependency path="LDK/LDKApi"/>
     </clientDependencies>
+    <properties>
+        <propertyDescriptor name="BackgroundAdminUser">
+            <description>This is the username of a user that can be used by background processes to execute tasks.  An example is certain system maintenance tasks, which might require a user to execute some operations.</description>
+            <canSetPerContainer>false</canSetPerContainer>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+        </propertyDescriptor>
+    </properties>
 </module>

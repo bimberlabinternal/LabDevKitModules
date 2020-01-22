@@ -2,6 +2,7 @@ package org.labkey.ldk;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -10,6 +11,7 @@ import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.Selector;
@@ -22,8 +24,12 @@ import org.labkey.api.files.FileContentService;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.NotificationSection;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
+import org.labkey.api.module.Module;
+import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.security.User;
-import org.labkey.api.services.ServiceRegistry;
+import org.labkey.api.security.UserManager;
+import org.labkey.api.security.ValidEmail;
 import org.labkey.ldk.query.BuiltInColumnsCustomizer;
 import org.labkey.ldk.query.ColumnOrderCustomizer;
 import org.labkey.ldk.query.DefaultTableCustomizer;
@@ -54,6 +60,7 @@ public class LDKServiceImpl extends LDKService
     private List<List<String>> _containerScopedTables = new ArrayList<>();
     private Boolean _isNaturalizeInstalled = null;
     private Map<String, Map<String, List<ButtonConfigFactory>>> _queryButtons = new CaseInsensitiveHashMap<Map<String, List<ButtonConfigFactory>>>();
+    private static final String BACKGROUND_USER_PROPNAME = "BackgroundAdminUser";
 
     public LDKServiceImpl()
     {
@@ -482,5 +489,32 @@ public class LDKServiceImpl extends LDKService
         {
             _browser = browser;
         }
+    }
+
+    public User getBackgroundAdminUser()
+    {
+        Module m = ModuleLoader.getInstance().getModule(LDKModule.NAME);
+        ModuleProperty mp = m.getModuleProperties().get(BACKGROUND_USER_PROPNAME);
+        String username = StringUtils.trimToNull(mp.getValueContainerSpecific(ContainerManager.getRoot()));
+        if (username != null)
+        {
+            User u = UserManager.getUserByDisplayName(username);
+            if (u == null)
+            {
+                try
+                {
+                    u = UserManager.getUser(new ValidEmail(username));
+                }
+                catch (ValidEmail.InvalidEmailException e)
+                {
+                    //ignore
+
+                }
+            }
+
+            return u;
+        }
+
+        return null;
     }
 }
