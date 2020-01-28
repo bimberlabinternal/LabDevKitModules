@@ -77,4 +77,6 @@ abstract public class LDKService
     abstract public List<ButtonConfigFactory> getQueryButtons(TableInfo ti);
 
     abstract public void customizeButtonBar(AbstractTableInfo ti, List<ButtonConfigFactory> buttons);
+
+    abstract public User getBackgroundAdminUser();
 }
