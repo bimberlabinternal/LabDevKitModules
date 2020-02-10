@@ -16,6 +16,7 @@
 package org.labkey.laboratory;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -74,7 +75,7 @@ public class LaboratoryModule extends ExtendedSimpleModule
     }
 
     @Override
-    public double getVersion()
+    public @Nullable Double getSchemaVersion()
     {
         return 12.304;
     }

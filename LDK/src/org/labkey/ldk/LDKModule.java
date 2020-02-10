@@ -17,6 +17,7 @@
 package org.labkey.ldk;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.bigiron.ClrAssemblyManager;
@@ -53,7 +54,7 @@ public class LDKModule extends ExtendedSimpleModule
     }
 
     @Override
-    public double getVersion()
+    public @Nullable Double getSchemaVersion()
     {
         return 12.39;
     }
