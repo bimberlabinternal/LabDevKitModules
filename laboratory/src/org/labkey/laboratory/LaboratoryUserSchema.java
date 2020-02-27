@@ -66,12 +66,12 @@ public class LaboratoryUserSchema extends SimpleUserSchema
 
     private SimpleTable getSubjectsTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
     {
-        return new ContainerScopedTable(this, schematable, cf, "subjectname").init();
+        return new ContainerScopedTable<>(this, schematable, cf, "subjectname").init();
     }
 
     private TableInfo getContainerScopedTable(String name, @NotNull TableInfo schematable, ContainerFilter cf, String pkCol)
     {
-        return new ContainerScopedTable(this, schematable, cf, pkCol).init();
+        return new ContainerScopedTable<>(this, schematable, cf, pkCol).init();
     }
 
     private SimpleTable getDnaOligosTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
