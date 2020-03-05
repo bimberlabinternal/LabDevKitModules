@@ -1,2 +1,6 @@
 /.gradle
 /intellijBuild
+
+# Generated files
+dependencies.txt
+
