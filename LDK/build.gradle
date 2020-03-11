@@ -9,8 +9,11 @@ dependencies {
    BuildUtils.addLabKeyDependency(project: project, config: "modules", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "core"), depProjectConfig: "published", depExtension: "module")
 
    BuildUtils.addLabKeyDependency(project: project, config: "modules", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "assay"), depProjectConfig: "published", depExtension: "module")
-   BuildUtils.addLabKeyDependency(project: project, config: "modules", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "audit"), depProjectConfig: "published", depExtension: "module")
-   BuildUtils.addLabKeyDependency(project: project, config: "modules", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "bigiron"), depProjectConfig: "published", depExtension: "module")
+
+   //Note: a dependency on these modules will break the folderAdmin UI: Issue 39943	
+   //BuildUtils.addLabKeyDependency(project: project, config: "modules", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "audit"), depProjectConfig: "published", depExtension: "module")
+   //BuildUtils.addLabKeyDependency(project: project, config: "modules", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "bigiron"), depProjectConfig: "published", depExtension: "module")
+   
    BuildUtils.addLabKeyDependency(project: project, config: "modules", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "experiment"), depProjectConfig: "published", depExtension: "module")
    BuildUtils.addLabKeyDependency(project: project, config: "modules", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "filecontent"), depProjectConfig: "published", depExtension: "module")
    BuildUtils.addLabKeyDependency(project: project, config: "modules", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "issues"), depProjectConfig: "published", depExtension: "module")
