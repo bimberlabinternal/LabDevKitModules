@@ -1,7 +1,7 @@
 package org.labkey.ldk.query;
 
+import org.labkey.api.cache.Cache;
 import org.labkey.api.cache.CacheManager;
-import org.labkey.api.cache.StringKeyCache;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveTreeSet;
 import org.labkey.api.data.Container;
@@ -37,7 +37,7 @@ import java.util.Set;
  */
 public class LookupsUserSchema extends SimpleUserSchema
 {
-    private final static StringKeyCache<Object> _cache;
+    private final static Cache<String, Object> _cache;
 
     static
     {
