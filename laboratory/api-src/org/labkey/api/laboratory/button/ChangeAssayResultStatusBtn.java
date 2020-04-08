@@ -21,6 +21,8 @@ import org.labkey.api.module.Module;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.view.template.ClientDependency;
 
+import java.util.Arrays;
+
 /**
  * User: bimber
  * Date: 9/8/13
@@ -36,7 +38,7 @@ public class ChangeAssayResultStatusBtn extends SimpleButtonConfigFactory
     public ChangeAssayResultStatusBtn(Module owner, String label)
     {
         super(owner, label, "Laboratory.window.ChangeAssayResultStatusWindow.buttonHandler(dataRegionName);");
-        setClientDependencies(ClientDependency.fromModuleName("laboratory"), ClientDependency.fromPath("laboratory/window/ChangeAssayResultStatusWindow.js"));
+        setClientDependencies(Arrays.asList(ClientDependency.supplierFromModuleName("laboratory"), ClientDependency.supplierFromPath("laboratory/window/ChangeAssayResultStatusWindow.js")));
     }
 
     public boolean isAvailable(TableInfo ti)

@@ -49,6 +49,7 @@ import org.labkey.api.view.template.ClientDependency;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -71,14 +72,15 @@ public class DefaultTableCustomizer implements TableCustomizer
 
     public DefaultTableCustomizer()
     {
-        this(new ArrayListValuedHashMap());
+        this(new ArrayListValuedHashMap<>());
     }
 
-    public DefaultTableCustomizer(MultiValuedMap props)
+    public DefaultTableCustomizer(MultiValuedMap<String, String> props)
     {
         _settings = new Settings(props);
     }
 
+    @Override
     public void customize(TableInfo table)
     {
         if (table instanceof SchemaTableInfo)
@@ -305,15 +307,12 @@ public class DefaultTableCustomizer implements TableCustomizer
         String[] existingScripts = cfg.getScriptIncludes();
         if (existingScripts != null)
         {
-            for (String s : existingScripts)
-            {
-                scripts.add(s);
-            }
+            Collections.addAll(scripts, existingScripts);
         }
 
         boolean hasMoreActions = configureMoreActionsBtn(ti, buttons, cfg, scripts);
 
-        cfg.setScriptIncludes(scripts.toArray(new String[scripts.size()]));
+        cfg.setScriptIncludes(scripts.toArray(new String[0]));
         if (hasMoreActions)
             cfg.setAlwaysShowRecordSelectors(true);
 
@@ -400,12 +399,12 @@ public class DefaultTableCustomizer implements TableCustomizer
             cfg.setItems(existingBtns);
         }
 
-        List<NavTree> menuItems = new ArrayList<NavTree>();
+        List<NavTree> menuItems = new ArrayList<>();
         if (moreActionsBtn.getMenuItems() != null)
             menuItems.addAll(moreActionsBtn.getMenuItems());
 
         //create map of existing item names
-        Map<String, NavTree> btnNameMap = new HashMap<String, NavTree>();
+        Map<String, NavTree> btnNameMap = new HashMap<>();
         for (NavTree item : menuItems)
         {
             btnNameMap.put(item.getText(), item);
@@ -419,7 +418,7 @@ public class DefaultTableCustomizer implements TableCustomizer
                 btnNameMap.put(newButton.getText(), newButton);
                 menuItems.add(newButton);
 
-                for (ClientDependency cd : fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser()))
+                for (ClientDependency cd : ClientDependency.getClientDependencySet(fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser())))
                 {
                     scripts.add(cd.getScriptString());
                 }

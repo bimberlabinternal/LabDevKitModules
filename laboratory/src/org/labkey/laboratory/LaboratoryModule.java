@@ -53,9 +53,11 @@ import org.labkey.laboratory.security.LaboratoryAdminRole;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * User: bimber
@@ -173,17 +175,17 @@ public class LaboratoryModule extends ExtendedSimpleModule
         LDKService.get().registerContainerScopedTable(SCHEMA_NAME, LaboratorySchema.TABLE_SUBJECTS, "subjectname");
 
         SimpleButtonConfigFactory btn1 = new SimpleButtonConfigFactory(this, "Mark Removed", "Laboratory.buttonHandlers.markSamplesRemoved(dataRegionName, arguments[0])");
-        btn1.setClientDependencies(ClientDependency.fromModuleName("laboratory"));
+        btn1.setClientDependencies(ClientDependency.supplierFromModuleName("laboratory"));
         btn1.setPermission(UpdatePermission.class);
         LDKService.get().registerQueryButton(btn1, LaboratoryModule.SCHEMA_NAME, LaboratorySchema.TABLE_SAMPLES);
 
         SimpleButtonConfigFactory btn2 = new SimpleButtonConfigFactory(this, "Duplicate/Derive Samples", "Laboratory.buttonHandlers.deriveSamples(dataRegionName, arguments[0])");
-        btn2.setClientDependencies(ClientDependency.fromModuleName("laboratory"));
+        btn2.setClientDependencies(ClientDependency.supplierFromModuleName("laboratory"));
         btn2.setPermission(UpdatePermission.class);
         LDKService.get().registerQueryButton(btn2, LaboratoryModule.SCHEMA_NAME, LaboratorySchema.TABLE_SAMPLES);
 
         SimpleButtonConfigFactory btn4 = new SimpleButtonConfigFactory(this, "Append Comment", "Laboratory.buttonHandlers.appendCommentToSamples(dataRegionName, arguments[0])");
-        btn4.setClientDependencies(ClientDependency.fromModuleName("laboratory"));
+        btn4.setClientDependencies(ClientDependency.supplierFromModuleName("laboratory"));
         btn4.setPermission(UpdatePermission.class);
         LDKService.get().registerQueryButton(btn4, LaboratoryModule.SCHEMA_NAME, LaboratorySchema.TABLE_SAMPLES);
 
@@ -212,11 +214,11 @@ public class LaboratoryModule extends ExtendedSimpleModule
 
     @NotNull
     @Override
-    public LinkedHashSet<ClientDependency> getClientDependencies(Container c)
+    public List<Supplier<ClientDependency>> getClientDependencies(Container c)
     {
         // allow other modules to register with EHR service, and include their dependencies automatically
         // whenever laboratory context is requested
-        LinkedHashSet<ClientDependency> ret = new LinkedHashSet<>();
+        List<Supplier<ClientDependency>> ret = new LinkedList<>();
         ret.addAll(super.getClientDependencies(c));
         ret.addAll(LaboratoryService.get().getRegisteredClientDependencies(c));
 
