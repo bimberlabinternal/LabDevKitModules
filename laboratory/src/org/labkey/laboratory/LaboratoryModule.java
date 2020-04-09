@@ -53,11 +53,8 @@ import org.labkey.laboratory.security.LaboratoryAdminRole;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * User: bimber
@@ -210,19 +207,6 @@ public class LaboratoryModule extends ExtendedSimpleModule
     public Set<String> getSchemaNames()
     {
         return PageFlowUtil.set(SCHEMA_NAME);
-    }
-
-    @NotNull
-    @Override
-    public List<Supplier<ClientDependency>> getClientDependencies(Container c)
-    {
-        // allow other modules to register with EHR service, and include their dependencies automatically
-        // whenever laboratory context is requested
-        List<Supplier<ClientDependency>> ret = new LinkedList<>();
-        ret.addAll(super.getClientDependencies(c));
-        ret.addAll(LaboratoryService.get().getRegisteredClientDependencies(c));
-
-        return ret;
     }
 
     @Override

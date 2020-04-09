@@ -17,6 +17,9 @@ package org.labkey.laboratory;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.labkey.api.assay.AssayFileWriter;
+import org.labkey.api.assay.AssayProvider;
+import org.labkey.api.assay.AssayService;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
@@ -32,10 +35,10 @@ import org.labkey.api.exp.api.ExpRun;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.laboratory.DataProvider;
 import org.labkey.api.laboratory.LaboratoryService;
+import org.labkey.api.laboratory.NavItem;
 import org.labkey.api.laboratory.TabbedReportItem;
 import org.labkey.api.laboratory.assay.AssayDataProvider;
 import org.labkey.api.laboratory.assay.SimpleAssayDataProvider;
-import org.labkey.api.laboratory.NavItem;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
@@ -44,12 +47,8 @@ import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.ReadPermission;
-import org.labkey.api.assay.AssayFileWriter;
-import org.labkey.api.assay.AssayProvider;
-import org.labkey.api.assay.AssayService;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.ViewContext;
-import org.labkey.api.view.template.ClientDependency;
 import org.labkey.laboratory.assay.AssayHelper;
 import org.labkey.laboratory.query.DefaultAssayCustomizer;
 import org.labkey.laboratory.query.LaboratoryTableCustomizer;
@@ -65,7 +64,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * User: bimber
@@ -78,7 +76,6 @@ public class LaboratoryServiceImpl extends LaboratoryService
     private static final Logger _log = Logger.getLogger(LaboratoryServiceImpl.class);
 
     private Set<Module> _registeredModules = new HashSet<>();
-    private Map<Module, List<Supplier<ClientDependency>>> _clientDependencies = new HashMap<>();
     private Map<String, Map<String, List<ButtonConfigFactory>>> _assayButtons = new CaseInsensitiveHashMap<>();
     private Map<String, DataProvider> _dataProviders = new HashMap<>();
     private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
@@ -312,33 +309,6 @@ public class LaboratoryServiceImpl extends LaboratoryService
 
             return o1.getLabel() == null ? -1 : o1.getLabel().compareToIgnoreCase(o2.getLabel());
         });
-    }
-
-    @Override
-    public void registerClientDependency(Supplier<ClientDependency> cd, Module owner)
-    {
-        List<Supplier<ClientDependency>> list = _clientDependencies.get(owner);
-        if (list == null)
-            list = new ArrayList<>();
-
-        list.add(cd);
-
-        _clientDependencies.put(owner, list);
-    }
-
-    @Override
-    public List<Supplier<ClientDependency>> getRegisteredClientDependencies(Container c)
-    {
-        List<Supplier<ClientDependency>> list = new ArrayList<>();
-        for (Module m : _clientDependencies.keySet())
-        {
-            if (c.getActiveModules().contains(m))
-            {
-                list.addAll(_clientDependencies.get(m));
-            }
-        }
-
-        return Collections.unmodifiableList(list);
     }
 
     @Override
