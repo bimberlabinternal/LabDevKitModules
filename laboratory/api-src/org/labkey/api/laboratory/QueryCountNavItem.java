@@ -56,8 +56,8 @@ public class QueryCountNavItem extends AbstractQueryNavItem implements SummaryNa
     {
         SimpleFilter filter = new SimpleFilter();
 
-        if (ti.getColumn("container") != null && !(ti.supportsContainerFilter() && ContainerFilter.CURRENT.equals(ti.getContainerFilter())))
-            filter.addClause(ContainerFilter.CURRENT.createFilterClause(ti.getSchema(), FieldKey.fromString("container"), c));
+        if (ti.getColumn("container") != null && !(ti.supportsContainerFilter() && ContainerFilter.current(c).equals(ti.getContainerFilter())))
+            filter.addClause(ContainerFilter.current(c).createFilterClause(ti.getSchema(), FieldKey.fromString("container")));
 
         if (_filter != null)
         {
