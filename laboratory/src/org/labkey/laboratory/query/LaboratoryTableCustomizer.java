@@ -973,7 +973,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         {
             Container c = ti.getUserSchema().getContainer();
             c = c.isWorkbook() ? c.getParent() : c;
-            SQLFragment containerSql = ContainerFilter.CURRENT.getSQLFragment(LaboratorySchema.getInstance().getSchema(), new SQLFragment(ti.getContainerFieldKey().toString()), c);
+            SQLFragment containerSql = ContainerFilter.current(c).getSQLFragment(LaboratorySchema.getInstance().getSchema(), new SQLFragment(ti.getContainerFieldKey().toString()));
 
             SQLFragment sql = new SQLFragment("(SELECT count(*) as _expr FROM laboratory.samples s WHERE " +
                     " (s.").append(containerSql).append(")" +
