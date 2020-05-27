@@ -70,16 +70,19 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
     protected Collection<AssayImportMethod> _importMethods = new LinkedHashSet<>();
     protected Module _module = null;
 
+    @Override
     public String getName()
     {
         return _providerName;
     }
 
+    @Override
     public ActionURL getInstructionsUrl(Container c, User u)
     {
         return null;
     }
 
+    @Override
     public List<NavItem> getDataNavItems(Container c, User u)
     {
         List<NavItem> items = new ArrayList<>();
@@ -91,6 +94,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
         return items;
     }
 
+    @Override
     public List<ExpProtocol> getProtocols(Container c)
     {
         List<ExpProtocol> list = new ArrayList<>();
@@ -113,36 +117,43 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
         return list;
     }
 
+    @Override
     public boolean isModuleEnabled(Container c)
     {
         return _module == null ? true : c.getActiveModules().contains(_module);
     }
 
+    @Override
     public List<NavItem> getSampleNavItems(Container c, User u)
     {
         return Collections.emptyList();
     }
 
+    @Override
     public List<NavItem> getSettingsItems(Container c, User u)
     {
         return Collections.emptyList();
     }
 
+    @Override
     public String getProviderName()
     {
         return _providerName;
     }
 
+    @Override
     public AssayProvider getAssayProvider()
     {
         return AssayService.get().getProvider(_providerName);
     }
 
+    @Override
     public Collection<AssayImportMethod> getImportMethods()
     {
         return _importMethods;
     }
 
+    @Override
     public AssayImportMethod getImportMethodByName(String methodName)
     {
         for (AssayImportMethod m : _importMethods)
@@ -153,6 +164,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
         return null;
     }
 
+    @Override
     public String getDefaultImportMethodName(Container c, User u, int protocolId)
     {
         Container targetContainer = c.isWorkbook() ? c.getParent() : c;
@@ -168,6 +180,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
         return getKey() + "||" + protocolId;
     }
 
+    @Override
     public boolean supportsRunTemplates()
     {
         for (AssayImportMethod im : getImportMethods())
@@ -180,6 +193,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
         return false;
     }
 
+    @Override
     public JSONObject getTemplateMetadata(ViewContext ctx)
     {
         JSONObject meta = new JSONObject();
@@ -310,6 +324,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
         return Collections.unmodifiableList(items);
     }
 
+    @Override
     @NotNull
     public Set<ClientDependency> getClientDependencies()
     {
@@ -321,11 +336,13 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
         return parent.containsKey(key) ? parent.getJSONObject(key): new JSONObject();
     }
 
+    @Override
     public Module getOwningModule()
     {
         return _module;
     }
 
+    @Override
     public List<SummaryNavItem> getSummary(Container c, User u)
     {
         List<SummaryNavItem> items = new ArrayList<>();
@@ -346,6 +363,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
         return Collections.unmodifiableList(items);
     }
 
+    @Override
     public List<NavItem> getSubjectIdSummary(Container c, User u, String subjectId)
     {
         List<NavItem> items = new ArrayList<>();

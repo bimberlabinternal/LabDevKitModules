@@ -144,25 +144,28 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
-            return root.addChild("Prepare Assay Run");
+            root.addChild("Prepare Assay Run");
         }
     }
 
     @RequiresPermission(AdminOperationsPermission.class)
     public class EnsureIndexesAction extends ConfirmAction<Object>
     {
+        @Override
         public void validateCommand(Object form, Errors errors)
         {
 
         }
 
+        @Override
         public URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
 
+        @Override
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
             StringBuilder msg = new StringBuilder();
@@ -176,6 +179,7 @@ public class LaboratoryController extends SpringActionController
             return new HtmlView(msg.toString());
         }
 
+        @Override
         public boolean handlePost(Object form, BindException errors) throws Exception
         {
             LaboratoryManager.get().createIndexes(getUser(), true, true);
@@ -201,6 +205,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class EnsureAssayFieldsAction extends ConfirmAction<EnsureAssayFieldsForm>
     {
+        @Override
         public void validateCommand(EnsureAssayFieldsForm form, Errors errors)
         {
             if (!ContainerManager.getRoot().hasPermission(getUser(), AdminPermission.class))
@@ -241,6 +246,7 @@ public class LaboratoryController extends SpringActionController
             }
         }
 
+        @Override
         public boolean handlePost(EnsureAssayFieldsForm form, BindException errors) throws Exception
         {
             try
@@ -274,6 +280,7 @@ public class LaboratoryController extends SpringActionController
             }
         }
 
+        @Override
         public URLHelper getSuccessURL(EnsureAssayFieldsForm form)
         {
             if (form.getReturnActionURL() != null)
@@ -287,6 +294,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class SetTableIncrementValueAction extends ConfirmAction<SetTableIncrementForm>
     {
+        @Override
         public void validateCommand(SetTableIncrementForm form, Errors errors)
         {
 
@@ -316,6 +324,7 @@ public class LaboratoryController extends SpringActionController
             return new HtmlView(sb.toString());
         }
 
+        @Override
         public boolean handlePost(SetTableIncrementForm form, BindException errors) throws Exception
         {
             ContainerIncrementingTable ti = getTable(form.getSchema(), form.getQuery(), errors, true);
@@ -374,6 +383,7 @@ public class LaboratoryController extends SpringActionController
             return (ContainerIncrementingTable)ti;
         }
 
+        @Override
         public URLHelper getSuccessURL(SetTableIncrementForm form)
         {
             return getContainer().getStartURL(getUser());
@@ -443,6 +453,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class InitWorkbooksAction extends ConfirmAction<Object>
     {
+        @Override
         public void validateCommand(Object form, Errors errors)
         {
             if (!ContainerManager.getRoot().hasPermission(getUser(), AdminPermission.class))
@@ -455,6 +466,7 @@ public class LaboratoryController extends SpringActionController
             return new HtmlView("This action will iterate all workbooks in the current folder and create laboratory experiments for them as needed");
         }
 
+        @Override
         public boolean handlePost(Object form, BindException errors) throws Exception
         {
             try
@@ -470,6 +482,7 @@ public class LaboratoryController extends SpringActionController
             }
         }
 
+        @Override
         public URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
@@ -479,6 +492,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class InitContainerIncrementingTableAction extends ConfirmAction<SetTableIncrementForm>
     {
+        @Override
         public void validateCommand(SetTableIncrementForm form, Errors errors)
         {
             if (!ContainerManager.getRoot().hasPermission(getUser(), AdminPermission.class))
@@ -505,6 +519,7 @@ public class LaboratoryController extends SpringActionController
         }
 
 
+        @Override
         public boolean handlePost(SetTableIncrementForm form, BindException errors) throws Exception
         {
             try
@@ -539,6 +554,7 @@ public class LaboratoryController extends SpringActionController
             }
         }
 
+        @Override
         public URLHelper getSuccessURL(SetTableIncrementForm form)
         {
             return getContainer().getStartURL(getUser());
@@ -548,6 +564,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class ResetLaboratoryFoldersAction extends ConfirmAction<Object>
     {
+        @Override
         public void validateCommand(Object form, Errors errors)
         {
             if (!ContainerManager.getRoot().hasPermission(getUser(), AdminPermission.class))
@@ -560,6 +577,7 @@ public class LaboratoryController extends SpringActionController
             return new HtmlView("This action will webparts and tabs for the current folder and all children to the default Laboratory FolderType, if these folders are either Laboratory Folders or Expt Workbooks");
         }
 
+        @Override
         public boolean handlePost(Object form, BindException errors) throws Exception
         {
             try
@@ -575,6 +593,7 @@ public class LaboratoryController extends SpringActionController
             }
         }
 
+        @Override
         public URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
@@ -590,6 +609,7 @@ public class LaboratoryController extends SpringActionController
             response.setContentType(ApiJsonWriter.CONTENT_TYPE_JSON);
         }
 
+        @Override
         protected File getTargetFile(String filename) throws IOException
         {
             if (!PipelineService.get().hasValidPipelineRoot(getContainer()))
@@ -677,6 +697,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class PopulateDefaultsAction extends MutatingApiAction<PopulateDefaultsForm>
     {
+        @Override
         public ApiResponse execute(PopulateDefaultsForm form, BindException errors) throws Exception
         {
             if (getContainer().isWorkbook())
@@ -715,6 +736,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(UpdatePermission.class)
     public class UpdateWorkbookAction extends MutatingApiAction<UpdateWorkbookForm>
     {
+        @Override
         public ApiResponse execute(UpdateWorkbookForm form, BindException errors) throws Exception
         {
             Map<String, Object> results = new HashMap<>();
@@ -753,6 +775,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(UpdatePermission.class)
     public class UpdateWorkbookTagsAction extends MutatingApiAction<UpdateWorkbookForm>
     {
+        @Override
         public ApiResponse execute(UpdateWorkbookForm form, BindException errors) throws Exception
         {
             Map<String, Object> results = new HashMap<>();
@@ -867,6 +890,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(UpdatePermission.class)
     public class SaveTemplateAction extends MutatingApiAction<SaveTemplateForm>
     {
+        @Override
         public ApiResponse execute(SaveTemplateForm form, BindException errors) throws Exception
         {
             Map<String, Object> results = new HashMap<>();
@@ -997,6 +1021,7 @@ public class LaboratoryController extends SpringActionController
                 errors.reject(ERROR_MSG, "Cannot create template, no jsonData provided");
         }
 
+        @Override
         public void export(ProcessAssayForm form, HttpServletResponse response, BindException errors) throws Exception
         {
             try
@@ -1051,6 +1076,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetDemographicsSourcesAction extends ReadOnlyApiAction<DataSourcesForm>
     {
+        @Override
         public ApiResponse execute(DataSourcesForm form, BindException errors)
         {
             Map<String, Object> results = new HashMap<>();
@@ -1127,6 +1153,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetAdditionalDataSourcesAction extends ReadOnlyApiAction<DataSourcesForm>
     {
+        @Override
         public ApiResponse execute(DataSourcesForm form, BindException errors)
         {
             Map<String, Object> results = new HashMap<>();
@@ -1245,6 +1272,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(LaboratoryAdminPermission.class)
     public class SetDemographicsSourcesAction extends MutatingApiAction<SetDataSourcesForm>
     {
+        @Override
         public ApiResponse execute(SetDataSourcesForm form, BindException errors)
         {
             Map<String, Object> results = new HashMap<>();
@@ -1303,6 +1331,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(LaboratoryAdminPermission.class)
     public class SetAdditionalDataSourcesAction extends MutatingApiAction<SetDataSourcesForm>
     {
+        @Override
         public ApiResponse execute(SetDataSourcesForm form, BindException errors)
         {
             Map<String, Object> results = new HashMap<>();
@@ -1384,6 +1413,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(LaboratoryAdminPermission.class)
     public class SetUrlDataSourcesAction extends MutatingApiAction<SetUrlDataSourcesForm>
     {
+        @Override
         public ApiResponse execute(SetUrlDataSourcesForm form, BindException errors)
         {
             Map<String, Object> results = new HashMap<>();
@@ -1439,6 +1469,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetAssayImportHeadersAction extends ReadOnlyApiAction<AssayImportHeadersForm>
     {
+        @Override
         public ApiResponse execute(AssayImportHeadersForm form, BindException errors)
         {
             Map<String, Object> results = new HashMap<>();
@@ -1480,6 +1511,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(LaboratoryAdminPermission.class)
     public class SetItemVisibilityAction extends MutatingApiAction<JsonDataForm>
     {
+        @Override
         public ApiResponse execute(JsonDataForm form, BindException errors)
         {
             if (form.getJsonData() == null)
@@ -1533,6 +1565,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(LaboratoryAdminPermission.class)
     public class SetItemDefaultViewAction extends MutatingApiAction<JsonDataForm>
     {
+        @Override
         public ApiResponse execute(JsonDataForm form, BindException errors)
         {
             if (form.getJsonData() == null)
@@ -1566,6 +1599,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(LaboratoryAdminPermission.class)
     public class SetDataBrowserSettingsAction extends MutatingApiAction<JsonDataForm>
     {
+        @Override
         public ApiResponse execute(JsonDataForm form, BindException errors)
         {
             if (form.getJsonData() == null)
@@ -1626,6 +1660,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(LaboratoryAdminPermission.class)
     public class SaveAssayDefaultsAction extends MutatingApiAction<JsonDataForm>
     {
+        @Override
         public ApiResponse execute(JsonDataForm form, BindException errors)
         {
             if (form.getJsonData() == null)
@@ -1658,6 +1693,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetDataItemsAction extends MutatingApiAction<GetDataItemsForm>
     {
+        @Override
         public ApiResponse execute(GetDataItemsForm form, BindException errors)
         {
             Map<String, Object> results = new HashMap<>();
@@ -1772,6 +1808,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetImportMethodsAction extends ReadOnlyApiAction<ImportMethodsForm>
     {
+        @Override
         public ApiResponse execute(ImportMethodsForm form, BindException errors)
         {
             Map<String, Object> results = new HashMap<>();
@@ -1841,6 +1878,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetDataSummaryAction extends ReadOnlyApiAction<DataSummaryForm>
     {
+        @Override
         public ApiResponse execute(DataSummaryForm form, BindException errors)
         {
             Map<String, Object> results = new HashMap<>();
@@ -1917,6 +1955,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class GetSubjectIdSummaryAction extends ReadOnlyApiAction<SubjectSummaryForm>
     {
+        @Override
         public ApiResponse execute(SubjectSummaryForm form, BindException errors)
         {
             if (form.getSubjectIds() == null)
@@ -2259,6 +2298,7 @@ public class LaboratoryController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class MigrateWorkbooksAction extends MutatingApiAction<MigrateWorkbooksForm>
     {
+        @Override
         public ApiResponse execute(MigrateWorkbooksForm form, BindException errors) throws Exception
         {
             if (getContainer().isWorkbook())
@@ -2339,9 +2379,9 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
-            return root.addChild("Data Browser");
+            root.addChild("Data Browser");
         }
     }
 }

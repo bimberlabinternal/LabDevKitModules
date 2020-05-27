@@ -29,6 +29,7 @@ public class AssayRunTemplatesCustomizer implements TableCustomizer
 
     }
 
+    @Override
     public void customize(TableInfo ti)
     {
         //apply defaults

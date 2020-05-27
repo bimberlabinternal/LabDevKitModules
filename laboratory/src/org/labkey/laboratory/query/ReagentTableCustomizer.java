@@ -12,6 +12,7 @@ import org.labkey.api.ldk.LDKService;
  */
 public class ReagentTableCustomizer implements TableCustomizer
 {
+    @Override
     public void customize(TableInfo ti)
     {
         LaboratoryTableCustomizer lc = new LaboratoryTableCustomizer();

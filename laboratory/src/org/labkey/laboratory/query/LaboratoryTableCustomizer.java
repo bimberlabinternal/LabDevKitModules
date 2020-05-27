@@ -67,6 +67,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         _props = props;
     }
 
+    @Override
     public void customize(TableInfo ti)
     {
         //apply defaults
@@ -291,6 +292,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
                     UserSchema targetSchema = qd.getTableInfo(targetContainer, us.getUser()).getUserSchema();
                     col.setFk(new QueryForeignKey(us, ti.getContainerFilter(), targetSchema, null, qd.getQueryName(), qd.getTargetColumn(), qd.getTargetColumn())
                     {
+                        @Override
                         public TableInfo getLookupTableInfo()
                         {
                             if (null == _table)
@@ -372,6 +374,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String querySelectName = ds.getSqlDialect().makeLegalIdentifier(ds.getPublicName());
 
         col.setFk(new LookupForeignKey(){
+            @Override
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
@@ -440,6 +443,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         col.setIsUnselectable(true);
         col.setUserEditable(false);
         col.setFk(new LookupForeignKey(){
+            @Override
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
@@ -486,6 +490,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         col2.setUserEditable(false);
         final String lookupColName = ds.getName() + "_overlappingProjectsPivot";
         col2.setFk(new LookupForeignKey(){
+            @Override
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
@@ -548,6 +553,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         col.setIsUnselectable(true);
         col.setUserEditable(false);
         col.setFk(new LookupForeignKey(){
+            @Override
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
@@ -594,6 +600,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         col2.setIsUnselectable(true);
         col2.setUserEditable(false);
         col2.setFk(new LookupForeignKey(){
+            @Override
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
@@ -744,6 +751,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String publicTableName = ds.getSqlDialect().makeLegalIdentifier(ds.getPublicName());
 
         col.setFk(new LookupForeignKey(){
+            @Override
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();

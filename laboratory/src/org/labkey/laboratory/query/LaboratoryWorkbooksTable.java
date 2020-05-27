@@ -52,6 +52,7 @@ public class LaboratoryWorkbooksTable extends SimpleUserSchema.SimpleTable
         super(us, st, cf);
     }
 
+    @Override
     public SimpleUserSchema.SimpleTable init()
     {
         super.init();

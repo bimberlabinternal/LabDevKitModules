@@ -116,6 +116,7 @@ public class NotificationServiceImpl extends NotificationService
         return containers;
     }
 
+    @Override
     public void registerNotification(Notification notification)
     {
         _log.info("Registering notification: " + notification.getName());
@@ -156,6 +157,7 @@ public class NotificationServiceImpl extends NotificationService
         return PropertyManager.getProperties(c, CONFIG_PROPERTY_DOMAIN).get(key);
     }
 
+    @Override
     public boolean isServiceEnabled()
     {
         String prop = getConfigProperty(ContainerManager.getRoot(), ENABLED_PROP);
@@ -172,6 +174,7 @@ public class NotificationServiceImpl extends NotificationService
         pm.save();
     }
 
+    @Override
     public Set<Notification> getNotifications(Container c, boolean includeAll)
     {
         Set<Notification> notifications = new HashSet<>();
@@ -197,6 +200,7 @@ public class NotificationServiceImpl extends NotificationService
         return Collections.unmodifiableSet(notifications);
     }
 
+    @Override
     public Notification getNotification(String key)
     {
         for (Notification n : _notifications)
@@ -207,6 +211,7 @@ public class NotificationServiceImpl extends NotificationService
         return null;
     }
 
+    @Override
     public Address getReturnEmail(Container c)
     {
         String email = getConfigProperty(c, RETURN_EMAIL);
@@ -319,6 +324,7 @@ public class NotificationServiceImpl extends NotificationService
         return n.getClass().getCanonicalName();
     }
 
+    @Override
     public long getLastRun(Notification n)
     {
         Map<String, String> m = PropertyManager.getProperties(NotificationServiceImpl.TIMESTAMP_PROPERTY_DOMAIN);
@@ -344,6 +350,7 @@ public class NotificationServiceImpl extends NotificationService
         pm.save();
     }
 
+    @Override
     public boolean isActive(Notification n, Container c)
     {
         Map<String, String> m = PropertyManager.getProperties(c, NotificationServiceImpl.STATUS_PROPERTY_DOMAIN);
@@ -362,6 +369,7 @@ public class NotificationServiceImpl extends NotificationService
         pm.save();
     }
 
+    @Override
     @NotNull
     public List<Address> getEmailsForPrincipal(UserPrincipal user) throws ValidEmail.InvalidEmailException
     {
@@ -442,11 +450,13 @@ public class NotificationServiceImpl extends NotificationService
         return null;
     }
 
+    @Override
     public User getUser(Notification n, Container c)
     {
         return getUser(c);
     }
 
+    @Override
     public Set<UserPrincipal> getRecipients(Notification n, Container c)
     {
         final Set<UserPrincipal> recipients = new HashSet<>();
@@ -457,6 +467,7 @@ public class NotificationServiceImpl extends NotificationService
         if (ts.getRowCount() > 0)
         {
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
+                @Override
                 public void exec(ResultSet rs) throws SQLException
                 {
                     int userId = rs.getInt("recipient");
@@ -504,6 +515,7 @@ public class NotificationServiceImpl extends NotificationService
         return containers;
     }
 
+    @Override
     public Date getNextFireTime(Notification n)
     {
         Trigger trigger = _triggerMap.get(n);

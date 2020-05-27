@@ -122,6 +122,7 @@ abstract public class PivotingImportMethod extends DefaultAssayImportMethod
         return Collections.emptyList();
     }
 
+    @Override
     public AssayParser getFileParser(Container c, User u, int assayId)
     {
         return new PivotingAssayParser(this, c, u, assayId);

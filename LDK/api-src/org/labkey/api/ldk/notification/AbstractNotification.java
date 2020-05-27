@@ -44,6 +44,7 @@ abstract public class AbstractNotification implements Notification
         _owner = owner;
     }
 
+    @Override
     public boolean isAvailable(Container c)
     {
         return c.getActiveModules().contains(_owner);

@@ -82,6 +82,7 @@ public class AdditionalDataSource extends AbstractDataSource
         }
     }
 
+    @Override
     public String getPropertyManagerKey()
     {
         return getForKey(getSchemaName()) + DELIM + getForKey(getQueryName()) + DELIM + getForKey(getContainerId()) + DELIM + getForKey(getLabel()) + DELIM + getForKey(getItemType().name())  + DELIM + getForKey(getReportCategory());

@@ -352,6 +352,7 @@ public class LDKController extends SpringActionController
     {
         private String _title = null;
 
+        @Override
         public ModelAndView getView(RunNotificationForm form, BindException errors) throws Exception
         {
             if (form.getKey() == null)
@@ -393,15 +394,17 @@ public class LDKController extends SpringActionController
             return new HtmlView(sb.toString());
         }
 
-        public NavTree appendNavTrail(NavTree root)
+        @Override
+        public void addNavTrail(NavTree root)
         {
-            return root.addChild(_title == null ? "Notification" : _title);
+            root.addChild(_title == null ? "Notification" : _title);
         }
     }
 
     @RequiresPermission(AdminPermission.class)
     public class SendNotificationAction extends MutatingApiAction<RunNotificationForm>
     {
+        @Override
         public ApiResponse execute(RunNotificationForm form, BindException errors) throws Exception
         {
             Map<String, Object> result = new HashMap<>();
@@ -435,6 +438,7 @@ public class LDKController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class ValidateContainerScopedTablesAction extends SimpleViewAction<Object>
     {
+        @Override
         public ModelAndView getView(Object form, BindException errors) throws Exception
         {
             LDKServiceImpl service = (LDKServiceImpl)LDKServiceImpl.get();
@@ -447,15 +451,17 @@ public class LDKController extends SpringActionController
             return new HtmlView(sb.toString());
         }
 
-        public NavTree appendNavTrail(NavTree root)
+        @Override
+        public void addNavTrail(NavTree root)
         {
-            return root.addChild("Validate Container Scoped Tables");
+            root.addChild("Validate Container Scoped Tables");
         }
     }
 
     @RequiresPermission(AdminPermission.class)
     public class GetNotificationSubscriptionsAction extends ReadOnlyApiAction<RunNotificationForm>
     {
+        @Override
         public ApiResponse execute(RunNotificationForm form, BindException errors) throws Exception
         {
             Map<String, Object> result = new HashMap<>();
@@ -505,6 +511,7 @@ public class LDKController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public class SetNotificationSettingsAction extends MutatingApiAction<NotificationSettingsForm>
     {
+        @Override
         public ApiResponse execute(NotificationSettingsForm form, BindException errors)
         {
             try
@@ -812,6 +819,7 @@ public class LDKController extends SpringActionController
     {
         private QueryForm _form;
 
+        @Override
         public ModelAndView getView(QueryForm form, BindException errors) throws Exception
         {
             ensureQueryExists(form);
@@ -861,7 +869,8 @@ public class LDKController extends SpringActionController
             return qwp;
         }
 
-        public NavTree appendNavTrail(NavTree root)
+        @Override
+        public void addNavTrail(NavTree root)
         {
             TableInfo ti = null;
             try
@@ -874,7 +883,6 @@ public class LDKController extends SpringActionController
             }
 
             root.addChild(ti == null ? _form.getQueryName() : ti.getTitle(), _form.urlFor(QueryAction.executeQuery));
-            return root;
         }
 
         protected void ensureQueryExists(QueryForm form)
@@ -941,6 +949,7 @@ public class LDKController extends SpringActionController
             return new HtmlView(sb.toString());
         }
 
+        @Override
         public boolean handlePost(MoveWorkbookForm form, BindException errors) throws Exception
         {
             Container toMove = getContainer();
@@ -1046,6 +1055,7 @@ public class LDKController extends SpringActionController
     @RequiresNoPermission
     public class RedirectStartAction extends SimpleViewAction<Object>
     {
+        @Override
         public ModelAndView getView(Object form, BindException errors) throws Exception
         {
             if (getContainer().hasPermission(getUser(), AdminPermission.class))
@@ -1078,9 +1088,10 @@ public class LDKController extends SpringActionController
             }
         }
 
-        public NavTree appendNavTrail(NavTree root)
+        @Override
+        public void addNavTrail(NavTree root)
         {
-            return root.addChild("Home");
+            root.addChild("Home");
         }
     }
 

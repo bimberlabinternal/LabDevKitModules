@@ -20,6 +20,7 @@ public class ColumnOrderCustomizer implements TableCustomizer
     {
     }
 
+    @Override
     public void customize(TableInfo table)
     {
         if (table instanceof AbstractTableInfo)

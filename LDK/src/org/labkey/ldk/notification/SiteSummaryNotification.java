@@ -84,26 +84,31 @@ public class SiteSummaryNotification implements Notification
 
     private static final String PROP_CATEGORY = "ldk.SiteSummaryNotification";
 
+    @Override
     public String getName()
     {
         return "Site Summary Notification";
     }
 
+    @Override
     public String getCategory()
     {
         return "Admin";
     }
 
+    @Override
     public boolean isAvailable(Container c)
     {
         return c.isRoot();
     }
 
+    @Override
     public String getDescription()
     {
         return "This runs every day at 5AM and sends an email summarizing various events about the site, including usage";
     }
 
+    @Override
     public String getEmailSubject(Container c)
     {
         return "Daily Admin Alerts: " + getDateTimeFormat(c).format(new Date());
@@ -125,6 +130,7 @@ public class SiteSummaryNotification implements Notification
         return "0 0 5 * * ?";
     }
 
+    @Override
     public String getScheduleDescription()
     {
         return "daily at 5AM";

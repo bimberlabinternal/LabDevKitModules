@@ -18,6 +18,7 @@ public class FreezersCustomizer implements TableCustomizer
 
     }
 
+    @Override
     public void customize(TableInfo ti)
     {
         //apply defaults

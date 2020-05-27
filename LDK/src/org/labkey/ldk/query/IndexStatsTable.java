@@ -23,6 +23,7 @@ public class IndexStatsTable extends VirtualTable
         setupColumns();
     }
 
+    @Override
     @NotNull
     public SQLFragment getFromSQL()
     {

@@ -17,6 +17,7 @@ public class WrappingTableCustomizer implements TableCustomizer
 
     }
 
+    @Override
     public void customize(TableInfo ti)
     {
         LaboratoryService.get().getLaboratoryTableCustomizer().customize(ti);

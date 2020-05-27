@@ -12,6 +12,7 @@ import org.labkey.api.ldk.LDKService;
  */
 public class SubjectsTableCustomizer implements TableCustomizer
 {
+    @Override
     public void customize(TableInfo ti)
     {
         //apply defaults

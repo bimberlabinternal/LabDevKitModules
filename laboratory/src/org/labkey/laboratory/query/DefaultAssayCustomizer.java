@@ -23,6 +23,7 @@ public class DefaultAssayCustomizer implements TableCustomizer
     //private static final Logger _log = Logger.getLogger(LaboratoryTableCustomizer.class);
     private final LaboratoryTableCustomizer _lc = new LaboratoryTableCustomizer();
 
+    @Override
     public void customize(TableInfo ti)
     {
         //apply defaults

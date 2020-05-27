@@ -67,16 +67,19 @@ public class LDKServiceImpl extends LDKService
 
     }
 
+    @Override
     public TableCustomizer getDefaultTableCustomizer()
     {
         return new DefaultTableCustomizer();
     }
 
+    @Override
     public TableCustomizer getDefaultTableCustomizer(MultiValuedMap<String, String> props)
     {
         return new DefaultTableCustomizer(props);
     }
 
+    @Override
     public TableCustomizer getBuiltInColumnsCustomizer(boolean disableFacetingForNumericCols)
     {
         BuiltInColumnsCustomizer ret = new BuiltInColumnsCustomizer();
@@ -85,11 +88,13 @@ public class LDKServiceImpl extends LDKService
         return ret;
     }
 
+    @Override
     public TableCustomizer getColumnsOrderCustomizer()
     {
         return new ColumnOrderCustomizer();
     }
 
+    @Override
     public Map<String, Object> getContainerSizeJson(Container c, User u, boolean includeAllRootTypes, boolean includeFileCount)
     {
         FileContentService svc = FileContentService.get();
@@ -170,16 +175,19 @@ public class LDKServiceImpl extends LDKService
         return count;
     }
 
+    @Override
     public void applyNaturalSort(AbstractTableInfo ti, String colName)
     {
         DefaultTableCustomizer.applyNaturalSort(ti, colName);
     }
 
+    @Override
     public void appendCalculatedDateColumns(AbstractTableInfo ti, String dateColName, String enddateColName)
     {
         DefaultTableCustomizer.appendCalculatedDateColumns(ti, dateColName, enddateColName);
     }
 
+    @Override
     public void registerSiteSummaryNotification(NotificationSection ns)
     {
         _summaryNotificationSections.add(ns);
@@ -190,6 +198,7 @@ public class LDKServiceImpl extends LDKService
         return Collections.unmodifiableSet(_summaryNotificationSections);
     }
 
+    @Override
     public boolean isNaturalizeInstalled()
     {
         if (_isNaturalizeInstalled != null)
@@ -215,6 +224,7 @@ public class LDKServiceImpl extends LDKService
         }
     }
 
+    @Override
     public void registerContainerScopedTable(String dbSchemaName, String tableName, String pseudoPk)
     {
         _containerScopedTables.add(Arrays.asList(dbSchemaName, tableName, pseudoPk));
@@ -276,6 +286,7 @@ public class LDKServiceImpl extends LDKService
         return messages;
     }
 
+    @Override
     public void logPerfMetric(Container c, User u, String metricName, String comment, Double value)
     {
         PerfMetricModel model = new PerfMetricModel();
@@ -317,6 +328,7 @@ public class LDKServiceImpl extends LDKService
         Table.insert(u, t, map);
     }
 
+    @Override
     public void registerQueryButton(ButtonConfigFactory btn, String schema, String query)
     {
         Map<String, List<ButtonConfigFactory>> schemaMap = _queryButtons.get(schema);
@@ -491,6 +503,7 @@ public class LDKServiceImpl extends LDKService
         }
     }
 
+    @Override
     public User getBackgroundAdminUser()
     {
         Module m = ModuleLoader.getInstance().getModule(LDKModule.NAME);

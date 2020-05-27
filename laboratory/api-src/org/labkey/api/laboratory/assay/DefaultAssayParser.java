@@ -360,6 +360,7 @@ public class DefaultAssayParser implements AssayParser
         }
     }
 
+    @Override
     public JSONObject getPreview(JSONObject json, File file, String fileName, ViewContext ctx) throws BatchValidationException
     {
         ImportContext context = new ImportContext(json, file, fileName, ctx);
@@ -483,6 +484,7 @@ public class DefaultAssayParser implements AssayParser
         }
     }
 
+    @Override
     public Pair<ExpExperiment, ExpRun> saveBatch(JSONObject json, File file, String fileName, ViewContext ctx) throws BatchValidationException
     {
         ImportContext context = new ImportContext(json, file, fileName, ctx);
@@ -601,11 +603,13 @@ public class DefaultAssayParser implements AssayParser
         return ret;
     }
 
+    @Override
     public ExpProtocol getProtocol()
     {
         return _protocol;
     }
 
+    @Override
     public AssayProvider getProvider()
     {
         return _provider;

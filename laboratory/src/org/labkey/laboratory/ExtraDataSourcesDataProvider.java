@@ -47,11 +47,13 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
         _module = m;
     }
 
+    @Override
     public String getName()
     {
         return NAME;
     }
 
+    @Override
     public ActionURL getInstructionsUrl(Container c, User u)
     {
         return null;
@@ -109,26 +111,31 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
         return Collections.unmodifiableList(items);
     }
 
+    @Override
     public List<NavItem> getDataNavItems(Container c, User u)
     {
         return getItems(c, u, LaboratoryService.NavItemCategory.data);
     }
 
+    @Override
     public List<NavItem> getSampleNavItems(Container c, User u)
     {
         return getItems(c, u, LaboratoryService.NavItemCategory.samples);
     }
 
+    @Override
     public List<NavItem> getMiscItems(Container c, User u)
     {
         return getItems(c, u, LaboratoryService.NavItemCategory.misc);
     }
 
+    @Override
     public List<NavItem> getSettingsItems(Container c, User u)
     {
         return getItems(c, u, LaboratoryService.NavItemCategory.settings);
     }
 
+    @Override
     public List<NavItem> getReportItems(Container c, User u)
     {
         List<NavItem> items = new ArrayList<>();
@@ -158,22 +165,26 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
         return Collections.unmodifiableList(items);
     }
 
+    @Override
     public JSONObject getTemplateMetadata(ViewContext ctx)
     {
         return new JSONObject();
     }
 
+    @Override
     @NotNull
     public Set<ClientDependency> getClientDependencies()
     {
         return Collections.emptySet();
     }
 
+    @Override
     public Module getOwningModule()
     {
         return _module;
     }
 
+    @Override
     public List<SummaryNavItem> getSummary(Container c, User u)
     {
         List<SummaryNavItem> items = new ArrayList<>();
@@ -194,6 +205,7 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
         return Collections.unmodifiableList(items);
     }
 
+    @Override
     public List<NavItem> getSubjectIdSummary(Container c, User u, String subjectId)
     {
         List<NavItem> items = new ArrayList<NavItem>();

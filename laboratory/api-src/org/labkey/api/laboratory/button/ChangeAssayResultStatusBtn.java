@@ -41,6 +41,7 @@ public class ChangeAssayResultStatusBtn extends SimpleButtonConfigFactory
         setClientDependencies(Arrays.asList(ClientDependency.supplierFromModuleName("laboratory"), ClientDependency.supplierFromPath("laboratory/window/ChangeAssayResultStatusWindow.js")));
     }
 
+    @Override
     public boolean isAvailable(TableInfo ti)
     {
         return super.isAvailable(ti) && ti.hasPermission(ti.getUserSchema().getUser(), UpdatePermission.class);

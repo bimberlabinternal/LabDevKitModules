@@ -33,6 +33,7 @@ public class LaboratoryUserSchema extends SimpleUserSchema
 
         DefaultSchema.registerProvider(LaboratoryModule.SCHEMA_NAME, new DefaultSchema.SchemaProvider(m)
         {
+            @Override
             public QuerySchema createSchema(final DefaultSchema schema, Module module)
             {
                 return new LaboratoryUserSchema(schema.getUser(), schema.getContainer(), dbSchema);

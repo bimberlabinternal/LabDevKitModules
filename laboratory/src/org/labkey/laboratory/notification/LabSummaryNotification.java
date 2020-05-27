@@ -51,26 +51,31 @@ public class LabSummaryNotification implements Notification
         _owner = owner;
     }
 
+    @Override
     public String getName()
     {
         return "Lab Summary Notification";
     }
 
+    @Override
     public String getCategory()
     {
         return "Laboratory";
     }
 
+    @Override
     public boolean isAvailable(Container c)
     {
         return c.getActiveModules().contains(_owner);
     }
 
+    @Override
     public String getDescription()
     {
         return "This creates a report summarizing laboratory data usage";
     }
 
+    @Override
     public String getEmailSubject(Container c)
     {
         return "Lab Data Summary: " + _dateTimeFormat.format(new Date());
@@ -82,6 +87,7 @@ public class LabSummaryNotification implements Notification
         return "0 0 11 1 * ?";
     }
 
+    @Override
     public String getScheduleDescription()
     {
         return "on the 1st of each month at 11AM";

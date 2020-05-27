@@ -73,12 +73,14 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
         _uploadedData = uploadedData;
     }
 
+    @Override
     @NotNull
     public ExpProtocol getProtocol()
     {
         return _protocol;
     }
 
+    @Override
     public Map<DomainProperty, String> getRunProperties() throws ExperimentException
     {
         if (_runProperties != null)
@@ -101,6 +103,7 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
         return null;
     }
 
+    @Override
     public Map<DomainProperty, String> getBatchProperties()
     {
         if (_batchProperties != null)
@@ -118,37 +121,44 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
         return null;
     }
 
+    @Override
     public String getComments()
     {
         return _comments;
     }
 
+    @Override
     public String getName()
     {
         return _name;
     }
 
+    @Override
     public User getUser()
     {
         return _ctx.getUser();
     }
 
+    @Override
     @NotNull
     public Container getContainer()
     {
         return _ctx.getContainer();
     }
 
+    @Override
     public HttpServletRequest getRequest()
     {
         return _ctx.getRequest();
     }
 
+    @Override
     public ActionURL getActionURL()
     {
         return _ctx.getActionURL();
     }
 
+    @Override
     @NotNull
     public Map<String, File> getUploadedData() throws ExperimentException
     {
@@ -162,21 +172,25 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
         return Collections.emptyMap();
     }
 
+    @Override
     public ProviderType getProvider()
     {
         return _providerType;
     }
 
+    @Override
     public String getTargetStudy()
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public TransformResult getTransformResult()
     {
         return _transformResult == null ? DefaultTransformResult.createEmptyResult() :_transformResult;
     }
 
+    @Override
     public void setTransformResult(TransformResult result)
     {
         _transformResult = result;
@@ -185,17 +199,20 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
     /**
      * The RowId for the run that is being deleted and reuploaded, or null if this is a new run
      */
+    @Override
     public Integer getReRunId()
     {
         return null;
     }
 
+    @Override
     public void uploadComplete(ExpRun run) throws ExperimentException
     {
 
     }
 
-	public Logger getLogger()
+	@Override
+    public Logger getLogger()
 	{
 		return null;
     }

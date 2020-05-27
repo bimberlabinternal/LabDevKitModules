@@ -39,6 +39,7 @@ public class NotificationJob implements Job
     private static final Logger _log = Logger.getLogger(NotificationJob.class);
     private Notification _notification;
 
+    @Override
     public void execute(JobExecutionContext context) throws JobExecutionException
     {
         String key = context.getMergedJobDataMap().getString("notificationName");

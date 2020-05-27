@@ -56,21 +56,25 @@ public class SampleSetDataProvider extends AbstractDataProvider
 
     }
 
+    @Override
     public String getName()
     {
         return NAME;
     }
 
+    @Override
     public ActionURL getInstructionsUrl(Container c, User u)
     {
         return null;
     }
 
+    @Override
     public List<NavItem> getDataNavItems(Container c, User u)
     {
         return Collections.emptyList();
     }
 
+    @Override
     public List<NavItem> getSampleNavItems(Container c, User u)
     {
         //also append all sample sets in this container
@@ -83,27 +87,32 @@ public class SampleSetDataProvider extends AbstractDataProvider
         return navItems;
     }
 
+    @Override
     public List<NavItem> getSettingsItems(Container c, User u)
     {
         return Collections.emptyList();
     }
 
+    @Override
     public JSONObject getTemplateMetadata(ViewContext ctx)
     {
         return new JSONObject();
     }
 
+    @Override
     @NotNull
     public Set<ClientDependency> getClientDependencies()
     {
         return Collections.emptySet();
     }
 
+    @Override
     public Module getOwningModule()
     {
         return null;
     }
 
+    @Override
     public List<SummaryNavItem> getSummary(Container c, User u)
     {
         List<SummaryNavItem> items = new ArrayList<>();
@@ -119,6 +128,7 @@ public class SampleSetDataProvider extends AbstractDataProvider
         return items;
     }
 
+    @Override
     public List<NavItem> getSubjectIdSummary(Container c, User u, String subjectId)
     {
         List<NavItem> items = new ArrayList<NavItem>();

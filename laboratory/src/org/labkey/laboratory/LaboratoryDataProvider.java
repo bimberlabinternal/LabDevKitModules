@@ -159,6 +159,7 @@ public class LaboratoryDataProvider extends AbstractDataProvider
         return Collections.unmodifiableList(items);
     }
 
+    @Override
     public List<NavItem> getSettingsItems(Container c, User u)
     {
         List<NavItem> items = new ArrayList<NavItem>();
@@ -275,6 +276,7 @@ public class LaboratoryDataProvider extends AbstractDataProvider
         return Collections.unmodifiableList(items);
     }
 
+    @Override
     public List<NavItem> getSubjectIdSummary(Container c, User u, String subjectId)
     {
         List<NavItem> items = new ArrayList<>();
