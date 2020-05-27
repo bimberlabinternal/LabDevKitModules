@@ -86,8 +86,8 @@ Ext4.define('Laboratory.panel.WorkbookHeaderPanel', {
                     scope: this,
                     handler: function(btn){
                         Ext4.Msg.confirm('Remove Tag', 'Do you want to remove this tag?', function(val){
-                            if (val == 'yes'){
-                                this.tags.remove(btn.tag);
+                            if (val === 'yes'){
+                                Ext4.Array.remove(this.tags, btn.tag);
                                 btn.destroy();
                                 this.onUpdate();
                             }
