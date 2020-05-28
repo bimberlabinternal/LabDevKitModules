@@ -258,7 +258,7 @@ public class LDKServiceImpl extends LDKService
             }
 
             // group data based on pseudoPK and effective container (ie. workbooks go with parent) and return duplicates
-            SQLFragment sql = new SQLFragment("SELECT ").append(pseudoPk.getValueSql("t")).append(" as keyField, count(*) as total FROM " + ti.getSelectName() + " t " +
+            SQLFragment sql = new SQLFragment("SELECT ").append(pseudoPk.getValueSql("t")).append(" as keyField, count(*) as total FROM " + ti.getFromSQL("t") +
             " LEFT JOIN core.containers c ON t.container = c.entityid " +
             " GROUP BY ").append(pseudoPk.getValueSql("t")).append(", CASE WHEN c.type = 'workbook' THEN c.parent ELSE c.entityid END " +
             " HAVING count(*) > 1");
