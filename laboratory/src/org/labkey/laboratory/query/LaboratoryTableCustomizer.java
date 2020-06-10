@@ -14,6 +14,7 @@ import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.DisplayColumnFactory;
 import org.labkey.api.data.JdbcType;
+import org.labkey.api.data.MutableColumnInfo;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
@@ -356,10 +357,10 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             return;
         }
         ColumnInfo pk = pks.get(0);
-        final String pkColSelectName = pk.getSelectName();
+        final String pkColSelectName = pk.getFieldKey().toSQLString();
         final String pkColRawName = pk.getName();
 
-        WrappedColumn col = new WrappedColumn(pk, name);
+        MutableColumnInfo col = new WrappedColumn(pk, name);
         col.setLabel("Major Events");
         col.setDescription("This column shows all major events recorded in this subject\'s history and will calculate the time elapsed between the current sample and these dates.");
         col.setReadOnly(true);
@@ -426,7 +427,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             return;
         }
         ColumnInfo pk = pks.get(0);
-        final String pkColSelectName = pk.getSelectName();
+        final String pkColSelectName = pk.getFieldKey().toSQLString();
         final String pkColRawName = pk.getName();
         final String publicTableName = ds.getPublicName();
         final String colName = ds.getName() + "_overlappingProjects";
@@ -538,7 +539,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             return;
         }
         ColumnInfo pk = pks.get(0);
-        final String pkColSelectName = pk.getSelectName();
+        final String pkColSelectName = pk.getFieldKey().toSQLString();
         final String pkColRawName = pk.getName();
         final String schemaName = ds.getUserSchema().getSchemaPath().toSQLString();
         final String querySelectName = ds.getSqlDialect().makeLegalIdentifier(ds.getPublicName());
@@ -735,7 +736,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             return;
         }
         ColumnInfo pk = pks.get(0);
-        final String pkColSelectName = pk.getSelectName();
+        final String pkColSelectName = pk.getFieldKey().toSQLString();
         final String pkColRawName = pk.getName();
 
         WrappedColumn col = new WrappedColumn(pk, name);
@@ -859,9 +860,9 @@ public class LaboratoryTableCustomizer implements TableCustomizer
     //NOTE: patterned off of AgeInMonthsMethodInfo
     public SQLFragment getAgeInMonthsSQL(DbSchema schema, ColumnInfo column, @Nullable ColumnInfo deathCol)
     {
-        SQLFragment yearA = new SQLFragment(schema.getSqlDialect().getDatePart(Calendar.YEAR, ExprColumn.STR_TABLE_ALIAS + "." + column.getSelectName()));
-        SQLFragment monthA = new SQLFragment(schema.getSqlDialect().getDatePart(Calendar.MONTH, ExprColumn.STR_TABLE_ALIAS + "." + column.getSelectName()));
-        SQLFragment dayA = new SQLFragment(schema.getSqlDialect().getDatePart(Calendar.DATE, ExprColumn.STR_TABLE_ALIAS + "." + column.getSelectName()));
+        SQLFragment yearA = schema.getSqlDialect().getDatePart(Calendar.YEAR, column.getValueSql(ExprColumn.STR_TABLE_ALIAS));
+        SQLFragment monthA = schema.getSqlDialect().getDatePart(Calendar.MONTH, column.getValueSql(ExprColumn.STR_TABLE_ALIAS));
+        SQLFragment dayA = schema.getSqlDialect().getDatePart(Calendar.DATE, column.getValueSql(ExprColumn.STR_TABLE_ALIAS));
 
         String curDateExpr = getCurDateExpr(deathCol);
         SQLFragment yearB = new SQLFragment(schema.getSqlDialect().getDatePart(Calendar.YEAR, curDateExpr));

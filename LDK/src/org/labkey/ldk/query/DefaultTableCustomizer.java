@@ -240,7 +240,7 @@ public class DefaultTableCustomizer implements TableCustomizer
         String name = sourceCol.getName();
         if (ti.getColumn(name + "Coalesced", false) == null)
         {
-            SQLFragment sql = new SQLFragment("CAST(COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + sourceCol.getSelectName() + ", {fn curdate()}) as date)");
+            SQLFragment sql = new SQLFragment("CAST(COALESCE(").append(sourceCol.getValueSql(ExprColumn.STR_TABLE_ALIAS)).append(", {fn curdate()}) as date)");
             ExprColumn col = new ExprColumn(ti, name + "Coalesced", sql, JdbcType.DATE);
             col.setCalculated(true);
             col.setUserEditable(false);
@@ -255,7 +255,7 @@ public class DefaultTableCustomizer implements TableCustomizer
 
         if (ti.getColumn(name + "timeCoalesced", false) == null)
         {
-            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + sourceCol.getSelectName() + ", {fn now()})");
+            SQLFragment sql = new SQLFragment("COALESCE(").append(sourceCol.getValueSql(ExprColumn.STR_TABLE_ALIAS)).append(", {fn now()})");
             ExprColumn col = new ExprColumn(ti, name + "timeCoalesced", sql, JdbcType.DATE);
             col.setCalculated(true);
             col.setUserEditable(false);
@@ -279,7 +279,7 @@ public class DefaultTableCustomizer implements TableCustomizer
         String name = sourceCol.getName().equals("date") ? "dateOnly" : sourceCol.getName() + "DatePart";
         if (ti.getColumn(name, false) == null)
         {
-            SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDateTimeToDateCast(ExprColumn.STR_TABLE_ALIAS + "." + sourceCol.getSelectName()));
+            SQLFragment sql = ti.getSqlDialect().getDateTimeToDateCast(sourceCol.getValueSql(ExprColumn.STR_TABLE_ALIAS));
             ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.DATE);
             col.setCalculated(true);
             col.setUserEditable(false);
