@@ -13,8 +13,8 @@ Laboratory.Utils = new function(){
         },
 
         /**
-         * The purpose of this helper is to provide a listing of all items to display in the laboratory module navigation pages.  It draws from
-         * assays, sample sets, and other other NavItems that have been registered with LaboratoryService.
+         * The purpose of this helper is to provide a listing of all items to display in the laboratory module navigation pages. It draws from
+         * assays, sample types, and other other NavItems that have been registered with LaboratoryService.
          * @param [config.types] Optional.
          * @param [config.includeHidden] Optional. If true, non-visible items will be included.
          * @param config.success Success callback.  Will be passed a single object as an argument with the following properties

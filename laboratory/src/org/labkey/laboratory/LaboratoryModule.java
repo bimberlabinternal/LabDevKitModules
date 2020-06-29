@@ -156,7 +156,7 @@ public class LaboratoryModule extends ExtendedSimpleModule
         RoleManager.registerRole(new LaboratoryAdminRole());
 
         LaboratoryService.get().registerDataProvider(new LaboratoryDataProvider(this));
-        LaboratoryService.get().registerDataProvider(new SampleSetDataProvider());
+        LaboratoryService.get().registerDataProvider(new SampleTypeDataProvider());
         LaboratoryService.get().registerDataProvider(new ExtraDataSourcesDataProvider(this));
 
         DetailsURL details = DetailsURL.fromString("/laboratory/siteLabSettings.view");

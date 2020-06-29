@@ -21,8 +21,8 @@ import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.exp.api.ExpSampleSet;
-import org.labkey.api.exp.api.ExperimentService;
+import org.labkey.api.exp.api.ExpSampleType;
+import org.labkey.api.exp.api.SampleTypeService;
 import org.labkey.api.laboratory.AbstractDataProvider;
 import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.laboratory.QueryCountNavItem;
@@ -47,13 +47,12 @@ import java.util.Set;
  * Date: 10/8/12
  * Time: 9:06 AM
  */
-public class SampleSetDataProvider extends AbstractDataProvider
+public class SampleTypeDataProvider extends AbstractDataProvider
 {
-    public static final String NAME = "SampleSetDataProvider";
+    public static final String NAME = "SampleTypeDataProvider";
 
-    public SampleSetDataProvider()
+    public SampleTypeDataProvider()
     {
-
     }
 
     @Override
@@ -77,12 +76,12 @@ public class SampleSetDataProvider extends AbstractDataProvider
     @Override
     public List<NavItem> getSampleNavItems(Container c, User u)
     {
-        //also append all sample sets in this container
+        //also append all sample types in this container
         List<NavItem> navItems = new ArrayList<NavItem>();
 
-        for (ExpSampleSet ss : ExperimentService.get().getSampleSets(c, u, true))
+        for (ExpSampleType st : SampleTypeService.get().getSampleTypes(c, u, true))
         {
-            navItems.add(new SampleSetNavItem(this, LaboratoryService.NavItemCategory.samples, ss));
+            navItems.add(new SampleTypeNavItem(this, LaboratoryService.NavItemCategory.samples, st));
         }
         return navItems;
     }
@@ -116,12 +115,12 @@ public class SampleSetDataProvider extends AbstractDataProvider
     public List<SummaryNavItem> getSummary(Container c, User u)
     {
         List<SummaryNavItem> items = new ArrayList<>();
-        for (ExpSampleSet ss : ExperimentService.get().getSampleSets(c, u, true))
+        for (ExpSampleType st : SampleTypeService.get().getSampleTypes(c, u, true))
         {
-            SampleSetNavItem nav = new SampleSetNavItem(this, LaboratoryService.NavItemCategory.samples, ss);
+            SampleTypeNavItem nav = new SampleTypeNavItem(this, LaboratoryService.NavItemCategory.samples, st);
             if (nav.isVisible(c, u))
             {
-                items.add(new QueryCountNavItem(this, "Samples", ss.getName(), LaboratoryService.NavItemCategory.samples, "Samples", ss.getName()));
+                items.add(new QueryCountNavItem(this, "Samples", st.getName(), LaboratoryService.NavItemCategory.samples, "Samples", st.getName()));
             }
         }
 
@@ -132,18 +131,18 @@ public class SampleSetDataProvider extends AbstractDataProvider
     public List<NavItem> getSubjectIdSummary(Container c, User u, String subjectId)
     {
         List<NavItem> items = new ArrayList<NavItem>();
-        for (ExpSampleSet ss : ExperimentService.get().getSampleSets(c, u, true))
+        for (ExpSampleType st : SampleTypeService.get().getSampleTypes(c, u, true))
         {
             UserSchema us = QueryService.get().getUserSchema(u, c, "Samples");
             if (us != null)
             {
-                TableInfo ti = us.getTable(ss.getName());
+                TableInfo ti = us.getTable(st.getName());
                 if (ti != null)
                 {
                     ColumnInfo ci = getSubjectColumn(ti);
                     if (ci != null)
                     {
-                        QueryCountNavItem qc = new QueryCountNavItem(this, "Samples", ss.getName(), LaboratoryService.NavItemCategory.samples, "Samples", ss.getName());
+                        QueryCountNavItem qc = new QueryCountNavItem(this, "Samples", st.getName(), LaboratoryService.NavItemCategory.samples, "Samples", st.getName());
                         qc.setFilter(new SimpleFilter(FieldKey.fromString(ci.getName()), subjectId));
                         items.add(qc);
                     }
