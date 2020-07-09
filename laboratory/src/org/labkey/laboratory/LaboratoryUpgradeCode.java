@@ -37,7 +37,7 @@ public class LaboratoryUpgradeCode implements UpgradeCode
     {
         try
         {
-            LaboratoryManager.get().initWorkbooksForContainer(moduleContext.getUpgradeUser(), ContainerManager.getRoot());
+            LaboratoryManager.get().recursivelyInitWorkbooksForContainer(moduleContext.getUpgradeUser(), ContainerManager.getRoot());
         }
         catch (Exception e)
         {
