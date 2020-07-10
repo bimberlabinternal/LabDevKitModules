@@ -110,7 +110,7 @@ public class LaboratoryContainerListener extends SimpleModuleContainerListener
         {
             updateWorkbookTableOnNameChange(evt);
         }
-        else if (evt.getPropertyName().equals(ContainerManager.Property.Policy.name()))
+        else if (evt.getPropertyName().equals(ContainerManager.Property.Modules.name()))
         {
             possiblyInitializeOnActiveModuleChange(evt);
         }
