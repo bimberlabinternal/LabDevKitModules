@@ -35,6 +35,7 @@ import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.settings.AdminConsole;
+import org.labkey.api.util.HtmlString;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.BaseWebPartFactory;
 import org.labkey.api.view.HtmlView;
@@ -89,10 +90,15 @@ public class LaboratoryModule extends ExtendedSimpleModule
                 @Override
                 public WebPartView getWebPartView(@NotNull ViewContext portalCtx, @NotNull Portal.WebPart webPart)
                 {
-                    WorkbookModel model = LaboratoryManager.get().getWorkbookModel(portalCtx.getContainer());
+                    if (!portalCtx.getContainer().isWorkbook())
+                    {
+                        return new HtmlView(HtmlString.of("This container is not a workbook"));
+                    }
+
+                    WorkbookModel model = LaboratoryManager.get().getWorkbookModel(portalCtx.getContainer(), true);
                     if (model == null)
                     {
-                        return new HtmlView("This container is not a workbook");
+                        model = WorkbookModel.createNew(portalCtx.getContainer());
                     }
 
                     JspView<WorkbookModel> view = new JspView<>("/org/labkey/laboratory/view/workbookHeader.jsp", model);

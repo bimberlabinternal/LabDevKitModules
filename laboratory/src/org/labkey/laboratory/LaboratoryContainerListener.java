@@ -68,10 +68,6 @@ public class LaboratoryContainerListener extends SimpleModuleContainerListener
             {
                 _log.warn("Unable to populate default values for laboratory module", e);
             }
-            catch (BatchValidationException e)
-            {
-                //ignore, since this may just indicate the table already has these values
-            }
         }
     }
 
@@ -112,69 +108,11 @@ public class LaboratoryContainerListener extends SimpleModuleContainerListener
 
         if (evt.getPropertyName().equals(ContainerManager.Property.Name.name()))
         {
-            if (evt instanceof ContainerManager.ContainerPropertyChangeEvent)
-            {
-                ContainerManager.ContainerPropertyChangeEvent ce = (ContainerManager.ContainerPropertyChangeEvent) evt;
-                if (ce.container.isWorkbook())
-                {
-                    TableInfo ti = LaboratorySchema.getInstance().getTable(LaboratorySchema.TABLE_WORKBOOKS);
-                    TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString(LaboratoryWorkbooksTable.WORKBOOK_COL), ce.container.getId()), null);
-                    if (ts.exists())
-                    {
-                        try
-                        {
-                            Integer rowId = Integer.parseInt(ce.container.getName());
-                            WorkbookModel w = ts.getObject(ce.container.getId(), WorkbookModel.class);
-                            w.setWorkbookId(rowId);
-                            Table.update(ce.user, ti, w, ce.container.getId());
-                        }
-                        catch (NumberFormatException e)
-                        {
-
-                        }
-                    }
-                }
-            }
+            updateWorkbookTableOnNameChange(evt);
         }
         else if (evt.getPropertyName().equals(ContainerManager.Property.Policy.name()))
         {
-            if (evt instanceof ContainerManager.ContainerPropertyChangeEvent)
-            {
-                ContainerManager.ContainerPropertyChangeEvent ce = (ContainerManager.ContainerPropertyChangeEvent)evt;
-
-                User u = ce.user;
-                if (u == null && HttpView.hasCurrentView())
-                    u = HttpView.currentView().getViewContext().getUser();
-
-                if (u == null || !ce.container.hasPermission(u, InsertPermission.class))
-                    return;
-
-                if (ce.container.getActiveModules().contains(ModuleLoader.getInstance().getModule(LaboratoryModule.class)))
-                {
-                    try
-                    {
-                        LaboratoryManager.get().initWorkbooksForContainer(u, ce.container);
-                    }
-                    catch (Exception e)
-                    {
-                        _log.error("Unable to update laboratory workbooks table", e);
-                    }
-
-                    //attempt to populate default values on load
-                    try
-                    {
-                        LaboratoryManager.get().populateDefaultData(u, ce.container, null);
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        _log.error("Unable to populate defaults in laboratory module tables", e);
-                    }
-                    catch (BatchValidationException e)
-                    {
-                        //ignore, since this may just indicate the table already has these values
-                    }
-                }
-            }
+            possiblyInitializeOnActiveModuleChange(evt);
         }
     }
 
@@ -192,6 +130,93 @@ public class LaboratoryContainerListener extends SimpleModuleContainerListener
         else
         {
             super.purgeTable(userSchema, table, c);
+        }
+    }
+
+    /**
+     * The container name field stores the workbookId as a string. If that name changes (and this should no longer be permitted
+     * for the most part in LK, we need to update this table
+     */
+    private void updateWorkbookTableOnNameChange(PropertyChangeEvent evt)
+    {
+        if (!(evt instanceof ContainerManager.ContainerPropertyChangeEvent))
+        {
+            return;
+        }
+
+        ContainerManager.ContainerPropertyChangeEvent ce = (ContainerManager.ContainerPropertyChangeEvent) evt;
+        if (!ce.container.isWorkbook())
+        {
+            return;
+        }
+
+        TableInfo ti = LaboratorySchema.getInstance().getTable(LaboratorySchema.TABLE_WORKBOOKS);
+        TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString(LaboratoryWorkbooksTable.WORKBOOK_COL), ce.container.getId()), null);
+        if (ts.exists())
+        {
+            try
+            {
+                Integer workbookId = Integer.parseInt(ce.container.getName());
+                WorkbookModel w = ts.getObject(ce.container.getId(), WorkbookModel.class);
+                w.setWorkbookId(workbookId);
+                Table.update(ce.user, ti, w, ce.container.getId());
+            }
+            catch (NumberFormatException e)
+            {
+                _log.error("Non-numeric workbook name: " + ce.container.getName() + " for: " + ce.container.getEntityId());
+            }
+        }
+    }
+
+    /**
+     * The intent of this is to initialize the laboratory folder if the set of active modules
+     * changes to include Laboratory.  This should only occur on the parent folder, not individual workbooks.
+     */
+    private void possiblyInitializeOnActiveModuleChange(PropertyChangeEvent evt)
+    {
+        if (!(evt instanceof ContainerManager.ContainerPropertyChangeEvent))
+        {
+            return;
+        }
+
+        ContainerManager.ContainerPropertyChangeEvent ce = (ContainerManager.ContainerPropertyChangeEvent)evt;
+
+        //Only make these changes from the parent container for performance reasons
+        if (ce.container.isWorkbook())
+        {
+            return;
+        }
+
+        User u = ce.user;
+        if (u == null && HttpView.hasCurrentView())
+        {
+            u = HttpView.currentView().getViewContext().getUser();
+        }
+
+        if (u == null || !ce.container.hasPermission(u, InsertPermission.class))
+        {
+            return;
+        }
+
+        if (ce.container.getActiveModules().contains(ModuleLoader.getInstance().getModule(LaboratoryModule.class)))
+        {
+            try
+            {
+                LaboratoryManager.get().recursivelyInitWorkbooksForContainer(u, ce.container);
+            }
+            catch (Exception e)
+            {
+                _log.error("Unable to update laboratory workbooks table", e);
+            }
+
+            try
+            {
+                LaboratoryManager.get().populateDefaultData(u, ce.container, null);
+            }
+            catch (Exception e)
+            {
+                _log.error("Unable to populate defaults in laboratory module tables", e);
+            }
         }
     }
 }

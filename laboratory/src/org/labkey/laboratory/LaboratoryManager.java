@@ -27,10 +27,10 @@ import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
-import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
 import org.labkey.api.data.SqlExecutor;
@@ -52,6 +52,7 @@ import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.Portal;
 import org.labkey.laboratory.query.ContainerIncrementingTable;
@@ -94,44 +95,88 @@ public class LaboratoryManager
         return _instance;
     }
 
-    public void initWorkbooksForContainer(User u, Container c) throws Exception
+    public synchronized void initLaboratoryWorkbook(Container c, User u)
     {
-        if (c.isWorkbookOrTab())
-            return;
-
-        boolean labModuleEnabled = c.getActiveModules().contains(ModuleLoader.getInstance().getModule(LaboratoryModule.class));
-
-        List<Container> containers = c.getChildren();
-        sortContainers(containers);
-        for (Container child : containers)
+        if (!c.isWorkbook())
         {
-            if (labModuleEnabled && child.isWorkbook())
-            {
-                initLaboratoryWorkbook(child, u);
-            }
+            return;
+        }
 
-            initWorkbooksForContainer(u, child);
+        recursivelyInitWorkbooksForContainer(u, c);
+    }
+
+    public synchronized void recursivelyInitWorkbooksForContainer(User u, Container c)
+    {
+        if (u == null || !c.hasPermission(u, InsertPermission.class))
+        {
+            return;
+        }
+
+        TableInfo workbookDbTable = DbSchema.get(LaboratoryModule.SCHEMA_NAME, DbSchemaType.Module).getTable(LaboratorySchema.TABLE_WORKBOOKS);
+        List<WorkbookModel> rows = new ArrayList<>();
+
+        doInitWorkbooksForContainer(workbookDbTable, c, rows);
+
+        if (!rows.isEmpty())
+        {
+            try (DbScope.Transaction t = workbookDbTable.getSchema().getScope().beginTransaction())
+            {
+                rows.forEach(wb -> Table.insert(u, workbookDbTable, wb));
+                t.commit();
+            }
         }
     }
 
-    public synchronized void initLaboratoryWorkbook(Container c, User u) throws Exception
+    private void doInitWorkbooksForContainer(TableInfo workbookDbTable, Container c, List<WorkbookModel> rows)
     {
-        if (c.isWorkbook())
-        {
-            UserSchema us = QueryService.get().getUserSchema(u, c, LaboratoryModule.SCHEMA_NAME);
-            if (us != null)
-            {
-                TableInfo ti = us.getTable(LaboratorySchema.TABLE_WORKBOOKS);
-                TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString(LaboratoryWorkbooksTable.WORKBOOK_COL), c.getId()), null);
-                if (!ts.exists())
-                {
-                    List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
-                    Map<String, Object> row = new CaseInsensitiveHashMap<>();
-                    rows.add(row);
+        boolean labModuleEnabled = c.getActiveModules().contains(ModuleLoader.getInstance().getModule(LaboratoryModule.class));
 
-                    ti.getUpdateService().insertRows(u, c, rows, new BatchValidationException(), null, new HashMap<>());
+        if (labModuleEnabled && c.isWorkbook())
+        {
+            prepareToInitLaboratoryWorkbook(workbookDbTable, c, rows);
+            return;
+        }
+
+        Set<String> childIdsPresent = new HashSet<>();
+        if (labModuleEnabled)
+        {
+            childIdsPresent.addAll(new TableSelector(workbookDbTable, PageFlowUtil.set(LaboratoryWorkbooksTable.WORKBOOK_COL), new SimpleFilter(FieldKey.fromString(LaboratoryWorkbooksTable.PARENT_COL), c.getId()), null).getArrayList(String.class));
+        }
+
+        List<Container> children = c.getChildren();
+        sortContainers(children);
+        for (Container child : children)
+        {
+            if (childIdsPresent.contains(child.getId()))
+            {
+                continue;
+            }
+
+            if (child.isWorkbook())
+            {
+                if (labModuleEnabled)
+                {
+                    prepareToInitLaboratoryWorkbook(workbookDbTable, child, rows);
                 }
             }
+            else
+            {
+                doInitWorkbooksForContainer(workbookDbTable, child, rows);
+            }
+        }
+    }
+
+    private void prepareToInitLaboratoryWorkbook(TableInfo workbookDbTable, Container c, List<WorkbookModel> rows)
+    {
+        if (!c.isWorkbook())
+        {
+            return;
+        }
+
+        TableSelector ts = new TableSelector(workbookDbTable, new SimpleFilter(FieldKey.fromString(LaboratoryWorkbooksTable.WORKBOOK_COL), c.getId()), null);
+        if (!ts.exists())
+        {
+            rows.add(WorkbookModel.createNew(c));
         }
     }
 
@@ -140,14 +185,28 @@ public class LaboratoryManager
         containers.sort(Comparator.comparingInt(Container::getRowId));
     }
 
-    public WorkbookModel getWorkbookModel(Container c)
+    public WorkbookModel getWorkbookModel(Container c, boolean createIfNotPresent)
     {
+        if (!c.isWorkbook())
+        {
+            return null;
+        }
+
         TableInfo ti = LaboratorySchema.getInstance().getSchema().getTable(LaboratorySchema.TABLE_WORKBOOKS);
         TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString(LaboratoryWorkbooksTable.WORKBOOK_COL), c.getId()), null);
         WorkbookModel[] arr = ts.getArray(WorkbookModel.class);
         WorkbookModel m =  arr.length == 0 ? null : arr[0];
         if (m == null)
-            return null;
+        {
+            if (createIfNotPresent)
+            {
+                m = WorkbookModel.createNew(c);
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         if (m.getContainer() == null)
         {
@@ -214,10 +273,18 @@ public class LaboratoryManager
         }
     }
 
-    public void updateWorkbook(User u, WorkbookModel model)
+    public void createOrUpdateWorkbook(User u, WorkbookModel model)
     {
         TableInfo ti = LaboratorySchema.getInstance().getTable(LaboratorySchema.TABLE_WORKBOOKS);
-        Table.update(u, ti, model, model.getContainer());
+        TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("container"), model.getContainer()), null);
+        if (!ts.exists())
+        {
+            Table.insert(u, ti, model);
+        }
+        else
+        {
+            Table.update(u, ti, model, model.getContainer());
+        }
     }
 
     public void updateWorkbookTags(User u, Container c, Collection<String> tags)
@@ -230,7 +297,7 @@ public class LaboratoryManager
         assert u != null : "No user provided";
 
         TableInfo ti = LaboratorySchema.getInstance().getTable(LaboratorySchema.TABLE_WORKBOOK_TAGS);
-        Set<String> newTags = new HashSet<String>();
+        Set<String> newTags = new HashSet<>();
         newTags.addAll(tags);
 
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("container"), c.getId());
@@ -242,7 +309,7 @@ public class LaboratoryManager
             newTags.addAll(existingTags);
         }
 
-        List<String> toDelete = new ArrayList<String>(existingTags);
+        List<String> toDelete = new ArrayList<>(existingTags);
         toDelete.removeAll(newTags);
 
         if (toDelete.size() > 0)
@@ -258,7 +325,7 @@ public class LaboratoryManager
         Date created = new Date();
         for (String tag : toAdd)
         {
-            Map<String, Object> row = new HashMap<String, Object>();
+            Map<String, Object> row = new HashMap<>();
             row.put("tag", tag);
             row.put("created", created);
             row.put("createdby", u.getUserId());
@@ -268,8 +335,13 @@ public class LaboratoryManager
     }
 
     //pass null to populate all supported tables
-    public void populateDefaultData(User u, Container c, @Nullable List<String> tableNames) throws BatchValidationException
+    public void populateDefaultData(User u, Container c, @Nullable List<String> tableNames)
     {
+        if (c.isWorkbook())
+        {
+            return;
+        }
+
         if (tableNames == null)
         {
             tableNames = new ArrayList<>();
@@ -280,15 +352,17 @@ public class LaboratoryManager
         {
             if (LaboratorySchema.TABLE_SAMPLE_TYPE.equalsIgnoreCase(name))
             {
-                populateDefaultDataForTable(u, c, "laboratory", LaboratorySchema.TABLE_SAMPLE_TYPE, PageFlowUtil.set("type"));
+                populateDefaultDataForTable(u, c, "laboratory", LaboratorySchema.TABLE_SAMPLE_TYPE, PageFlowUtil.set("type"), "type");
             }
         }
     }
 
     /**
+     * This copies the values of this table that exist in /Shared to the target folder.
+     *
      * NOTE: this makes the assumption that the schema/query match a physical table
      */
-    private void populateDefaultDataForTable(User u, Container c, String schema, String query, final Set<String> columns) throws BatchValidationException
+    private void populateDefaultDataForTable(User u, Container c, String schema, String query, final Set<String> columns, final String keyCol)
     {
         assert u != null : "No user provided";
 
@@ -297,12 +371,11 @@ public class LaboratoryManager
             throw new IllegalArgumentException("Schema " + schema + " not found");
 
 
-        DbSchema sourceSchema = DbSchema.get(schema);
+        DbSchema sourceSchema = DbSchema.get(schema, DbSchemaType.Module);
         if (sourceSchema == null)
-            throw new IllegalArgumentException("Schema " + schema + " not found in /shared");
+            throw new IllegalArgumentException("Schema " + schema + " not found in: " + c.getPath());
 
-        TableInfo ti = us.getTable(query);
-        final QueryUpdateService qus = ti.getUpdateService();
+        TableInfo targetTable = us.getTable(query, null);
 
         TableInfo sourceTable = sourceSchema.getTable(query);
         if (sourceTable.getColumn(FieldKey.fromString("container")) == null)
@@ -310,46 +383,50 @@ public class LaboratoryManager
             throw new IllegalArgumentException("Table " + schema + "." + query + " does not have a container column");
         }
 
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("container"), ContainerManager.getSharedContainer().getId());
+        //Find unique values in the target table:
+        List<Object> existingValues = new TableSelector(targetTable, PageFlowUtil.set(keyCol)).getArrayList(Object.class);
+
+        //Now find the values from /Shared
+        Set<String> selectCols = new HashSet<>(columns);
+        columns.add(keyCol);
 
         final List<Map<String, Object>> rows = new ArrayList<>();
-        TableSelector ts = new TableSelector(sourceTable, columns, filter, null);
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
-        {
-            @Override
-            public void exec(ResultSet rs) throws SQLException
-            {
-                Map<String, Object> row = new CaseInsensitiveHashMap<>();
-                for (String col : columns)
-                {
-                    row.put(col, rs.getObject(col));
-                }
+        TableSelector ts = new TableSelector(sourceTable, selectCols, new SimpleFilter(FieldKey.fromString("container"), ContainerManager.getSharedContainer().getId()), null);
+        ts.forEach(rs -> {
 
-                rows.add(row);
+            if (existingValues.contains(rs.getObject(keyCol)))
+            {
+                return;
             }
+
+            Map<String, Object> row = new CaseInsensitiveHashMap<>();
+            for (String col : columns)
+            {
+                row.put(col, rs.getObject(col));
+            }
+
+            rows.add(row);
         });
 
-        BatchValidationException errors = new BatchValidationException();
+        if (rows.isEmpty())
+        {
+            return;
+        }
 
         try
         {
-            qus.insertRows(u, c, rows, errors, null, new HashMap<String, Object>());
+            BatchValidationException errors = new BatchValidationException();
+            QueryUpdateService qus = targetTable.getUpdateService();
+            qus.insertRows(u, c, rows, errors, null, new HashMap<>());
+
+            if (errors.hasErrors())
+            {
+                throw errors;
+            }
         }
-        catch (QueryUpdateServiceException e)
+        catch (SQLException | QueryUpdateServiceException | DuplicateKeyException | BatchValidationException e)
         {
-            throw new RuntimeException(e);
-        }
-        catch (DuplicateKeyException e)
-        {
-            //ignore
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeSQLException(e);
-        }
-        catch (BatchValidationException e)
-        {
-            //ignore
+            _log.error("Unable to insert default laboratory data", e);
         }
     }
 
@@ -362,7 +439,7 @@ public class LaboratoryManager
         if (us == null)
             throw new IllegalArgumentException("Unknown schema: " + schemaName);
 
-        TableInfo table = us.getTable(queryName);
+        TableInfo table = us.getTable(queryName, null);
         if (table == null)
             throw new IllegalArgumentException("Unknown table: " + schemaName + "." + queryName);
 
