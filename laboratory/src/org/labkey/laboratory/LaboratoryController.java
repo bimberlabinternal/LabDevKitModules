@@ -471,7 +471,7 @@ public class LaboratoryController extends SpringActionController
         {
             try
             {
-                LaboratoryManager.get().initWorkbooksForContainer(getUser(), getContainer());
+                LaboratoryManager.get().recursivelyInitWorkbooksForContainer(getUser(), getContainer());
 
                 return true;
             }
@@ -747,7 +747,7 @@ public class LaboratoryController extends SpringActionController
                 return null;
             }
 
-            WorkbookModel model = LaboratoryManager.get().getWorkbookModel(getContainer());
+            WorkbookModel model = LaboratoryManager.get().getWorkbookModel(getContainer(), true);
             if (model == null)
             {
                 errors.reject(ERROR_MSG, "Unable to find workbook record for this folder");
@@ -759,11 +759,11 @@ public class LaboratoryController extends SpringActionController
             model.setResults(form.getResults());
             model.setDescription(form.getDescription(), getUser());
 
-            LaboratoryManager.get().updateWorkbook(getUser(), model);
+            LaboratoryManager.get().createOrUpdateWorkbook(getUser(), model);
 
             if (form.isForceTagUpdate() || form.getTags() != null)
             {
-                LaboratoryManager.get().updateWorkbookTags(getUser(), getContainer(), (form.getTags() == null ? (Collection)Collections.emptyList() : Arrays.asList(form.getTags())));
+                LaboratoryManager.get().updateWorkbookTags(getUser(), getContainer(), (form.getTags() == null ? Collections.emptyList() : Arrays.asList(form.getTags())));
             }
 
             results.put("success", true);
@@ -2292,74 +2292,6 @@ public class LaboratoryController extends SpringActionController
         public void setProtocol(Integer protocol)
         {
             _protocol = protocol;
-        }
-    }
-
-    @RequiresPermission(AdminPermission.class)
-    public class MigrateWorkbooksAction extends MutatingApiAction<MigrateWorkbooksForm>
-    {
-        @Override
-        public ApiResponse execute(MigrateWorkbooksForm form, BindException errors) throws Exception
-        {
-            if (getContainer().isWorkbook())
-            {
-                errors.reject(ERROR_MSG, "Cannot be run on workbooks");
-                return null;
-            }
-
-            //find current workbook #
-
-
-            //find all workbooks where workbookId doesnt match LK ID
-            TreeMap<Integer, Container> toFix = new TreeMap<>();
-            for (Container c : ContainerManager.getChildren(getContainer()))
-            {
-                if (c.isWorkbook())
-                {
-                    WorkbookModel w = LaboratoryManager.get().getWorkbookModel(c);
-                    if (w != null)
-                    {
-                        _log.warn("workbook model not found for: " + c.getName());
-                    }
-                    else if (!c.getName().equals(w.getWorkbookId().toString()))
-                    {
-                        toFix.put(w.getWorkbookId(), c);
-                    }
-                }
-            }
-
-            _log.info("workbooks to migrate: " + toFix.size());
-            Set<Integer> list = form.getReverseOrder() == true ? toFix.keySet() : toFix.descendingKeySet();
-            for (Integer id : list)
-            {
-                Container wb = toFix.get(id);
-                Container target = ContainerManager.getChild(wb.getParent(), id.toString());
-                if (target != null)
-                {
-                    _log.warn("target workbook exists, skipping: " + id);
-                }
-                else
-                {
-                    ContainerManager.rename(wb, getUser(), id.toString());
-                }
-            }
-
-            return new ApiSimpleResponse("success", true);
-        }
-    }
-
-    public static class MigrateWorkbooksForm
-    {
-        private Boolean reverseOrder = false;
-
-        public Boolean getReverseOrder()
-        {
-            return reverseOrder;
-        }
-
-        public void setReverseOrder(Boolean reverseOrder)
-        {
-            this.reverseOrder = reverseOrder;
         }
     }
 

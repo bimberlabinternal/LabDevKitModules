@@ -123,4 +123,18 @@ public class WorkbookModel
     {
         _tags = tags;
     }
+
+    public static WorkbookModel createNew(Container c)
+    {
+        if (!c.isWorkbook())
+        {
+            throw new IllegalArgumentException("Container is not a workbook: " + c.getPath());
+        }
+
+        WorkbookModel model = new WorkbookModel();
+        model.setWorkbookId(Integer.parseInt(c.getName()));
+        model.setContainer(c.getId());
+
+        return model;
+    }
 }
