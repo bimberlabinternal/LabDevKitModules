@@ -3,7 +3,8 @@ package org.labkey.laboratory.query;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.BaseColumnInfo;
@@ -55,7 +56,7 @@ import java.util.Set;
  */
 public class LaboratoryTableCustomizer implements TableCustomizer
 {
-    private static final Logger _log = Logger.getLogger(LaboratoryTableCustomizer.class);
+    private static final Logger _log = LogManager.getLogger(LaboratoryTableCustomizer.class);
     private MultiValuedMap _props;
 
     public LaboratoryTableCustomizer()

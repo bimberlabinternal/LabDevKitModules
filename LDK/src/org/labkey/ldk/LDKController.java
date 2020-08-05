@@ -17,7 +17,8 @@
 package org.labkey.ldk;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -103,7 +104,7 @@ import java.util.Set;
 public class LDKController extends SpringActionController
 {
     private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(LDKController.class);
-    private static Logger _log = Logger.getLogger(LDKController.class);
+    private static Logger _log = LogManager.getLogger(LDKController.class);
 
     public LDKController()
     {

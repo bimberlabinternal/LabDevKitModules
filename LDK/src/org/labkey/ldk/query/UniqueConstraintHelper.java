@@ -1,6 +1,7 @@
 package org.labkey.ldk.query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -32,7 +33,7 @@ public class UniqueConstraintHelper
 
     private List<Object> _encounteredKeys = new ArrayList<>();
 
-    private static final Logger _log = Logger.getLogger(UniqueConstraintHelper.class);
+    private static final Logger _log = LogManager.getLogger(UniqueConstraintHelper.class);
 
     private UniqueConstraintHelper(String containerId, int userId, String schemaName, String queryName, String targetColName)
     {

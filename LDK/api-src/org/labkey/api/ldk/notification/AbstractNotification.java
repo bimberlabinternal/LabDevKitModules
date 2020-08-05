@@ -15,7 +15,8 @@
  */
 package org.labkey.api.ldk.notification;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.SimpleFilter;
@@ -36,7 +37,7 @@ abstract public class AbstractNotification implements Notification
 {
     private Module _owner;
 
-    protected final static Logger log = Logger.getLogger(AbstractNotification.class);
+    protected final static Logger log = LogManager.getLogger(AbstractNotification.class);
     protected final static SimpleDateFormat _timeFormat = new SimpleDateFormat("kk:mm");
 
     public AbstractNotification(Module owner)

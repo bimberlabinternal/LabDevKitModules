@@ -15,7 +15,8 @@
  */
 package org.labkey.api.laboratory.assay;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.labkey.api.data.ColumnInfo;
@@ -64,7 +65,7 @@ import java.util.Set;
 abstract public class AbstractAssayDataProvider extends AbstractDataProvider implements AssayDataProvider
 {
     public static final String PROPERTY_CATEGORY = "laboratory.importMethodDefaults";
-    protected static final Logger _log = Logger.getLogger(AbstractDataProvider.class);
+    protected static final Logger _log = LogManager.getLogger(AbstractDataProvider.class);
 
     protected String _providerName = null;
     protected Collection<AssayImportMethod> _importMethods = new LinkedHashSet<>();

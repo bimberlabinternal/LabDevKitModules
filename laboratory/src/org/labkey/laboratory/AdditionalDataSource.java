@@ -1,7 +1,8 @@
 package org.labkey.laboratory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +26,7 @@ public class AdditionalDataSource extends AbstractDataSource
     private boolean _importIntoWorkbooks;
     private String _subjectFieldKey;
     private String _sampleDateFieldKey;
-    private static final Logger _log = Logger.getLogger(AdditionalDataSource.class);
+    private static final Logger _log = LogManager.getLogger(AdditionalDataSource.class);
 
     public AdditionalDataSource(LaboratoryService.NavItemCategory itemType, String label, @Nullable String containerId, String schemaName, String queryName, String reportCategory, boolean importIntoWorkbooks, String subjectFieldKey, String sampleDateFieldKey)
     {

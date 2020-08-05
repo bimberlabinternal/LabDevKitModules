@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class DefaultAssayCustomizer implements TableCustomizer
 {
-    //private static final Logger _log = Logger.getLogger(LaboratoryTableCustomizer.class);
+    //private static final Logger _log = LogManager.getLogger(LaboratoryTableCustomizer.class);
     private final LaboratoryTableCustomizer _lc = new LaboratoryTableCustomizer();
 
     @Override

@@ -1,7 +1,8 @@
 package org.labkey.laboratory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +27,7 @@ public class URLDataSource
 
     protected static final String DELIM = "<>";
 
-    private static final Logger _log = Logger.getLogger(URLDataSource.class);
+    private static final Logger _log = LogManager.getLogger(URLDataSource.class);
 
     private URLDataSource(LaboratoryService.NavItemCategory itemType, String label, StringExpression url)
     {

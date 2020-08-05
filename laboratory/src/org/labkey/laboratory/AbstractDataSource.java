@@ -1,6 +1,7 @@
 package org.labkey.laboratory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
@@ -33,7 +34,7 @@ abstract public class AbstractDataSource
     private String _queryName;
     private String _label;
     protected static final String DELIM = "<>";
-    protected static final Logger _log = Logger.getLogger(AbstractDataSource.class);
+    protected static final Logger _log = LogManager.getLogger(AbstractDataSource.class);
     private Map<String, TableInfo> _cachedTables = new HashMap<>();
     
     public AbstractDataSource(String label, @Nullable String containerId, String schemaName, String queryName)

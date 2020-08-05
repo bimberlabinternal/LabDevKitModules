@@ -3,8 +3,9 @@ package org.labkey.ldk;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
@@ -55,7 +56,7 @@ import java.util.Set;
  */
 public class LDKServiceImpl extends LDKService
 {
-    private static final Logger _log = Logger.getLogger(LDKServiceImpl.class);
+    private static final Logger _log = LogManager.getLogger(LDKServiceImpl.class);
     private Set<NotificationSection> _summaryNotificationSections = new HashSet<>();
     private List<List<String>> _containerScopedTables = new ArrayList<>();
     private Boolean _isNaturalizeInstalled = null;

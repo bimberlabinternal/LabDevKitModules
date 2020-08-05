@@ -15,7 +15,8 @@
  */
 package org.labkey.laboratory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.json.JSONObject;
 import org.labkey.api.assay.AssayFileWriter;
 import org.labkey.api.assay.AssayProvider;
@@ -73,7 +74,7 @@ import java.util.Set;
 public class LaboratoryServiceImpl extends LaboratoryService
 {
     private static final LaboratoryServiceImpl _instance = new LaboratoryServiceImpl();
-    private static final Logger _log = Logger.getLogger(LaboratoryServiceImpl.class);
+    private static final Logger _log = LogManager.getLogger(LaboratoryServiceImpl.class);
 
     private Set<Module> _registeredModules = new HashSet<>();
     private Map<String, Map<String, List<ButtonConfigFactory>>> _assayButtons = new CaseInsensitiveHashMap<>();

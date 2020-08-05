@@ -1,7 +1,8 @@
 package org.labkey.laboratory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +30,7 @@ import java.util.List;
 public class DemographicsSource extends AbstractDataSource
 {
     private String _targetColumn;
-    private static final Logger _log = Logger.getLogger(DemographicsSource.class);
+    private static final Logger _log = LogManager.getLogger(DemographicsSource.class);
     
     public DemographicsSource(String label, String containerId, String schemaName, String queryName, String targetColumn)
     {

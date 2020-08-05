@@ -1,6 +1,7 @@
 package org.labkey.laboratory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.SQLFragment;
@@ -30,7 +31,7 @@ import java.beans.PropertyChangeEvent;
  */
 public class LaboratoryContainerListener extends SimpleModuleContainerListener
 {
-    Logger _log = Logger.getLogger(LaboratoryContainerListener.class);
+    Logger _log = LogManager.getLogger(LaboratoryContainerListener.class);
 
     public LaboratoryContainerListener(Module owner)
     {

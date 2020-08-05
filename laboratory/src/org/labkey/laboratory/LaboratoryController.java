@@ -18,7 +18,8 @@ package org.labkey.laboratory;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,7 +107,7 @@ import java.util.TreeMap;
 public class LaboratoryController extends SpringActionController
 {
     private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(LaboratoryController.class);
-    private static final Logger _log = Logger.getLogger(LaboratoryController.class);
+    private static final Logger _log = LogManager.getLogger(LaboratoryController.class);
 
     public LaboratoryController()
     {

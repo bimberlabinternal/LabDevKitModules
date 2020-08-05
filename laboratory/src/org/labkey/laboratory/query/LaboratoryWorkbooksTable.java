@@ -1,7 +1,8 @@
 package org.labkey.laboratory.query;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
@@ -45,7 +46,7 @@ public class LaboratoryWorkbooksTable extends SimpleUserSchema.SimpleTable
     public static final String WORKBOOK_ID_COl = "workbookId";
     public static final String CONTAINER_ROWID_COL = "containerRowId";
 
-    private static final Logger _log = Logger.getLogger(LaboratoryWorkbooksTable.class);
+    private static final Logger _log = LogManager.getLogger(LaboratoryWorkbooksTable.class);
 
     public LaboratoryWorkbooksTable(UserSchema us, TableInfo st, ContainerFilter cf)
     {

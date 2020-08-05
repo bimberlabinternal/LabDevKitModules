@@ -1,6 +1,7 @@
 package org.labkey.ldk.query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.TableCustomizer;
@@ -17,7 +18,7 @@ import java.sql.Timestamp;
  */
 public class BuiltInColumnsCustomizer implements TableCustomizer
 {
-    private static final Logger _log = Logger.getLogger(TableCustomizer.class);
+    private static final Logger _log = LogManager.getLogger(TableCustomizer.class);
     private boolean _disableFacetingForNumericCols = true;
 
     public BuiltInColumnsCustomizer()

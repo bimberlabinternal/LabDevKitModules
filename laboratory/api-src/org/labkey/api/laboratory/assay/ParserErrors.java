@@ -15,7 +15,7 @@
  */
 package org.labkey.api.laboratory.assay;
 
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.query.BatchValidationException;
@@ -49,7 +49,7 @@ public class ParserErrors
 
     public void addError(String msg, Level level)
     {
-        if (level.isGreaterOrEqual(_threshold))
+        if (level.intLevel() >= _threshold.intLevel())
             _errors.add(Pair.of(msg, level));
     }
 

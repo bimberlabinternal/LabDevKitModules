@@ -15,7 +15,8 @@
  */
 package org.labkey.laboratory.assay;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.assay.AssayBatchDomainKind;
@@ -76,7 +77,7 @@ import java.util.Map;
 public class AssayHelper
 {
     private static final AssayHelper _instance = new AssayHelper();
-    private static final Logger _log = Logger.getLogger(AssayHelper.class);
+    private static final Logger _log = LogManager.getLogger(AssayHelper.class);
 
     private AssayHelper()
     {

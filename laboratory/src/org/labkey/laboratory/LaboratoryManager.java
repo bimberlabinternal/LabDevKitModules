@@ -16,7 +16,8 @@
 package org.labkey.laboratory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.assay.AssayService;
@@ -83,7 +84,7 @@ public class LaboratoryManager
 {
     private static final LaboratoryManager _instance = new LaboratoryManager();
     public static final String DEFAULT_WORKBOOK_FOLDERTYPE_PROPNAME = "DefaultWorkbookFolderType";
-    private static final Logger _log = Logger.getLogger(LaboratoryManager.class);
+    private static final Logger _log = LogManager.getLogger(LaboratoryManager.class);
 
     private LaboratoryManager()
     {

@@ -1,7 +1,8 @@
 package org.labkey.laboratory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
@@ -29,7 +30,7 @@ import java.util.Map;
  */
 public class LaboratoryUpgradeCode implements UpgradeCode
 {
-    private static final Logger _log = Logger.getLogger(LaboratoryUpgradeCode.class);
+    private static final Logger _log = LogManager.getLogger(LaboratoryUpgradeCode.class);
 
     /** called at 12.277-12.278 */
     @SuppressWarnings({"UnusedDeclaration"})

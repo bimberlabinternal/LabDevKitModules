@@ -19,7 +19,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.audit.AuditLogService;
@@ -78,7 +79,7 @@ import java.util.TreeMap;
  */
 public class SiteSummaryNotification implements Notification
 {
-    protected final static Logger log = Logger.getLogger(SiteSummaryNotification.class);
+    protected final static Logger log = LogManager.getLogger(SiteSummaryNotification.class);
     private static final String lastSave = "lastSave";
     private NumberFormat _pctFormat = null;
 

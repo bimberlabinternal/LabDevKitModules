@@ -17,7 +17,8 @@ package org.labkey.ldk.notification;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -77,7 +78,7 @@ import java.util.Set;
  */
 public class NotificationServiceImpl extends NotificationService
 {
-    private final static Logger _log = Logger.getLogger(NotificationServiceImpl.class);
+    private final static Logger _log = LogManager.getLogger(NotificationServiceImpl.class);
 
     public final static String TIMESTAMP_PROPERTY_DOMAIN = "org.labkey.ldk.notifications.timestamp";
     public final static String STATUS_PROPERTY_DOMAIN = "org.labkey.ldk.notifications.status";

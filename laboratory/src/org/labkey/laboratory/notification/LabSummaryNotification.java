@@ -2,7 +2,8 @@ package org.labkey.laboratory.notification;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
@@ -38,7 +39,7 @@ import java.util.TreeMap;
  */
 public class LabSummaryNotification implements Notification
 {
-    protected final static Logger log = Logger.getLogger(LabSummaryNotification.class);
+    protected final static Logger log = LogManager.getLogger(LabSummaryNotification.class);
     protected final static SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
     private static final String lastSave = "lastSave";
