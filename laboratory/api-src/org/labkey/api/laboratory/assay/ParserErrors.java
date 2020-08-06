@@ -49,7 +49,7 @@ public class ParserErrors
 
     public void addError(String msg, Level level)
     {
-        if (level.intLevel() >= _threshold.intLevel())
+        if (level.isMoreSpecificThan(_threshold))
             _errors.add(Pair.of(msg, level));
     }
 
