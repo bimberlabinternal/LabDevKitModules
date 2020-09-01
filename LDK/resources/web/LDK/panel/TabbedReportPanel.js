@@ -548,7 +548,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                 }, this);
             }
         }
-        
+
         return subjects;
     },
 
@@ -764,19 +764,34 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             scope: this
         };
 
-        //special case these two properties because they are common
-        if (tab.report.viewName){
-            queryConfig.viewName = tab.report.viewName;
-        }
+        //
+        // Define a list of configuration options.  These can be set on the report tab to override default values.
+        // This list can be obtained by going to the URL for the
+        // LABKEY.QueryWebPart API, and looking in the config summary table.  If you'd like to get it programatically,   // https://www.labkey.org/download/clientapi_docs/javascript-api/symbols/LABKEY.QueryWebPart.html#constructor
+        // run the function commented out to the right of this message (you'll need to load jQuery first).  It will      //
+        // output an array of configuration options.                                                                     //getConfigOptions = function() {
+        //                                                                                                               //    var summaryTable = jQuery('table.summaryTable')
+        var configOptions = [                                                                                            //            // Filter for the table with the config object
+            "aggregates",             "allowChooseQuery",     "allowChooseView",        "bodyClass",                     //            .filter(function(index,element){ return jQuery(element).attr("summary").match(/config object/); });
+            "buttonBar",              "buttonBarPosition",    "containerFilter",        "containerPath",                 //
+            "dataRegionName",         "deleteURL",            "detailsURL",             "errorType",                     //    var options = [];
+            "failure",                "filters",              "frame",                  "importURL",                     //
+            "insertURL",              "linkTarget",           "maskEl",                 "maxRows",                       //    var configRegex = /^config\./;
+            "metadata",               "offset",               "parameters",             "queryName",                     //    summaryTable.find('td.nameDescription a').each(function(index,element){
+            "removeableFilters",      "removeableSort",       "renderTo",               "reportId",                      //        var configOption = jQuery(element).text();
+            "schemaName",             "scope",                "shadeAlternatingRows",   "showBorders",                   //
+            "showDeleteButton",       "showDetailsColumn",    "showExportButtons",      "showInsertNewButton",           //
+            "showPagination",         "showRecordSelectors",  "showReports",            "showRows",                      //        if (configOption.match(configRegex)) {
+            "showSurroundingBorder",  "showUpdateColumn",     "showViewPanel",          "sort",                          //            options.push(configOption.replace(configRegex, ''));
+            "sql",                    "success",              "suppressRenderErrors",   "timeout",                       //        }
+            "title",                  "titleHref",            "updateURL",              "viewName"                       //    });
+        ];                                                                                                               //
 
-        if (tab.report.containerPath){
-            queryConfig.containerPath = tab.report.containerPath;
-        }
-
-        //allow any other supported properties to be applied through here
-        if (tab.report.queryConfig){
-            Ext4.apply(queryConfig, tab.report.queryConfig);
-        }
+        Ext4.each(configOptions, function(option, index, list) {
+            if (option in tab.report) {
+                queryConfig[option] = tab.report[option];
+            }
+        });
 
         tab.add({
             xtype: 'ldk-querycmp',

@@ -19,6 +19,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
+import org.labkey.test.components.domain.DomainFormPanel;
+import org.labkey.test.pages.ReactAssayDesignerPage;
+import org.labkey.test.params.FieldDefinition;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.UIAssayHelper;
@@ -30,6 +33,7 @@ import org.labkey.test.util.ext4cmp.Ext4GridRef;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -190,7 +194,6 @@ public class LabModuleHelper
         }
 
         _test.waitForText("Sample Information");
-        _test._ext4Helper.waitForMaskToDisappear();
         _test.waitAndClick(Ext4Helper.Locators.ext4Button("Add From Spreadsheet"));
         _test.waitForElement(Ext4Helper.Locators.window("Spreadsheet Import"));
 
