@@ -165,6 +165,12 @@ Ext4.define('Ext.ux.form.field.DateTime', {
         }, me.timeConfig));
         me.items.push(me.timeField);
 
+        // Allow times in the style of "1423" to be accepted by the time field, instead of requiring colons
+        // for 24 hour fields.
+        var formats = me.timeField.altFormats.split("|");
+        formats.push("Hi");
+        me.timeField.altFormats = formats.join("|");
+
         for (; i < me.items.length; i++) {
             if(me.items[i].xtype == 'splitter')
                 continue;

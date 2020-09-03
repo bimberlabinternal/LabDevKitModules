@@ -50,13 +50,14 @@ Ext4.define('Laboratory.ext.WellLayoutPanel', {
     },
 
     drawWell: function(){
-        if (!this.store.getCount()){
+        var platePanel = this.down('#plate');
+        var legendPanel = this.down('#legend');
+
+        if (!this.store.getCount() || !platePanel || !legendPanel){
             this.store.on('load', this.drawWell, this, {single: true});
             return;
         }
 
-        var platePanel = this.down('#plate');
-        var legendPanel = this.down('#legend');
         var notAssigned = 0;
         var unknownWells = [];
 
