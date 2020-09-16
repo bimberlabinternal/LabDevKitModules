@@ -190,7 +190,6 @@ public class LabModuleHelper
         }
 
         _test.waitForText("Sample Information");
-        _test._ext4Helper.waitForMaskToDisappear();
         _test.waitAndClick(Ext4Helper.Locators.ext4Button("Add From Spreadsheet"));
         _test.waitForElement(Ext4Helper.Locators.window("Spreadsheet Import"));
 

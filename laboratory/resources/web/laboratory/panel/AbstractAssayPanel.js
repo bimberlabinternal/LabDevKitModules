@@ -584,7 +584,7 @@ Ext4.define('Laboratory.panel.AbstractAssayPanel', {
                                 importMethodToggle: importMethod
                             });
 
-                            imf.fireEvent('change', this, imf.getValues, current);
+                            imf.fireEvent('change', this, imf.getValue(), current);
                         }
 
                         var target = this.down('#templatePreviewPanel');

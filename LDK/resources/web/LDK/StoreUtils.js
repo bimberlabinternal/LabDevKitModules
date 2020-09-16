@@ -60,6 +60,7 @@ LDK.StoreUtils = new function(){
          * @param config.fileName
          * @param config.labelProperty
          * @param config.skippedColumns
+         * @param config.includeDescription
          */
         createExcelTemplate: function(config){
             Ext4.applyIf(config, {
@@ -72,7 +73,16 @@ LDK.StoreUtils = new function(){
                     if (config.skippedColumns && Ext4.Array.contains(config.skippedColumns, field.name))
                         return;
 
-                    header.push(field[config.labelProperty]);
+                    //Sending label property and comment in case of including description
+                    if (config.includeDescription){
+                        header.push({
+                            value:       field[config.labelProperty],
+                            cellComment: field['description']
+                        });
+                    }
+                    else{
+                        header.push(field[config.labelProperty]);
+                    }
                 }
             }, this);
 
