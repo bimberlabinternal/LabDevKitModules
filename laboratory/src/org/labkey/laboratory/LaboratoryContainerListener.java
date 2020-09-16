@@ -122,11 +122,10 @@ public class LaboratoryContainerListener extends SimpleModuleContainerListener
     {
         if (table.getName().equalsIgnoreCase(LaboratorySchema.TABLE_WORKBOOKS))
         {
-            if (!c.isWorkbook())
-            {
-                SQLFragment sql = new SQLFragment("DELETE FROM laboratory.workbooks WHERE " + LaboratoryWorkbooksTable.PARENT_COL + " = ?", c.getId());
-                new SqlExecutor(table.getSchema()).execute(sql);
-            }
+            SQLFragment sql = new SQLFragment("DELETE FROM laboratory.workbooks WHERE " +
+                    (c.isWorkbook() ? LaboratoryWorkbooksTable.WORKBOOK_COL : LaboratoryWorkbooksTable.PARENT_COL) +
+                    " = ?", c.getId());
+            new SqlExecutor(table.getSchema()).execute(sql);
         }
         else
         {
