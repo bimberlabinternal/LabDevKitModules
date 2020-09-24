@@ -3,6 +3,6 @@ import org.labkey.gradle.util.BuildUtils;
 dependencies {
     BuildUtils.addLabKeyDependency(project: project, config: "implementation", depProjectPath: ":server:modules:LabDevKitModules:LDK", depProjectConfig: "apiJarFile")
     BuildUtils.addLabKeyDependency(project: project, config: "implementation", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "assay"), depProjectConfig: "apiJarFile")
-
+    apiImplementation "net.sf.opencsv:opencsv:${opencsvVersion}"
     BuildUtils.addLabKeyDependency(project: project, config: "modules", depProjectPath: ":server:modules:LabDevKitModules:LDK", depProjectConfig: "published", depExtension: "module")
 }
