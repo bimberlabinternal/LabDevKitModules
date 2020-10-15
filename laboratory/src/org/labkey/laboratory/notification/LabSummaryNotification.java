@@ -5,6 +5,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSchema;
@@ -116,7 +117,12 @@ public class LabSummaryNotification implements Notification
         newValues.put(lastSave, String.valueOf(new Date().getTime()));
         map.putAll(newValues);
 
-        map.save();
+        // this is recording when the report was last run, which is similar to audit logging and similar activities
+        // that we are comfortable treating as non-mutating.
+        try (var ignored = SpringActionController.ignoreSqlUpdates())
+        {
+            map.save();
+        }
     }
 
     private String getPctChange(Long oldVal, Long newVal, double threshold)

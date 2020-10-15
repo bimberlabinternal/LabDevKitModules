@@ -22,6 +22,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.labkey.api.action.SpringActionController;
 import org.labkey.api.audit.AuditLogService;
 import org.labkey.api.audit.AuditTypeProvider;
 import org.labkey.api.data.CompareType;
@@ -168,7 +169,12 @@ public class SiteSummaryNotification implements Notification
         newValues.put(lastSave, String.valueOf(new Date().getTime()));
         map.putAll(newValues);
 
-        map.save();
+        // this is recording when the report was last run, which is similar to audit logging and similar activities
+        // that we are comfortable treating as non-mutating.
+        try (var ignored = SpringActionController.ignoreSqlUpdates())
+        {
+            map.save();
+        }
     }
 
     @Override
