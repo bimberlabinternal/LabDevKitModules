@@ -1060,7 +1060,7 @@ public class LDKController extends SpringActionController
         {
             if (getContainer().hasPermission(getUser(), AdminPermission.class))
             {
-                return ModuleHtmlView.get(ModuleLoader.getInstance().getModule(LDKModule.class), Path.parse("/views/setRedirectUrl.html"));
+                return ModuleHtmlView.get(ModuleLoader.getInstance().getModule(LDKModule.class), "setRedirectUrl");
             }
             else
             {
