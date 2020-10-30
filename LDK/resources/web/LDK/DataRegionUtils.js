@@ -16,14 +16,19 @@ LDK.DataRegionUtils = new function(){
             LDK.Assert.assertTrue(success + ' is not a valid success function.', Ext4.isFunction(success));
 
             var selectionSuccess = function(selection) {
-                if(!selection.selected.length && Ext4.isFunction(onNoneSelected)) {
-                    onNoneSelected();
-                }
-                else {
-                    var colExpr = '(' + tableAlias + '.' + selectorCols.join(" || ',' || " + tableAlias + ".") + ')';
-                    var clause = "WHERE " + colExpr + " IN ('" + selection.selected.join("', '") + "')";
-                    success(clause);
-                }
+                dataRegion.clearSelected({
+                    success: function () {
+                        if (!selection.selected.length && Ext4.isFunction(onNoneSelected)) {
+                            onNoneSelected();
+                        }
+                        else {
+                            var colExpr = '(' + tableAlias + '.' + selectorCols.join(" || ',' || " + tableAlias + ".") + ')';
+                            var clause = "WHERE " + colExpr + " IN ('" + selection.selected.join("', '") + "')";
+                            success(clause);
+                        }
+                    },
+                    failure: Ext4.isFunction(failure) ? failure : LDK.Utils.getErrorCallback()
+                });
             };
 
             var config = {
