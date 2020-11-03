@@ -641,6 +641,11 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         var reportTab = tab.items[0];
         if (reportTab.filters){
             for (var i in filters){
+                // The intent of this code is to test the filter conditions of this report (i.e. IDs, groups).
+                // showReport has nothing to do with this
+                if (i === 'showReport') {
+                    continue;
+                }
                 if (JSON.stringify(filters[i]) !== JSON.stringify(reportTab.filters[i])){
                     reload = true;
                     break;
@@ -1067,15 +1072,19 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
             for (var i=0;i<token.length;i++){
                 var t = token[i].split(':');
+                t[0] = decodeURIComponent(t[0]);
+                if (t.length > 1) {
+                    t[1] = decodeURIComponent(t[1]);
+                }
                 switch(t[0]){
                     case 'inputType':
                         context.inputType = t[1];
                         break;
                     case 'showReport':
-                        this.isReportTabSelected = (t[1] === 1);
+                        this.isReportTabSelected = (t[1] === '1');
                         break;
                     case 'activeReport':
-                        var report = decodeURI(t[1]);
+                        var report = t[1];
                         var tab = this.reportMap[report];
                         if (tab){
                             this.activeReport = tab;
@@ -1086,7 +1095,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                         }
                         break;
                     default:
-                        context[t[0]] = decodeURI(t[1]);
+                        context[t[0]] = t[1];
                 }
             }
         }
