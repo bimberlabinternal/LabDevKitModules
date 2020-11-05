@@ -358,8 +358,9 @@ Laboratory.buttonHandlers = new function(){
                                 var header = [];
                                 var fieldMap = LDK.StoreUtils.getFieldMap(store);
                                 Ext4.each(columns, function(name){
-                                    if (name == 'rowid' || name == 'freezerid')
+                                    if (name == 'rowid' || name == 'freezerid') {
                                         return;
+                                    }
 
                                     header.push(fieldMap[name].caption);
                                 }, this);
