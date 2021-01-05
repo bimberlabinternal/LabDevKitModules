@@ -266,7 +266,8 @@ public class LaboratoryController extends SpringActionController
                     ActionURL url = new ActionURL(LaboratoryController.EnsureAssayFieldsAction.class, ContainerManager.getSharedContainer());
                     url.addParameter("renameConflicts", true);
                     url.addParameter("providerName", form.getProviderName());
-                    url.addParameter("returnUrl", form.getReturnUrl().toString());
+                    if (form.getReturnActionURL() != null)
+                        url.addReturnURL(form.getReturnActionURL());
                     form.setReturnUrl(url.getLocalURIString());
                 }
 

@@ -15,13 +15,18 @@
  */
 package org.labkey.laboratory.assay;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.assay.AssayBatchDomainKind;
+import org.labkey.api.assay.AssayDataCollector;
+import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.assay.AssayResultDomainKind;
+import org.labkey.api.assay.AssayRunCreator;
 import org.labkey.api.assay.AssayRunDomainKind;
+import org.labkey.api.assay.AssayRunUploadContext;
+import org.labkey.api.assay.AssayService;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
@@ -45,14 +50,8 @@ import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.laboratory.assay.AssayDataProvider;
 import org.labkey.api.laboratory.assay.AssayImportMethod;
 import org.labkey.api.query.BatchValidationException;
-import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
-import org.labkey.api.assay.AssayDataCollector;
-import org.labkey.api.assay.AssayProvider;
-import org.labkey.api.assay.AssayRunCreator;
-import org.labkey.api.assay.AssayRunUploadContext;
-import org.labkey.api.assay.AssayService;
 import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.ActionURL;
@@ -382,9 +381,9 @@ public class AssayHelper
                                     ActionURL url = new ActionURL(LaboratoryController.EnsureAssayFieldsAction.class, ContainerManager.getSharedContainer());
                                     url.addParameter("renameConflicts", true);
                                     url.addParameter("providerName", ap.getName());
-                                    DetailsURL returnUrl = DetailsURL.fromString("/laboratory/synchronizeAssayFields.view");
-                                    returnUrl.setContainerContext(ContainerManager.getSharedContainer());
-                                    url.addParameter("returnUrl", returnUrl.toString());
+
+                                    ActionURL returnUrl = new ActionURL("laboratory", "synchronizeAssayFields.view", ContainerManager.getSharedContainer());
+                                    url.addReturnURL(returnUrl);
                                     msg += "This will not be changed automatically.  If do you want to correct this, <a href=\"" + url.toString() + "\">CLICK HERE</a>.";
                                 }
                                 else
