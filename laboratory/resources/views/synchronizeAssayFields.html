@@ -25,7 +25,7 @@
                 var items = [];
                 Ext4.each(results.providers, function(provider){
                     items.push({
-                        url: LABKEY.ActionURL.buildURL('laboratory', 'ensureAssayFields', null, {providerName: provider.name, returnURL: LABKEY.ActionURL.buildURL('laboratory', 'synchronizeAssayFields')}),
+                        url: LABKEY.ActionURL.buildURL('laboratory', 'ensureAssayFields', null, {providerName: provider.name, returnUrl: LABKEY.ActionURL.buildURL('laboratory', 'synchronizeAssayFields')}),
                         name: provider.name
                     })
                 }, this);
