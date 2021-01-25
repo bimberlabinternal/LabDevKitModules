@@ -1,0 +1,24 @@
+<ft:folderType xmlns:ft="http://labkey.org/data/xml/folderType">
+    <ft:name>File Sharing</ft:name>
+    <ft:description>This folder type is designed for simple file sharing. It just has a files webpart</ft:description>
+    <ft:folderTabs>
+        <ft:folderTab>
+            <ft:name>overview</ft:name>
+            <ft:caption>Overview</ft:caption>
+            <ft:selectors>
+            </ft:selectors>
+            <ft:requiredWebParts>
+            </ft:requiredWebParts>
+            <ft:preferredWebParts>
+                <ft:webPart>
+                    <ft:name>Files</ft:name>
+                    <ft:location>body</ft:location>
+                </ft:webPart>
+            </ft:preferredWebParts>
+        </ft:folderTab>
+    </ft:folderTabs>
+    <ft:modules>
+        <ft:moduleName>Laboratory</ft:moduleName>
+    </ft:modules>
+    <ft:defaultModule>Laboratory</ft:defaultModule>
+</ft:folderType>

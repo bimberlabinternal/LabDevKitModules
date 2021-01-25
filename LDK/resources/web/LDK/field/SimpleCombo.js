@@ -25,6 +25,14 @@ Ext4.define('LDK.form.field.SimpleCombo', {
         });
 
         this.callParent(arguments);
+
+        if (this.initialValues) {
+            if (!Ext4.isArray(this.initialValues)) {
+                this.initialValues = this.initialValues.split(';');
+            }
+
+            this.setValue(this.initialValues);
+        }
     },
 
     parseStoreValues: function(){
