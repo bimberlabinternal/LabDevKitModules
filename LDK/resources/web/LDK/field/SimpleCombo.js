@@ -12,6 +12,7 @@ Ext4.define('LDK.form.field.SimpleCombo', {
     typeAhead: true,
     queryMode: 'local',
     triggerAction: 'all',
+    joinReturnValue: false,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -48,5 +49,18 @@ Ext4.define('LDK.form.field.SimpleCombo', {
         vals = Ext4.unique(vals);
 
         return vals;
+    },
+
+    getSubmitValue: function(){
+        var val = this.callParent(arguments);
+        if (!this.joinReturnValue) {
+            return val;
+        }
+
+        return val && val.length ? val.join(this.delimiter) : null;
+    },
+
+    getToolParameterValue : function(){
+        return this.getSubmitValue();
     }
 });
