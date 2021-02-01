@@ -81,7 +81,7 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
         var report = tab.report;
         var projectFieldName = (filters.projectFilterMode == 'overlappingProjects') ? report.overlappingProjectsFieldName : report.allProjectsFieldName;
         if (!projectFieldName){
-            if (filters.projectFilterMode == 'overlappingProjects' && !report.overlappingProjectsFieldName){
+            if (filters.projectFilterMode === 'overlappingProjects' && !report.overlappingProjectsFieldName){
                 projectFieldName = report.allProjectsFieldName;
 
                 if (projectFieldName)
@@ -100,7 +100,8 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
             }
         }
 
-        projectFieldName = projectFieldName + '/' + filters.projects[0] + '::lastStartDate';
+        var fieldName = filters.projects[0].replaceAll('/', '$S');
+        projectFieldName = projectFieldName + '/' + fieldName + '::lastStartDate';
         filterArray.nonRemovable.push(LABKEY.Filter.create(projectFieldName, null, LABKEY.Filter.Types.NONBLANK));
 
         return filterArray;
