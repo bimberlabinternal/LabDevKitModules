@@ -13,6 +13,7 @@ Ext4.define('LDK.form.field.SimpleCombo', {
     queryMode: 'local',
     triggerAction: 'all',
     joinReturnValue: false,
+    delimiter: ';',
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -62,5 +63,15 @@ Ext4.define('LDK.form.field.SimpleCombo', {
 
     getToolParameterValue : function(){
         return this.getSubmitValue();
+    },
+
+    setValue: function(val) {
+        if (this.multiSelect && val && Ext4.isString(val)) {
+            val = val.split(this.delimiter);
+            this.callParent([val]);
+        }
+        else {
+            this.callParent(arguments);
+        }
     }
 });
