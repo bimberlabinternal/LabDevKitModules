@@ -100,17 +100,7 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
             }
         }
 
-        if (!filters.projects || !filters.projects.length) {
-            LDK.Utils.logToServer({
-                message: 'ProjectFilterType.getFilterArray() called with empty value: ' + filters.projects + ' / ' + this.getProjects(),
-                level: 'ERROR',
-                includeContext: true
-            });
-
-            filters.projects = this.getProjects();
-        }
-
-        var fieldName = filters.projects[0].replaceAll('/', '$S');
+        var fieldName = filters.projects[0].replace(/\//g, '$S');
         projectFieldName = projectFieldName + '/' + fieldName + '::lastStartDate';
         filterArray.nonRemovable.push(LABKEY.Filter.create(projectFieldName, null, LABKEY.Filter.Types.NONBLANK));
 
