@@ -52,11 +52,11 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
                 items: [{
                     boxLabel: 'Include if subject was ever a member of the project/group',
                     inputValue: 'allProjects',
-                    checked: ctx.projectFilterMode != 'overlappingProjects'
+                    checked: ctx.projectFilterMode !== 'overlappingProjects'
                 },{
                     boxLabel: 'Include only if the sample date overlaps with assignment to that project/group',
                     inputValue: 'overlappingProjects',
-                    checked: ctx.projectFilterMode == 'overlappingProjects'
+                    checked: ctx.projectFilterMode === 'overlappingProjects'
                 }]
             }]
         });
@@ -79,9 +79,9 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
 
         var filters = this.getFilters();
         var report = tab.report;
-        var projectFieldName = (filters.projectFilterMode == 'overlappingProjects') ? report.overlappingProjectsFieldName : report.allProjectsFieldName;
+        var projectFieldName = (filters.projectFilterMode === 'overlappingProjects') ? report.overlappingProjectsFieldName : report.allProjectsFieldName;
         if (!projectFieldName){
-            if (filters.projectFilterMode == 'overlappingProjects' && !report.overlappingProjectsFieldName){
+            if (filters.projectFilterMode === 'overlappingProjects' && !report.overlappingProjectsFieldName){
                 projectFieldName = report.allProjectsFieldName;
 
                 if (projectFieldName)
@@ -100,7 +100,8 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
             }
         }
 
-        projectFieldName = projectFieldName + '/' + filters.projects[0] + '::lastStartDate';
+        var fieldName = filters.projects[0].replace(/\//g, '$S');
+        projectFieldName = projectFieldName + '/' + fieldName + '::lastStartDate';
         filterArray.nonRemovable.push(LABKEY.Filter.create(projectFieldName, null, LABKEY.Filter.Types.NONBLANK));
 
         return filterArray;
@@ -108,7 +109,7 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
 
     isValid: function(){
         var val = this.down('#projectField').getValue();
-        if(!val || !val.length){
+        if (!val || !val.length){
             return false;
         }
 
@@ -139,10 +140,11 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
 
     getProjects: function(){
         var projectArray = this.down('#projectField').getValue();
-        if (projectArray || !Ext4.isArray(projectArray))
+        if (projectArray && !Ext4.isArray(projectArray)) {
             projectArray = [projectArray];
+        }
 
-        if (projectArray.length > 0){
+        if (projectArray && projectArray.length > 0){
             projectArray = Ext4.unique(projectArray);
             projectArray.sort();
         }
