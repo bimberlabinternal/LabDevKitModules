@@ -52,11 +52,11 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
                 items: [{
                     boxLabel: 'Include if subject was ever a member of the project/group',
                     inputValue: 'allProjects',
-                    checked: ctx.projectFilterMode != 'overlappingProjects'
+                    checked: ctx.projectFilterMode !== 'overlappingProjects'
                 },{
                     boxLabel: 'Include only if the sample date overlaps with assignment to that project/group',
                     inputValue: 'overlappingProjects',
-                    checked: ctx.projectFilterMode == 'overlappingProjects'
+                    checked: ctx.projectFilterMode === 'overlappingProjects'
                 }]
             }]
         });
@@ -79,7 +79,7 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
 
         var filters = this.getFilters();
         var report = tab.report;
-        var projectFieldName = (filters.projectFilterMode == 'overlappingProjects') ? report.overlappingProjectsFieldName : report.allProjectsFieldName;
+        var projectFieldName = (filters.projectFilterMode === 'overlappingProjects') ? report.overlappingProjectsFieldName : report.allProjectsFieldName;
         if (!projectFieldName){
             if (filters.projectFilterMode === 'overlappingProjects' && !report.overlappingProjectsFieldName){
                 projectFieldName = report.allProjectsFieldName;
@@ -98,6 +98,14 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
 
                 return filterArray;
             }
+        }
+
+        if (!filters.projects || !filters.projects.length) {
+            LDK.Utils.logToServer({
+                message: 'ProjectFilterType.getFilterArray() called with empty value: ' + filters.projects + ' / ' + this.getProjects(),
+                level: 'ERROR',
+                includeContext: true
+            });
         }
 
         var fieldName = filters.projects[0].replaceAll('/', '$S');
