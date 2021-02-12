@@ -109,7 +109,7 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
 
     isValid: function(){
         var val = this.down('#projectField').getValue();
-        if(!val || !val.length){
+        if (!val || !val.length){
             return false;
         }
 
@@ -140,10 +140,11 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
 
     getProjects: function(){
         var projectArray = this.down('#projectField').getValue();
-        if (projectArray || !Ext4.isArray(projectArray))
+        if (projectArray && !Ext4.isArray(projectArray)) {
             projectArray = [projectArray];
+        }
 
-        if (projectArray.length > 0){
+        if (projectArray && projectArray.length > 0){
             projectArray = Ext4.unique(projectArray);
             projectArray.sort();
         }
