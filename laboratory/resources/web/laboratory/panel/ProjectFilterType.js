@@ -106,6 +106,8 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
                 level: 'ERROR',
                 includeContext: true
             });
+
+            filters.projects = this.getProjects();
         }
 
         var fieldName = filters.projects[0].replaceAll('/', '$S');
