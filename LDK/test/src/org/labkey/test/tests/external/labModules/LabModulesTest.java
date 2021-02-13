@@ -729,6 +729,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
         Ext4ComboRef field = _ext4Helper.queryOne("#projectField", Ext4ComboRef.class);
         field.setComboByDisplayValue("Project1");
+        assertNotNull(field.getValue());
 
         // we toggle back to a panel with a single tab, where that tab has already been loaded.
         // since the filter set has changed, this tab should update to reflect that
