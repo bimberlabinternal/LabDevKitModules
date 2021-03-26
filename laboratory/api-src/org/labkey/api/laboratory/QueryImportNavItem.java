@@ -48,7 +48,7 @@ public class QueryImportNavItem extends AbstractImportingNavItem
     public QueryImportNavItem(DataProvider provider, String schema, String query, String label, LaboratoryService.NavItemCategory itemType, String reportCategory, QueryCache cache)
     {
         this(provider, null, schema, query, itemType, label, reportCategory);
-        _queryCache = cache;
+        _queryCache = cache == null ? new QueryCache() : cache;
     }
 
     public QueryImportNavItem(DataProvider provider, Container targetContainer, String schema, String query, LaboratoryService.NavItemCategory itemType, String label, String reportCategory)
