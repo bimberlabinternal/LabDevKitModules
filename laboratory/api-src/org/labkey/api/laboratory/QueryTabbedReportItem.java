@@ -34,7 +34,8 @@ public class QueryTabbedReportItem extends TabbedReportItem
     public QueryTabbedReportItem(QueryCache cache, DataProvider provider, String schemaName, String queryName, String label, String reportCategory)
     {
         super(provider, queryName, label, reportCategory);
-        _queryCache = cache;
+        if (cache != null)
+            _queryCache = cache;
         _schemaName = schemaName;
         _queryName = queryName;
     }
