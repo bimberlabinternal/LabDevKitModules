@@ -54,7 +54,7 @@ Ext4.define('LDK.form.field.SimpleCombo', {
 
     getSubmitValue: function(){
         var val = this.callParent(arguments);
-        if (!this.joinReturnValue) {
+        if (!Ext4.isArray(val) || !this.joinReturnValue) {
             return val;
         }
 
