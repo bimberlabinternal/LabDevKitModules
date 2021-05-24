@@ -223,8 +223,9 @@ public class LabModuleHelper
 
     public String getPageText()
     {
+        String text = _test.getHtmlSource();
         //the browser converts line breaks to spaces.  this is a hack to get them back
-        String text = _test.getDriver().getPageSource().replaceAll("<[^>]+>|&[^;]+;", "");
+        text = text.replaceAll("<[^>]+>|&[^;]+;", "");
         text = text.replaceAll(" {2,}", " ");
         text = text.replaceAll(", ", ",\n").replaceAll("] ", "]\n");
         return text;
