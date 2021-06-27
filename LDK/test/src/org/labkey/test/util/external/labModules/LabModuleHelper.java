@@ -17,6 +17,7 @@ package org.labkey.test.util.external.labModules;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
+import org.junit.Assert;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.util.DataRegionTable;
@@ -250,6 +251,8 @@ public class LabModuleHelper
 
     public String getExampleData()
     {
+        String ret = null;
+
         String currentWindow = _test.getDriver().getWindowHandle();
         for (String handle : _test.getDriver().getWindowHandles())
         {
@@ -259,10 +262,13 @@ public class LabModuleHelper
                 String text = getPageText();
                 _test.getDriver().close();
                 _test.getDriver().switchTo().window(currentWindow);
-                return text;
+                ret = StringUtils.trimToNull(text);
             }
         }
-        return null;
+
+        Assert.assertNotNull("Unable to retrieve example data", StringUtils.trimToNull(ret));
+
+        return ret;
     }
 
     public Locator toolIcon(String name)
