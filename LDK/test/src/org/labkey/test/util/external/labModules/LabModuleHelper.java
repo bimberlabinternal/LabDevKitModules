@@ -253,6 +253,7 @@ public class LabModuleHelper
     {
         String ret = null;
 
+        Assert.assertTrue("Expected more than one open window", _test.getDriver().getWindowHandles().size() > 1);
         String currentWindow = _test.getDriver().getWindowHandle();
         for (String handle : _test.getDriver().getWindowHandles())
         {
