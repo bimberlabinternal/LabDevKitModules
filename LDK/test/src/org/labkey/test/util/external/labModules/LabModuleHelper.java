@@ -17,10 +17,8 @@ package org.labkey.test.util.external.labModules;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
-import org.junit.Assert;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
-import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.UIAssayHelper;
@@ -28,13 +26,11 @@ import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.labkey.test.util.ext4cmp.Ext4GridRef;
-import org.openqa.selenium.TimeoutException;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -252,33 +248,8 @@ public class LabModuleHelper
         _test.waitForText("Data Import");
     }
 
-    public String clickAndGetExampleData()
-    {
-        Locator btn = Locator.linkContainingText("Download Example Data");
-        _test.waitForElement(btn);
-        _test.waitAndClick(btn);
-
-        int iterations = 0;
-        while (_test.getDriver().getWindowHandles().size() < 2)
-        {
-            iterations++;
-            WebDriverWrapper.sleep(100);
-
-            if (iterations > 20)
-            {
-                throw new TimeoutException("Timed out waiting for second browser window");
-            }
-        }
-
-        return getExampleData();
-    }
-
     public String getExampleData()
     {
-        String ret = null;
-
-        Set<String> handles = _test.getDriver().getWindowHandles();
-        Assert.assertTrue("Expected more than one open window, was: " + handles.size(), handles.size() > 1);
         String currentWindow = _test.getDriver().getWindowHandle();
         for (String handle : _test.getDriver().getWindowHandles())
         {
@@ -288,13 +259,10 @@ public class LabModuleHelper
                 String text = getPageText();
                 _test.getDriver().close();
                 _test.getDriver().switchTo().window(currentWindow);
-                ret = StringUtils.trimToNull(text);
+                return text;
             }
         }
-
-        Assert.assertNotNull("Unable to retrieve example data", StringUtils.trimToNull(ret));
-
-        return ret;
+        return null;
     }
 
     public Locator toolIcon(String name)
