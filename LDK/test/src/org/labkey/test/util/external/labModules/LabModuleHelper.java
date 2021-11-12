@@ -290,8 +290,13 @@ public class LabModuleHelper
             if (!currentWindow.equals(handle))
             {
                 _test.getDriver().switchTo().window(handle);
-                String text = getPageText();
-                ret = StringUtils.trimToNull(text);
+                ret = StringUtils.trimToNull(getPageText());
+                if (ret == null)
+                {
+                    // NOTE: this fails intermittently. Perhaps due to loading timing?
+                    BaseWebDriverTest.sleep(1000);
+                    ret = StringUtils.trimToNull(getPageText());
+                }
                 Assert.assertNotNull("Unable to retrieve example data", StringUtils.trimToNull(ret));
 
                 _test.getDriver().close();
