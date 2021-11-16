@@ -274,11 +274,6 @@ public class LabModuleHelper
         return getExampleData(currentWindow);
     }
 
-    public String getExampleData()
-    {
-        return getExampleData(_test.getDriver().getWindowHandle());
-    }
-
     private String getExampleData(String currentWindow)
     {
         String ret = null;
@@ -290,9 +285,8 @@ public class LabModuleHelper
             if (!currentWindow.equals(handle))
             {
                 _test.getDriver().switchTo().window(handle);
-                String text = getPageText();
-                ret = StringUtils.trimToNull(text);
-                Assert.assertNotNull("Unable to retrieve example data", StringUtils.trimToNull(ret));
+                ret = _test.shortWait().withMessage("Unable to retrieve example data")
+                        .until(wd -> StringUtils.trimToNull(getPageText()));
 
                 _test.getDriver().close();
                 _test.getDriver().switchTo().window(currentWindow);
