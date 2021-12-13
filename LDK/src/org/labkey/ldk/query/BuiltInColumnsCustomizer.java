@@ -1,9 +1,9 @@
 package org.labkey.ldk.query;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.labkey.api.data.BaseColumnInfo;
+import org.apache.logging.log4j.Logger;
 import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.MutableColumnInfo;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
@@ -31,11 +31,11 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
     {
         for (ColumnInfo col : table.getColumns())
         {
-            COL_ENUM.processColumn( (BaseColumnInfo)col );
+            COL_ENUM.processColumn( (MutableColumnInfo)col );
 
             if (_disableFacetingForNumericCols && col.isNumericType() && col.getFk() == null)
             {
-                ((BaseColumnInfo)col).setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                ((MutableColumnInfo)col).setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             }
         }
 
@@ -46,7 +46,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
     {
         created(Timestamp.class){
             @Override
-            public void customizeColumn(BaseColumnInfo col)
+            public void customizeColumn(MutableColumnInfo col)
             {
                 setNonEditable(col);
                 col.setHidden(true);
@@ -56,7 +56,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
         },
         createdby(Integer.class){
             @Override
-            public void customizeColumn(BaseColumnInfo col)
+            public void customizeColumn(MutableColumnInfo col)
             {
                 setNonEditable(col);
                 col.setHidden(true);
@@ -66,7 +66,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
         },
         modified(Timestamp.class){
             @Override
-            public void customizeColumn(BaseColumnInfo col)
+            public void customizeColumn(MutableColumnInfo col)
             {
                 setNonEditable(col);
                 col.setHidden(true);
@@ -76,7 +76,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
         },
         modifiedby(Integer.class){
             @Override
-            public void customizeColumn(BaseColumnInfo col)
+            public void customizeColumn(MutableColumnInfo col)
             {
                 setNonEditable(col);
                 col.setHidden(true);
@@ -86,7 +86,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
         },
         container(String.class){
             @Override
-            public void customizeColumn(BaseColumnInfo col)
+            public void customizeColumn(MutableColumnInfo col)
             {
                 setNonEditable(col);
                 col.setLabel("Folder");
@@ -94,7 +94,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
         },
         rowid(Integer.class){
             @Override
-            public void customizeColumn(BaseColumnInfo col)
+            public void customizeColumn(MutableColumnInfo col)
             {
                 setNonEditable(col);
                 col.setAutoIncrement(true);
@@ -102,7 +102,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
         },
         entityid(String.class){
             @Override
-            public void customizeColumn(BaseColumnInfo col)
+            public void customizeColumn(MutableColumnInfo col)
             {
                 setNonEditable(col);
                 col.setShownInDetailsView(false);
@@ -111,7 +111,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
         },
         objectid(String.class){
             @Override
-            public void customizeColumn(BaseColumnInfo col)
+            public void customizeColumn(MutableColumnInfo col)
             {
                 setNonEditable(col);
                 col.setShownInDetailsView(false);
@@ -125,16 +125,16 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             this.dataType = dataType;
         }
 
-        private static void setNonEditable(BaseColumnInfo col)
+        private static void setNonEditable(MutableColumnInfo col)
         {
             col.setUserEditable(false);
             col.setShownInInsertView(false);
             col.setShownInUpdateView(false);
         }
 
-        abstract public void customizeColumn(BaseColumnInfo col);
+        abstract public void customizeColumn(MutableColumnInfo col);
 
-        public static void processColumn(BaseColumnInfo col)
+        public static void processColumn(MutableColumnInfo col)
         {
             for (COL_ENUM colEnum : COL_ENUM.values())
             {
