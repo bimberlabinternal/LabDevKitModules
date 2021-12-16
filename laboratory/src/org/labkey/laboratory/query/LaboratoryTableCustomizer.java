@@ -3,11 +3,10 @@ package org.labkey.laboratory.query;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.AbstractTableInfo;
-import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
@@ -302,7 +301,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
                                 // get forWrite==true because we modify this table
                                 TableInfo ti = ((UserSchema)getSchema()).getTable(_tableName, getLookupContainerFilter(), true, true);
 
-                                ((BaseColumnInfo)ti.getColumn(qd.getTargetColumn())).setKeyField(true);
+                                ((MutableColumnInfo)ti.getColumn(qd.getTargetColumn())).setKeyField(true);
 
                                 Set<ColumnInfo> birthCols = new HashSet<>();
                                 Set<ColumnInfo> deathCols = new HashSet<>();
@@ -398,7 +397,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
                 if (ti != null)
                 {
-                    BaseColumnInfo col = (BaseColumnInfo)ti.getColumn(pkColRawName);
+                    MutableColumnInfo col = (MutableColumnInfo)ti.getColumn(pkColRawName);
                     col.setKeyField(true);
                     col.setHidden(true);
                 }
@@ -467,12 +466,12 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
                 if (ti != null)
                 {
-                    BaseColumnInfo col = (BaseColumnInfo)ti.getColumn(pkColRawName);
+                    MutableColumnInfo col = (MutableColumnInfo)ti.getColumn(pkColRawName);
                     col.setKeyField(true);
                     col.setHidden(true);
 
-                    ((BaseColumnInfo)ti.getColumn("projects")).setLabel("Overlapping Groups");
-                    ((BaseColumnInfo)ti.getColumn("groups")).setLabel("Overlapping Sub-groups");
+                    ((MutableColumnInfo)ti.getColumn("projects")).setLabel("Overlapping Groups");
+                    ((MutableColumnInfo)ti.getColumn("groups")).setLabel("Overlapping Sub-groups");
                 }
 
                 return ti;
@@ -514,11 +513,11 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
                 if (ti != null)
                 {
-                    BaseColumnInfo col = (BaseColumnInfo)ti.getColumn(pkColRawName);
+                    MutableColumnInfo col = (MutableColumnInfo)ti.getColumn(pkColRawName);
                     col.setKeyField(true);
                     col.setHidden(true);
 
-                    ((BaseColumnInfo)ti.getColumn("lastStartDate")).setLabel("Most Recent Start Date");
+                    ((MutableColumnInfo)ti.getColumn("lastStartDate")).setLabel("Most Recent Start Date");
                 }
 
                 return ti;
@@ -577,12 +576,12 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
                 if (ti != null)
                 {
-                    BaseColumnInfo col = (BaseColumnInfo) ti.getColumn(pkColRawName);
+                    MutableColumnInfo col = (MutableColumnInfo) ti.getColumn(pkColRawName);
                     col.setKeyField(true);
                     col.setHidden(true);
 
-                    ((BaseColumnInfo)ti.getColumn("projects")).setLabel("All Groups/Projects");
-                    ((BaseColumnInfo)ti.getColumn("groups")).setLabel("All Sub-Groups");
+                    ((MutableColumnInfo)ti.getColumn("projects")).setLabel("All Groups/Projects");
+                    ((MutableColumnInfo)ti.getColumn("groups")).setLabel("All Sub-Groups");
                 }
 
                 return ti;
@@ -624,11 +623,11 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
                 if (ti != null)
                 {
-                    BaseColumnInfo col = (BaseColumnInfo) ti.getColumn(pkColRawName);
+                    MutableColumnInfo col = (MutableColumnInfo) ti.getColumn(pkColRawName);
                     col.setKeyField(true);
                     col.setHidden(true);
 
-                    ((BaseColumnInfo)ti.getColumn("lastStartDate")).setLabel("Most Recent Start Date");
+                    ((MutableColumnInfo)ti.getColumn("lastStartDate")).setLabel("Most Recent Start Date");
                 }
 
                 return ti;
@@ -808,7 +807,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
                 if (ti != null)
                 {
-                    BaseColumnInfo col = (BaseColumnInfo)ti.getColumn(pkColRawName);
+                    MutableColumnInfo col = (MutableColumnInfo)ti.getColumn(pkColRawName);
                     col.setKeyField(true);
                     col.setHidden(true);
                 }

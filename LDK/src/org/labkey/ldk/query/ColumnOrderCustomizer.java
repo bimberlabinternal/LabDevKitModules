@@ -1,8 +1,8 @@
 package org.labkey.ldk.query;
 
 import org.labkey.api.data.AbstractTableInfo;
-import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.MutableColumnInfo;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 
@@ -70,7 +70,7 @@ public class ColumnOrderCustomizer implements TableCustomizer
         });
 
         for (ColumnInfo c : columns)
-            table.addColumn( (BaseColumnInfo)c );
+            table.addColumn( (MutableColumnInfo) c );
     }
 
     public void setDefaultVisible(AbstractTableInfo table)
