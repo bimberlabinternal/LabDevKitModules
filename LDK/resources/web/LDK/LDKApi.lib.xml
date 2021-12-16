@@ -47,6 +47,7 @@
     <dependencies>
         <dependency path="clientapi"/>
         <dependency path="clientapi_core"/>
+        <dependency path="Ext4"/>
         <dependency path="Ext4ClientApi"/>
         <dependency path="ux/CheckCombo/CheckCombo.js"/>
         <dependency path="ux/CheckCombo/CheckCombo.css"/>
