@@ -23,6 +23,7 @@ import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.UIAssayHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
@@ -252,6 +253,7 @@ public class LabModuleHelper
         _test.waitForText("Data Import");
     }
 
+    @LogMethod(quiet = true)
     public String clickAndGetExampleData()
     {
         Locator btn = Locator.linkContainingText("Download Example Data");
@@ -279,6 +281,7 @@ public class LabModuleHelper
         return getExampleData(_test.getDriver().getWindowHandle());
     }
 
+    @LogMethod(quiet = true)
     private String getExampleData(String currentWindow)
     {
         String ret = null;
