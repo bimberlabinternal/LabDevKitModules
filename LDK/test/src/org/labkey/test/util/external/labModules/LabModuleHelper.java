@@ -276,11 +276,6 @@ public class LabModuleHelper
         return getExampleData(currentWindow);
     }
 
-    public String getExampleData()
-    {
-        return getExampleData(_test.getDriver().getWindowHandle());
-    }
-
     @LogMethod(quiet = true)
     private String getExampleData(String currentWindow)
     {
@@ -290,17 +285,12 @@ public class LabModuleHelper
         Assert.assertTrue("Expected more than one open window, was: " + handles.size(), handles.size() > 1);
         for (String handle : _test.getDriver().getWindowHandles())
         {
+            _test.log("window: " + handle);
             if (!currentWindow.equals(handle))
             {
                 _test.getDriver().switchTo().window(handle);
-                ret = StringUtils.trimToNull(getPageText());
-                if (ret == null)
-                {
-                    // NOTE: this fails intermittently. Perhaps due to loading timing?
-                    BaseWebDriverTest.sleep(1000);
-                    ret = StringUtils.trimToNull(getPageText());
-                }
-                Assert.assertNotNull("Unable to retrieve example data", StringUtils.trimToNull(ret));
+                ret = _test.shortWait().withMessage("Unable to retrieve example data")
+                        .until(wd -> StringUtils.trimToNull(getPageText()));
 
                 _test.getDriver().close();
                 _test.getDriver().switchTo().window(currentWindow);
