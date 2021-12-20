@@ -258,6 +258,7 @@ public class LabModuleHelper
     {
         Locator btn = Locator.linkContainingText("Download Example Data");
         String currentWindow = _test.getDriver().getWindowHandle();
+        _test.log("Current window: " + currentWindow);
         _test.waitForElement(btn);
         _test.waitAndClick(btn);
 
@@ -283,6 +284,7 @@ public class LabModuleHelper
 
         Set<String> handles = _test.getDriver().getWindowHandles();
         Assert.assertTrue("Expected more than one open window, was: " + handles.size(), handles.size() > 1);
+        _test.log("All windows: [" + StringUtils.join(_test.getDriver().getWindowHandles(), ",") + "]");
         for (String handle : _test.getDriver().getWindowHandles())
         {
             _test.log("window: " + handle);
