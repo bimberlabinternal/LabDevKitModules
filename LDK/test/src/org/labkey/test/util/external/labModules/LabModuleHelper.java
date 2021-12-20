@@ -256,6 +256,7 @@ public class LabModuleHelper
     @LogMethod(quiet = true)
     public String clickAndGetExampleData()
     {
+        _test.log("clickAndGetExampleData!");
         Locator btn = Locator.linkContainingText("Download Example Data");
         String currentWindow = _test.getDriver().getWindowHandle();
         _test.log("Current window: " + currentWindow);
