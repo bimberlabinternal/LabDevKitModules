@@ -226,9 +226,8 @@ public class LabModuleHelper
         return Locator.xpath("//div[contains(@style, '" + color + "') and normalize-space() = '" + text + "']");
     }
 
-    public String getPageText()
+    private String removeSpaces(String text)
     {
-        String text = _test.getHtmlSource();
         //the browser converts line breaks to spaces.  this is a hack to get them back
         text = text.replaceAll("<[^>]+>|&[^;]+;", "");
         text = text.replaceAll(" {2,}", " ");
@@ -290,8 +289,9 @@ public class LabModuleHelper
             {
                 _test.getDriver().switchTo().window(handle);
                 ret = _test.shortWait().withMessage("Unable to retrieve example data")
-                        .until(wd -> StringUtils.trimToNull(getPageText()));
+                        .until(wd -> StringUtils.trimToNull(_test.getHtmlSource()));
 
+                ret = removeSpaces(ret);
                 _test.getDriver().close();
                 _test.getDriver().switchTo().window(currentWindow);
             }
