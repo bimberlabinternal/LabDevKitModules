@@ -23,6 +23,7 @@ import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.UIAssayHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
@@ -225,9 +226,13 @@ public class LabModuleHelper
         return Locator.xpath("//div[contains(@style, '" + color + "') and normalize-space() = '" + text + "']");
     }
 
-    public String getPageText()
+    private String removeSpaces(String text)
     {
-        String text = _test.getHtmlSource();
+        if (text == null)
+        {
+            return null;
+        }
+
         //the browser converts line breaks to spaces.  this is a hack to get them back
         text = text.replaceAll("<[^>]+>|&[^;]+;", "");
         text = text.replaceAll(" {2,}", " ");
@@ -252,6 +257,7 @@ public class LabModuleHelper
         _test.waitForText("Data Import");
     }
 
+    @LogMethod(quiet = true)
     public String clickAndGetExampleData()
     {
         Locator btn = Locator.linkContainingText("Download Example Data");
@@ -274,6 +280,7 @@ public class LabModuleHelper
         return getExampleData(currentWindow);
     }
 
+    @LogMethod(quiet = true)
     private String getExampleData(String currentWindow)
     {
         String ret = null;
@@ -282,11 +289,12 @@ public class LabModuleHelper
         Assert.assertTrue("Expected more than one open window, was: " + handles.size(), handles.size() > 1);
         for (String handle : _test.getDriver().getWindowHandles())
         {
+            _test.log("window: " + handle);
             if (!currentWindow.equals(handle))
             {
                 _test.getDriver().switchTo().window(handle);
                 ret = _test.shortWait().withMessage("Unable to retrieve example data")
-                        .until(wd -> StringUtils.trimToNull(getPageText()));
+                        .until(wd -> removeSpaces(StringUtils.trimToNull(_test.getHtmlSource())));
 
                 _test.getDriver().close();
                 _test.getDriver().switchTo().window(currentWindow);
