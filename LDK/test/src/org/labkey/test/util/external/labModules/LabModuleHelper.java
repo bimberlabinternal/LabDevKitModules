@@ -228,6 +228,11 @@ public class LabModuleHelper
 
     private String removeSpaces(String text)
     {
+        if (text == null)
+        {
+            return null;
+        }
+
         //the browser converts line breaks to spaces.  this is a hack to get them back
         text = text.replaceAll("<[^>]+>|&[^;]+;", "");
         text = text.replaceAll(" {2,}", " ");
@@ -289,9 +294,8 @@ public class LabModuleHelper
             {
                 _test.getDriver().switchTo().window(handle);
                 ret = _test.shortWait().withMessage("Unable to retrieve example data")
-                        .until(wd -> StringUtils.trimToNull(_test.getHtmlSource()));
+                        .until(wd -> removeSpaces(StringUtils.trimToNull(_test.getHtmlSource())));
 
-                ret = removeSpaces(ret);
                 _test.getDriver().close();
                 _test.getDriver().switchTo().window(currentWindow);
             }
