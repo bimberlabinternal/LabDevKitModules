@@ -95,6 +95,8 @@ public class LabModuleHelper
     {
         Locator l = getNavPanelItem(label, itemText);
         _test.waitForElement(l);
+        Assert.assertEquals("Incorrect number of elements: " + label + "/" + itemText, l.findElements(_test.getDriver()).size(), 1);
+
         _test.waitAndClick(l);
     }
 
