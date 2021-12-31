@@ -262,7 +262,7 @@ public class LabModuleHelper
     @LogMethod(quiet = true)
     public String clickAndGetExampleData()
     {
-        Locator btn = Locator.linkContainingText("Download Example Data");
+        Locator btn = Ext4Helper.Locators.ext4ButtonEnabled("Download Example Data");
         String currentWindow = _test.getDriver().getWindowHandle();
         _test.waitForElement(btn);
         _test.waitAndClick(btn);
