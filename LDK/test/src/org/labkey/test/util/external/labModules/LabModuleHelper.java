@@ -95,6 +95,8 @@ public class LabModuleHelper
     {
         Locator l = getNavPanelItem(label, itemText);
         _test.waitForElement(l);
+        Assert.assertEquals("Incorrect number of elements: " + label + "/" + itemText, l.findElements(_test.getDriver()).size(), 1);
+
         _test.waitAndClick(l);
     }
 
@@ -260,7 +262,7 @@ public class LabModuleHelper
     @LogMethod(quiet = true)
     public String clickAndGetExampleData()
     {
-        Locator btn = Locator.linkContainingText("Download Example Data");
+        Locator btn = Ext4Helper.Locators.ext4ButtonEnabled("Download Example Data");
         String currentWindow = _test.getDriver().getWindowHandle();
         _test.waitForElement(btn);
         _test.waitAndClick(btn);
