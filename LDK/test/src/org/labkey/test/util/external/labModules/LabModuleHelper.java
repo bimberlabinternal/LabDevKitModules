@@ -289,6 +289,7 @@ public class LabModuleHelper
 
         Set<String> handles = _test.getDriver().getWindowHandles();
         Assert.assertEquals("Expected more than one open window, found: " + StringUtils.join(handles, ","), 2, handles.size());
+        _test.log("Current windows: [" + StringUtils.join(handles, ",") + "]");
         for (String handle : handles)
         {
             _test.log("window: " + handle);
