@@ -287,16 +287,23 @@ public class LabModuleHelper
 
         Set<String> handles = _test.getDriver().getWindowHandles();
         Assert.assertEquals("Expected more than one open window, found: " + StringUtils.join(handles, ","), 2, handles.size());
-        _test.log("Current windows: [" + StringUtils.join(handles, ",") + "]");
+        _test.log("Current window: " + currentWindow + ", all: [" + StringUtils.join(handles, ",") + "]");
         for (String handle : handles)
         {
-            _test.log("window: " + handle);
+            _test.log("inspecting window: " + handle);
             if (!currentWindow.equals(handle))
             {
+                _test.log("switching to: " + handle);
                 _test.getDriver().switchTo().window(handle);
-                ret = _test.shortWait().withMessage("Unable to retrieve example data")
+                ret = _test.shortWait().withMessage("Unable to retrieve example data after shortWait")
                         .until(wd -> removeSpaces(StringUtils.trimToNull(_test.getHtmlSource())));
 
+                if (StringUtils.trimToNull(ret) == null)
+                {
+                    _test.checker().takeScreenShot("DownloadExampleData" + handle);
+                }
+
+                Assert.assertNotNull("Unable to retrieve example data for window: " + handle, StringUtils.trimToNull(ret));
                 _test.getDriver().close();
                 _test.getDriver().switchTo().window(currentWindow);
             }
