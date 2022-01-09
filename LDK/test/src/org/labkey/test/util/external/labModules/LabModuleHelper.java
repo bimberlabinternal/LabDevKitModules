@@ -296,7 +296,7 @@ public class LabModuleHelper
                 _test.log("switching to: " + handle);
                 _test.getDriver().switchTo().window(handle);
                 ret = _test.shortWait().withMessage("Unable to retrieve example data after shortWait")
-                        .until(wd -> removeSpaces(StringUtils.trimToNull(_test.getHtmlSource())));
+                        .until(wd -> StringUtils.trimToNull(_test.getHtmlSource()));
 
                 if (StringUtils.trimToNull(ret) == null)
                 {
@@ -304,6 +304,9 @@ public class LabModuleHelper
                 }
 
                 Assert.assertNotNull("Unable to retrieve example data for window: " + handle, StringUtils.trimToNull(ret));
+                ret = StringUtils.trimToNull(removeSpaces(ret));
+                Assert.assertNotNull("Unable to retrieve example data for window after remove spaces: " + handle, ret);
+
                 _test.getDriver().close();
                 _test.getDriver().switchTo().window(currentWindow);
             }
