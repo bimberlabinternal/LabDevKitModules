@@ -259,7 +259,6 @@ public class LabModuleHelper
         _test.waitForText("Data Import");
     }
 
-    @LogMethod(quiet = true)
     public String clickAndGetExampleData()
     {
         Locator btn = Ext4Helper.Locators.ext4ButtonEnabled("Download Example Data");
@@ -282,7 +281,6 @@ public class LabModuleHelper
         return getExampleData(currentWindow);
     }
 
-    @LogMethod(quiet = true)
     private String getExampleData(String currentWindow)
     {
         String ret = null;
