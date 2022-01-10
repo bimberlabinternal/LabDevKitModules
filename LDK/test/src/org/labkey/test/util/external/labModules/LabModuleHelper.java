@@ -239,7 +239,7 @@ public class LabModuleHelper
         text = text.replaceAll("<[^>]+>|&[^;]+;", "");
         text = text.replaceAll(" {2,}", " ");
         text = text.replaceAll(", ", ",\n").replaceAll("] ", "]\n");
-        return text;
+        return StringUtils.trimToNull(text);
     }
 
     public void goToAssayResultImport(String assayName)
@@ -290,22 +290,19 @@ public class LabModuleHelper
         _test.log("Current window: " + currentWindow + ", all: [" + StringUtils.join(handles, ",") + "]");
         for (String handle : handles)
         {
-            _test.log("inspecting window: " + handle);
             if (!currentWindow.equals(handle))
             {
                 _test.log("switching to: " + handle);
                 _test.getDriver().switchTo().window(handle);
                 ret = _test.shortWait().withMessage("Unable to retrieve example data after shortWait")
-                        .until(wd -> StringUtils.trimToNull(_test.getHtmlSource()));
+                        .until(wd -> removeSpaces(StringUtils.trimToNull(_test.getHtmlSource())));
 
                 if (StringUtils.trimToNull(ret) == null)
                 {
                     _test.checker().takeScreenShot("DownloadExampleData" + handle);
                 }
 
-                Assert.assertNotNull("Unable to retrieve example data for window: " + handle, StringUtils.trimToNull(ret));
-                ret = StringUtils.trimToNull(removeSpaces(ret));
-                Assert.assertNotNull("Unable to retrieve example data for window after remove spaces: " + handle, ret);
+                Assert.assertNotNull("Unable to retrieve example data for window: " + handle, ret);
 
                 _test.getDriver().close();
                 _test.getDriver().switchTo().window(currentWindow);
