@@ -155,7 +155,10 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
     aliasTableConfig: function (subjectArray) {
         this.aliasTable.scope = this;
-        this.aliasTable.filterArray = [LABKEY.Filter.create('alias', subjectArray.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)];
+
+        // Use contains filter to ensure case insensitivity across dbs
+        var filterType = this.caseInsensitive ? LABKEY.Filter.Types.CONTAINS_ONE_OF : LABKEY.Filter.Types.EQUALS_ONE_OF;
+        this.aliasTable.filterArray = [LABKEY.Filter.create('alias', subjectArray.join(';'), filterType)];
         this.aliasTable.columns = this.aliasTable.idColumn + (Ext4.isDefined(this.aliasTable.aliasColumn) ? ',' + this.aliasTable.aliasColumn : '');
     },
 
@@ -179,14 +182,28 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
                 // Remove from notFound array if found
                 var subjIndex = this.notFound.indexOf(row[this.aliasTable.aliasColumn]);
-                if (subjIndex != -1) {
+                if (subjIndex === -1 && this.caseInsensitive) {
+                    subjIndex = this.notFound.findIndex(nf => {
+                        return row[this.aliasTable.aliasColumn].toLowerCase() === nf.toLowerCase()
+                    });
+                }
+
+                if (subjIndex !== -1) {
                     this.notFound.splice(subjIndex, 1);
+                    if (this.caseInsensitive) // Ensure case mismatch corrected
+                        this.subjects.splice(subjIndex, 1, row[this.aliasTable.aliasColumn]);
                 }
 
                 // Resolve aliases
-                if (row[this.aliasTable.idColumn] != row[this.aliasTable.aliasColumn]) {
+                if (row[this.aliasTable.idColumn] !== row[this.aliasTable.aliasColumn]) {
                     var index = this.subjects.indexOf(row[this.aliasTable.aliasColumn]);
-                    if (index != -1) {
+                    if (index === -1 && this.caseInsensitive) {
+                        index = this.subjects.findIndex(subj => {
+                            return row[this.aliasTable.aliasColumn].toLowerCase() === subj.toLowerCase()
+                        });
+                    }
+
+                    if (index !== -1) {
                         this.aliases[row[this.aliasTable.aliasColumn]] = [row[this.aliasTable.idColumn]];
                         this.subjects.splice(index, 1, row[this.aliasTable.idColumn]);
                     }
@@ -205,6 +222,11 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
             else {
                 // Remove from notFound array if found
                 var idIndex = this.notFound.indexOf(row[this.aliasTable.idColumn]);
+                if (idIndex === -1 && this.caseInsensitive) {
+                    idIndex = this.notFound.findIndex(nf => {
+                        return row[this.aliasTable.idColumn].toLowerCase() == nf.toLowerCase()
+                    });
+                }
 
                 // TODO: Update this and LDK.Utils.splitIds when the case sensitive cache issues are fixed
                 if (idIndex == -1) {
