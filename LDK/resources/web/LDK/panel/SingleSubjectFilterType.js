@@ -156,7 +156,9 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
     aliasTableConfig: function (subjectArray) {
         this.aliasTable.scope = this;
 
-        // Use contains filter to ensure case insensitivity across dbs
+        // When caseInsensitive is true, use contains filter to ensure case insensitivity across dbs. This will return more
+        // results than necessary in some cases, however those results are filtered to match the user input and non-matching
+        // results are not used.
         var filterType = this.caseInsensitive ? LABKEY.Filter.Types.CONTAINS_ONE_OF : LABKEY.Filter.Types.EQUALS_ONE_OF;
         this.aliasTable.filterArray = [LABKEY.Filter.create('alias', subjectArray.join(';'), filterType)];
         this.aliasTable.columns = this.aliasTable.idColumn + (Ext4.isDefined(this.aliasTable.aliasColumn) ? ',' + this.aliasTable.aliasColumn : '');
