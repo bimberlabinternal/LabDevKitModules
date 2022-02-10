@@ -9,6 +9,11 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
     nounSingular: 'Subject',
 
+    // This flag updates alias/Id db query to use a case insensitive LK filter (CONTAINS). The
+    // results are processed after to do case insensitive matches on the results with the user entered Ids.
+    // This is primarily for use when an alias table is set for the filter.
+    caseInsensitive: false,
+
     subjects: [],
     notFound: [],
     aliases: {},
