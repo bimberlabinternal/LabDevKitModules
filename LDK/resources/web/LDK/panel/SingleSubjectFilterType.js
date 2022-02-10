@@ -200,25 +200,27 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
                 if (subjIndex !== -1) {
                     this.notFound.splice(subjIndex, 1);
-                    if (this.caseInsensitive) // Ensure case mismatch corrected
-                        this.subjects.splice(subjIndex, 1, row[this.aliasTable.aliasColumn]);
+                }
+
+                var index = this.subjects.indexOf(row[this.aliasTable.aliasColumn]);
+                if (index === -1 && this.caseInsensitive) {
+                    for (var i = 0; i < this.subjects.length; i++) {
+                        if (row[this.aliasTable.aliasColumn].toLowerCase() === this.subjects[i].toLowerCase()) {
+                            index = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (index !== -1) {
+                    this.subjects.splice(index, 1, row[this.aliasTable.idColumn]);
                 }
 
                 // Resolve aliases
                 if (row[this.aliasTable.idColumn] !== row[this.aliasTable.aliasColumn]) {
-                    var index = this.subjects.indexOf(row[this.aliasTable.aliasColumn]);
-                    if (index === -1 && this.caseInsensitive) {
-                        for (var i = 0; i < this.subjects.length; i++) {
-                            if (row[this.aliasTable.aliasColumn].toLowerCase() === this.subjects[i].toLowerCase()) {
-                                index = i;
-                                break;
-                            }
-                        }
-                    }
 
                     if (index !== -1) {
                         this.aliases[row[this.aliasTable.aliasColumn]] = [row[this.aliasTable.idColumn]];
-                        this.subjects.splice(index, 1, row[this.aliasTable.idColumn]);
                     }
                     // In case an alias matches multiple ID's
                     else {
