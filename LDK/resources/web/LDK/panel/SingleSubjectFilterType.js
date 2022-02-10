@@ -185,9 +185,12 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
                 // Remove from notFound array if found
                 var subjIndex = this.notFound.indexOf(row[this.aliasTable.aliasColumn]);
                 if (subjIndex === -1 && this.caseInsensitive) {
-                    subjIndex = this.notFound.findIndex(nf => {
-                        return row[this.aliasTable.aliasColumn].toLowerCase() === nf.toLowerCase()
-                    });
+                    for (var i = 0; i < this.notFound.length; i++) {
+                        if (row[this.aliasTable.aliasColumn].toLowerCase() === this.notFound[i].toLowerCase()) {
+                            subjIndex = i;
+                            break;
+                        }
+                    }
                 }
 
                 if (subjIndex !== -1) {
@@ -200,9 +203,12 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
                 if (row[this.aliasTable.idColumn] !== row[this.aliasTable.aliasColumn]) {
                     var index = this.subjects.indexOf(row[this.aliasTable.aliasColumn]);
                     if (index === -1 && this.caseInsensitive) {
-                        index = this.subjects.findIndex(subj => {
-                            return row[this.aliasTable.aliasColumn].toLowerCase() === subj.toLowerCase()
-                        });
+                        for (var i = 0; i < this.subjects.length; i++) {
+                            if (row[this.aliasTable.aliasColumn].toLowerCase() === this.subjects[i].toLowerCase()) {
+                                index = i;
+                                break;
+                            }
+                        }
                     }
 
                     if (index !== -1) {
@@ -225,9 +231,12 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
                 // Remove from notFound array if found
                 var idIndex = this.notFound.indexOf(row[this.aliasTable.idColumn]);
                 if (idIndex === -1 && this.caseInsensitive) {
-                    idIndex = this.notFound.findIndex(nf => {
-                        return row[this.aliasTable.idColumn].toLowerCase() == nf.toLowerCase()
-                    });
+                    for (var i = 0; i < this.notFound.length; i++) {
+                        if (row[this.aliasTable.idColumn].toLowerCase() === this.notFound[i].toLowerCase()) {
+                            idIndex = i;
+                            break;
+                        }
+                    }
                 }
 
                 // TODO: Update this and LDK.Utils.splitIds when the case sensitive cache issues are fixed
