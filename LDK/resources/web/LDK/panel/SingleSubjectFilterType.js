@@ -191,7 +191,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
                 var subjIndex = this.notFound.indexOf(row[this.aliasTable.aliasColumn]);
                 if (subjIndex === -1 && this.caseInsensitive) {
                     for (var i = 0; i < this.notFound.length; i++) {
-                        if (row[this.aliasTable.aliasColumn].toLowerCase() === this.notFound[i].toLowerCase()) {
+                        if (row[this.aliasTable.aliasColumn].toLowerCase() === this.notFound[i].toString().toLowerCase()) {
                             subjIndex = i;
                             break;
                         }
@@ -205,7 +205,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
                 var index = this.subjects.indexOf(row[this.aliasTable.aliasColumn]);
                 if (index === -1 && this.caseInsensitive) {
                     for (var i = 0; i < this.subjects.length; i++) {
-                        if (row[this.aliasTable.aliasColumn].toLowerCase() === this.subjects[i].toLowerCase()) {
+                        if (row[this.aliasTable.aliasColumn].toLowerCase() === this.subjects[i].toString().toLowerCase()) {
                             index = i;
                             break;
                         }
@@ -239,7 +239,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
                 var idIndex = this.notFound.indexOf(row[this.aliasTable.idColumn]);
                 if (idIndex === -1 && this.caseInsensitive) {
                     for (var i = 0; i < this.notFound.length; i++) {
-                        if (row[this.aliasTable.idColumn].toLowerCase() === this.notFound[i].toLowerCase()) {
+                        if (row[this.aliasTable.idColumn].toLowerCase() === this.notFound[i].toString().toLowerCase()) {
                             idIndex = i;
                             break;
                         }
@@ -249,7 +249,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
                 // TODO: Update this and LDK.Utils.splitIds when the case sensitive cache issues are fixed
                 if (idIndex == -1) {
                     for (var nfIndex = 0; nfIndex < this.notFound.length; nfIndex++) {
-                        if (this.notFound[nfIndex].toUpperCase() == row[this.aliasTable.idColumn]) {
+                        if (this.notFound[nfIndex].toString().toUpperCase() == row[this.aliasTable.idColumn]) {
                             idIndex = nfIndex;
                             break;
                         }
