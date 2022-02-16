@@ -9,6 +9,11 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
     nounSingular: 'Subject',
 
+    // This flag updates alias/Id db query to use a case insensitive LK filter (CONTAINS). The
+    // results are processed after to do case insensitive matches on the results with the user entered Ids.
+    // This is primarily for use when an alias table is set for the filter.
+    caseInsensitive: false,
+
     subjects: [],
     notFound: [],
     aliases: {},
@@ -155,7 +160,12 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
     aliasTableConfig: function (subjectArray) {
         this.aliasTable.scope = this;
-        this.aliasTable.filterArray = [LABKEY.Filter.create('alias', subjectArray.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)];
+
+        // When caseInsensitive is true, use contains filter to ensure case insensitivity across dbs. This will return more
+        // results than necessary in some cases, however those results are filtered to match the user input and non-matching
+        // results are not used.
+        var filterType = this.caseInsensitive ? LABKEY.Filter.Types.CONTAINS_ONE_OF : LABKEY.Filter.Types.EQUALS_ONE_OF;
+        this.aliasTable.filterArray = [LABKEY.Filter.create('alias', subjectArray.join(';'), filterType)];
         this.aliasTable.columns = this.aliasTable.idColumn + (Ext4.isDefined(this.aliasTable.aliasColumn) ? ',' + this.aliasTable.aliasColumn : '');
     },
 
@@ -179,16 +189,38 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
                 // Remove from notFound array if found
                 var subjIndex = this.notFound.indexOf(row[this.aliasTable.aliasColumn]);
-                if (subjIndex != -1) {
+                if (subjIndex === -1 && this.caseInsensitive) {
+                    for (var i = 0; i < this.notFound.length; i++) {
+                        if (row[this.aliasTable.aliasColumn].toLowerCase() === this.notFound[i].toString().toLowerCase()) {
+                            subjIndex = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (subjIndex !== -1) {
                     this.notFound.splice(subjIndex, 1);
                 }
 
+                var index = this.subjects.indexOf(row[this.aliasTable.aliasColumn]);
+                if (index === -1 && this.caseInsensitive) {
+                    for (var i = 0; i < this.subjects.length; i++) {
+                        if (row[this.aliasTable.aliasColumn].toLowerCase() === this.subjects[i].toString().toLowerCase()) {
+                            index = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (index !== -1) {
+                    this.subjects.splice(index, 1, row[this.aliasTable.idColumn]);
+                }
+
                 // Resolve aliases
-                if (row[this.aliasTable.idColumn] != row[this.aliasTable.aliasColumn]) {
-                    var index = this.subjects.indexOf(row[this.aliasTable.aliasColumn]);
-                    if (index != -1) {
+                if (row[this.aliasTable.idColumn] !== row[this.aliasTable.aliasColumn]) {
+
+                    if (index !== -1) {
                         this.aliases[row[this.aliasTable.aliasColumn]] = [row[this.aliasTable.idColumn]];
-                        this.subjects.splice(index, 1, row[this.aliasTable.idColumn]);
                     }
                     // In case an alias matches multiple ID's
                     else {
@@ -205,11 +237,19 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
             else {
                 // Remove from notFound array if found
                 var idIndex = this.notFound.indexOf(row[this.aliasTable.idColumn]);
+                if (idIndex === -1 && this.caseInsensitive) {
+                    for (var i = 0; i < this.notFound.length; i++) {
+                        if (row[this.aliasTable.idColumn].toLowerCase() === this.notFound[i].toString().toLowerCase()) {
+                            idIndex = i;
+                            break;
+                        }
+                    }
+                }
 
                 // TODO: Update this and LDK.Utils.splitIds when the case sensitive cache issues are fixed
                 if (idIndex == -1) {
                     for (var nfIndex = 0; nfIndex < this.notFound.length; nfIndex++) {
-                        if (this.notFound[nfIndex].toUpperCase() == row[this.aliasTable.idColumn]) {
+                        if (this.notFound[nfIndex].toString().toUpperCase() == row[this.aliasTable.idColumn]) {
                             idIndex = nfIndex;
                             break;
                         }
