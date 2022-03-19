@@ -71,6 +71,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -388,7 +389,7 @@ public class LaboratoryManager
         List<Object> existingValues = new TableSelector(targetTable, PageFlowUtil.set(keyCol)).getArrayList(Object.class);
 
         //Now find the values from /Shared
-        Set<String> selectCols = new HashSet<>(columns);
+        Set<String> selectCols = new LinkedHashSet<>(columns);
         columns.add(keyCol);
 
         final List<Map<String, Object>> rows = new ArrayList<>();
