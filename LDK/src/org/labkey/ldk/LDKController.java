@@ -26,6 +26,7 @@ import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
 import org.labkey.api.action.ExportAction;
+import org.labkey.api.action.HasAllowBindParameter;
 import org.labkey.api.action.MutatingApiAction;
 import org.labkey.api.action.ReadOnlyApiAction;
 import org.labkey.api.action.SimpleErrorView;
@@ -90,6 +91,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.util.function.Predicate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -593,7 +595,7 @@ public class LDKController extends SpringActionController
         }
     }
 
-    public static class NotificationSettingsForm
+    public static class NotificationSettingsForm implements HasAllowBindParameter
     {
         private String _replyEmail;
         private String _user;
@@ -639,7 +641,14 @@ public class LDKController extends SpringActionController
         {
             _enabled = enabled;
         }
+
+        @Override
+        public Predicate<String> allowBindParameter()
+        {
+            return (name) -> HasAllowBindParameter.getDefaultPredicate().test(name) || "user".equals(name);
+        }
     }
+
 
     @RequiresPermission(ReadPermission.class)
     public class LogMetricAction extends MutatingApiAction<LogMetricForm>
