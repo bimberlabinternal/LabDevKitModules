@@ -1,8 +1,8 @@
 package org.labkey.laboratory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +46,7 @@ public class AdditionalDataSource extends AbstractDataSource
         return new AdditionalDataSource(cat, label, containerId, schemaName, queryName, reportCategory, importIntoWorkbooks, subjectFieldKey, sampleDateFieldKey);
     }
 
-    public static AdditionalDataSource getFromPropertyManager(Container c, User u, String key, String value) throws IllegalArgumentException
+    public static @Nullable AdditionalDataSource getFromPropertyManager(Container c, User u, String key, String value) throws IllegalArgumentException
     {
         if (value == null)
             return null;
