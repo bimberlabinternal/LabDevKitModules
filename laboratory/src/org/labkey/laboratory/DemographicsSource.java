@@ -44,10 +44,12 @@ public class DemographicsSource extends AbstractDataSource
         return new DemographicsSource(label, containerId, schemaName, queryName, targetColumn);
     }
 
-    public static DemographicsSource getFromPropertyManager(Container c, User u, String key, String value) throws IllegalArgumentException
+    public static @Nullable DemographicsSource getFromPropertyManager(Container c, User u, String key, String value) throws IllegalArgumentException
     {
         if (value == null)
+        {
             return null;
+        }
 
         try
         {
