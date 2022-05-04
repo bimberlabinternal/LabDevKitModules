@@ -431,11 +431,19 @@ public class LaboratoryServiceImpl extends LaboratoryService
                 set = new HashSet<>();
 
             AdditionalDataSource source = AdditionalDataSource.getFromPropertyManager(c, u, entry.getKey(), entry.getValue());
-            if (source != null)
-                set.add(source);
+            if (source == null)
+            {
+                continue;
+            }
 
-            if (set.size() > 0)
-                map.put(c, set);
+            Container targetContainer = source.getTargetContainer(c);
+            if (targetContainer == null || !targetContainer.hasPermission(u, ReadPermission.class))
+            {
+                continue;
+            }
+
+            set.add(source);
+            map.put(c, set);
         }
 
         return Collections.unmodifiableMap(map);
@@ -457,11 +465,19 @@ public class LaboratoryServiceImpl extends LaboratoryService
                 set = new HashSet<>();
 
             DemographicsSource source = DemographicsSource.getFromPropertyManager(c, u, entry.getKey(), entry.getValue());
-            if (source != null)
-                set.add(source);
+            if (source == null)
+            {
+                continue;
+            }
 
-            if (set.size() > 0)
-                map.put(c, set);
+            Container targetContainer = source.getTargetContainer(c);
+            if (targetContainer == null || !targetContainer.hasPermission(u, ReadPermission.class))
+            {
+                continue;
+            }
+
+            set.add(source);
+            map.put(c, set);
         }
 
         return Collections.unmodifiableMap(map);
