@@ -18,8 +18,7 @@ SELECT
 m.UserId,
 g.Name AS GroupName,
 a.Date,
-a.EventType,
---a.comment,
+a.EventType
 
 FROM core.groups g
 
