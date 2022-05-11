@@ -18,7 +18,7 @@ PARAMETERS(MinDate TIMESTAMP)
 SELECT
 
 g.GroupName,
-count(*) AS Visits,
+count(*) AS Visits
 
 FROM core.SiteUsagePerGroup g
 WHERE cast(g.date as date) >= cast(MinDate as date)
