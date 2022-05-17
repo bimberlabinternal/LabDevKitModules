@@ -18,7 +18,7 @@ cast(EndDate as TIMESTAMP) as endDate @hidden
 
 FROM (SELECT
 
-timestampadd('SQL_TSI_DAY', i.value, CAST(COALESCE(StartDate, curdate()) AS TIMESTAMP)) as date,
+timestampadd('SQL_TSI_DAY', i.value, CAST(COALESCE(StartDate, curdate()) AS TIMESTAMP)) as date
 
 FROM ldk.integers i
 
