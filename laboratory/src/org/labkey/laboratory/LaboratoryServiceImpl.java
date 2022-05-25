@@ -383,7 +383,9 @@ public class LaboratoryServiceImpl extends LaboratoryService
             {
                 DemographicsSource source = DemographicsSource.getFromPropertyManager(target, u, key, properties.get(key));
                 if (source != null)
+                {
                     qds.add(source);
+                }
             }
             catch (IllegalArgumentException e)
             {
@@ -450,18 +452,26 @@ public class LaboratoryServiceImpl extends LaboratoryService
         {
             Container c = ContainerManager.getForId(entry.getObjectId());
             if (c == null || !c.hasPermission(u, ReadPermission.class))
+            {
                 continue;
+            }
 
             Set<DemographicsSource> set = map.get(c);
             if (set == null)
+            {
                 set = new HashSet<>();
+            }
 
             DemographicsSource source = DemographicsSource.getFromPropertyManager(c, u, entry.getKey(), entry.getValue());
             if (source != null)
+            {
                 set.add(source);
+            }
 
-            if (set.size() > 0)
+            if (!set.isEmpty())
+            {
                 map.put(c, set);
+            }
         }
 
         return Collections.unmodifiableMap(map);
