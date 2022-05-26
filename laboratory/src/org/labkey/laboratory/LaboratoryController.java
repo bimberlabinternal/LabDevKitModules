@@ -20,6 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -159,7 +160,7 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -281,7 +282,7 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(EnsureAssayFieldsForm form)
+        public @NotNull URLHelper getSuccessURL(EnsureAssayFieldsForm form)
         {
             if (form.getReturnActionURL() != null)
                 return form.getReturnActionURL();
@@ -384,7 +385,7 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(SetTableIncrementForm form)
+        public @NotNull URLHelper getSuccessURL(SetTableIncrementForm form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -483,7 +484,7 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -555,7 +556,7 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(SetTableIncrementForm form)
+        public @NotNull URLHelper getSuccessURL(SetTableIncrementForm form)
         {
             return getContainer().getStartURL(getUser());
         }
@@ -594,7 +595,7 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        public URLHelper getSuccessURL(Object form)
+        public @NotNull URLHelper getSuccessURL(Object form)
         {
             return getContainer().getStartURL(getUser());
         }
