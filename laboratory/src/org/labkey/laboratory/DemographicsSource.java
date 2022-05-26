@@ -16,6 +16,7 @@ import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.study.Dataset;
 import org.labkey.api.study.DatasetTable;
 
@@ -40,7 +41,11 @@ public class DemographicsSource extends AbstractDataSource
 
     public static DemographicsSource getFromParts(Container c, User u, String label, String containerId, String schemaName, String queryName, String targetColumn) throws IllegalArgumentException
     {
-        DemographicsSource.validateKey(c, u, containerId, schemaName, queryName, targetColumn, label);
+        if (!isValidSource(c, u, containerId, schemaName, queryName, targetColumn, label))
+        {
+            return null;    
+        }
+        
         return new DemographicsSource(label, containerId, schemaName, queryName, targetColumn);
     }
 
@@ -60,7 +65,10 @@ public class DemographicsSource extends AbstractDataSource
             String label = json.getString("label");
             String targetColumn = json.getString("targetColumn");
 
-            validateKey(c, u, containerId, schemaName, queryName, targetColumn, label);
+            if (!isValidSource(c, u, containerId, schemaName, queryName, targetColumn, label))
+            {
+                return null;
+            }
 
             return new DemographicsSource(label, containerId, schemaName, queryName, targetColumn);
         }
@@ -103,21 +111,37 @@ public class DemographicsSource extends AbstractDataSource
         return json;
     }
 
-    public static boolean validateKey(Container defaultContainer, User u, @Nullable String containerId, String schemaName, String queryName, String targetColumn, String label) throws IllegalArgumentException
+    private static boolean isValidSource(Container defaultContainer, User u, @Nullable String containerId, String schemaName, String queryName, String targetColumn, String label) throws IllegalArgumentException
     {
         Container target;
         if (containerId == null)
+        {
             target = defaultContainer;
+        }
         else
+        {
             target = ContainerManager.getForId(containerId);
+        }
 
-        if (target == null)
-            target = defaultContainer;
-
-        UserSchema us = QueryService.get().getUserSchema(u, target, schemaName);
         if (target == null)
         {
+            target = defaultContainer;
+        }
+        
+        if (!target.hasPermission(u, ReadPermission.class))
+        {
+            return false;
+        }
+
+        UserSchema us = QueryService.get().getUserSchema(u, target, schemaName);
+        if (us == null)
+        {
             throw new IllegalArgumentException("Unknown schema in saved data source: " + schemaName);
+        }
+
+        if (!us.canReadSchema())
+        {
+            return false;
         }
 
         QueryDefinition qd = us.getQueryDefForTable(queryName);
@@ -131,19 +155,28 @@ public class DemographicsSource extends AbstractDataSource
             throw new IllegalArgumentException("Missing targetColumn");
         }
 
-        List<QueryException> errors = new ArrayList<QueryException>();
+        List<QueryException> errors = new ArrayList<>();
         TableInfo ti = qd.getTable(errors,  true);
-        if (errors.size() != 0 || ti == null)
+
+        if (!errors.isEmpty())
         {
             _log.error("Unable to create TableInfo for query: " + queryName + ". there were " + errors.size() + " errors");
             for (QueryException e : errors)
             {
                 _log.error(e.getMessage());
             }
-            if (errors.size() > 0)
-                throw new IllegalArgumentException("Unable to create table for query: " + queryName, errors.get(0));
-            else
-                throw new IllegalArgumentException("Unable to create table for query: " + queryName);
+
+            throw new IllegalArgumentException("Unable to create table for query: " + queryName, errors.get(0));
+        }
+
+        if (ti == null)
+        {
+            throw new IllegalArgumentException("Unable to create table for query: " + queryName);
+        }
+
+        if (!ti.hasPermission(u, ReadPermission.class))
+        {
+            return false;
         }
 
         ColumnInfo col = ti.getColumn(targetColumn);
@@ -160,6 +193,11 @@ public class DemographicsSource extends AbstractDataSource
             if (ti instanceof DatasetTable)
             {
                 Dataset ds = ((DatasetTable)ti).getDataset();
+                if (!ds.hasPermission(u, ReadPermission.class))
+                {
+                    return false;
+                }
+
                 if (!(ds.isDemographicData() && ds.getStudy().getSubjectColumnName().equalsIgnoreCase(col.getName())))
                 {
                     throw new IllegalArgumentException("Target column is not a key field: " + targetColumn);
@@ -177,7 +215,9 @@ public class DemographicsSource extends AbstractDataSource
         }
 
         if (StringUtils.trimToNull(label) == null)
+        {
             throw new IllegalArgumentException("Label must not be blank");
+        }
 
         return true;
     }

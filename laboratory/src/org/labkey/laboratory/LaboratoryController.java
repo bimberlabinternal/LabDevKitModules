@@ -1309,7 +1309,11 @@ public class LaboratoryController extends SpringActionController
                     return null;
                 }
 
-                sources.add(DemographicsSource.getFromParts(getContainer(), getUser(), label, containerId, schemaName, queryName, targetColumn));
+                DemographicsSource s = DemographicsSource.getFromParts(getContainer(), getUser(), label, containerId, schemaName, queryName, targetColumn);
+                if (s != null)
+                {
+                    sources.add(s);
+                }
             }
 
             try
