@@ -48,7 +48,6 @@ import org.labkey.api.module.ModuleHtmlView;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.QueryAction;
-import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryForm;
 import org.labkey.api.query.QueryParseException;
 import org.labkey.api.query.QueryView;
@@ -76,7 +75,6 @@ import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
 import org.labkey.api.view.NavTree;
-import org.labkey.api.view.NotFoundException;
 import org.labkey.api.view.Portal;
 import org.labkey.api.view.RedirectException;
 import org.labkey.api.view.UnauthorizedException;
@@ -91,7 +89,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.util.function.Predicate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -99,6 +96,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 
 
@@ -832,7 +830,7 @@ public class LDKController extends SpringActionController
         @Override
         public ModelAndView getView(QueryForm form, BindException errors) throws Exception
         {
-            ensureQueryExists(form);
+            form.ensureQueryExists();
 
             _form = form;
 
@@ -893,42 +891,6 @@ public class LDKController extends SpringActionController
             }
 
             root.addChild(ti == null ? _form.getQueryName() : ti.getTitle(), _form.urlFor(QueryAction.executeQuery));
-        }
-
-        protected void ensureQueryExists(QueryForm form)
-        {
-            if (form.getSchema() == null)
-            {
-                throw new NotFoundException("Could not find schema: " + form.getSchemaName());
-            }
-
-            if (StringUtils.isEmpty(form.getQueryName()))
-            {
-                throw new NotFoundException("Query not specified");
-            }
-
-            if (!queryExists(form))
-            {
-                throw new NotFoundException("Query '" + form.getQueryName() + "' in schema '" + form.getSchemaName() + "' doesn't exist.");
-            }
-        }
-
-        protected boolean queryExists(QueryForm form)
-        {
-            try
-            {
-                return form.getSchema() != null && form.getSchema().getTable(form.getQueryName()) != null;
-            }
-            catch (QueryParseException x)
-            {
-                // exists with errors
-                return true;
-            }
-            catch (QueryException x)
-            {
-                // exists with errors
-                return true;
-            }
         }
     }
 
