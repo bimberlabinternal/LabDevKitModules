@@ -104,6 +104,9 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         if (!report.subjectFieldName)
             return 'This report cannot be used with the selected filter type, because the report does not contain a ' + this.nounSingular + ' Id field';
 
+        if (this.subjects.length === 0)
+            return 'Must enter at least one valid Subject ID.'
+
         return null;
     },
 
@@ -169,7 +172,8 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         // results than necessary in some cases, however those results are filtered to match the user input and non-matching
         // results are not used.
         var filterType = this.caseInsensitive ? LABKEY.Filter.Types.CONTAINS_ONE_OF : LABKEY.Filter.Types.EQUALS_ONE_OF;
-        this.aliasTable.filterArray = [LABKEY.Filter.create('alias', subjectArray.join(';'), filterType)];
+        var filterCol = this.aliasTable.aliasColumn ? this.aliasTable.aliasColumn : this.aliasTable.idColumn;
+        this.aliasTable.filterArray = [LABKEY.Filter.create(filterCol, subjectArray.join(';'), filterType)];
         this.aliasTable.columns = this.aliasTable.idColumn + (Ext4.isDefined(this.aliasTable.aliasColumn) ? ',' + this.aliasTable.aliasColumn : '');
     },
 
