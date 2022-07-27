@@ -189,10 +189,41 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         LABKEY.Query.selectRows(this.aliasTable);
     },
 
+    // This looks for rows that match subjects case insensitively. This is called due to the filter in the case insensitive
+    // case being "contains" instead of "equals" to get all possible casings. This also gets Ids that just contain the
+    // subject id as a substring. Thus we need this to filter out the non-matching rows.
+    getCaseInsensitiveMatches: function(results) {
+        var hasAlias = !!this.aliasTable.aliasColumn;
+        var updatedResults = [];
+
+        Ext4.each(results.rows, function (row) {
+            var rowValue = hasAlias ? row[this.aliasTable.aliasColumn] : row[this.aliasTable.idColumn];
+            var index = this.subjects.indexOf(rowValue);
+
+            if (index === -1) {
+                for (var i = 0; i < this.subjects.length; i++) {
+                    if (rowValue.toLowerCase() === this.subjects[i].toString().toLowerCase()) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+
+            if (index !== -1) {
+                updatedResults.push(row);
+            }
+        }, this)
+        return updatedResults;
+    },
+
+
     handleAliasResults: function (results) {
         this.notFound = Ext4.clone(this.subjects);
+
+        var rows = this.caseInsensitive ? this.getCaseInsensitiveMatches(results) : results.rows;
         var updatedSubjects = [];
-        Ext4.each(results.rows, function (row) {
+
+        Ext4.each(rows, function (row) {
 
             var rowId = row[this.aliasTable.idColumn];
             updatedSubjects.push(rowId);
@@ -214,16 +245,6 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
                 if (subjIndex !== -1) {
                     this.notFound.splice(subjIndex, 1);
-                }
-
-                var index = this.subjects.indexOf(rowAlias);
-                if (index === -1 && this.caseInsensitive) {
-                    for (var i = 0; i < this.subjects.length; i++) {
-                        if (rowAlias.toLowerCase() === this.subjects[i].toString().toLowerCase()) {
-                            index = i;
-                            break;
-                        }
-                    }
                 }
 
                 // Resolve aliases
