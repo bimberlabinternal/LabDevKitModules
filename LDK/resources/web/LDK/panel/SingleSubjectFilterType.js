@@ -189,10 +189,60 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         LABKEY.Query.selectRows(this.aliasTable);
     },
 
+    // This looks for rows that match subjects case insensitively. This is called due to the filter in the case insensitive
+    // case being "contains" instead of "equals" to get all possible casings. This also gets Ids that just contain the
+    // subject id as a substring. Thus we need this to filter out the non-matching rows.
+    getCaseInsensitiveMatches: function(results) {
+        var hasAlias = !!this.aliasTable.aliasColumn;
+        var updatedResults = [];
+
+        Ext4.each(results.rows, function (row) {
+            if (hasAlias) {
+                var rowAlias = row[this.aliasTable.aliasColumn];
+
+                var aliasIndex = this.subjects.indexOf(rowAlias);
+                if (aliasIndex === -1) {
+                    for (var i = 0; i < this.subjects.length; i++) {
+                        if (rowAlias.toLowerCase() === this.subjects[i].toString().toLowerCase()) {
+                            aliasIndex = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (aliasIndex !== -1) {
+                    updatedResults.push(row);
+                }
+            }
+            else {
+                var rowId = row[this.aliasTable.idColumn];
+
+                var rowIndex = this.subjects.indexOf(rowId);
+                if (rowIndex === -1) {
+                    for (var i = 0; i < this.subjects.length; i++) {
+                        if (rowId.toLowerCase() === this.subjects[i].toString().toLowerCase()) {
+                            rowIndex = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (rowIndex !== -1) {
+                    updatedResults.push(row);
+                }
+            }
+        }, this)
+        return updatedResults;
+    },
+
+
     handleAliasResults: function (results) {
         this.notFound = Ext4.clone(this.subjects);
+
+        var rows = this.caseInsensitive ? this.getCaseInsensitiveMatches(results) : results.rows;
         var updatedSubjects = [];
-        Ext4.each(results.rows, function (row) {
+
+        Ext4.each(rows, function (row) {
 
             var rowId = row[this.aliasTable.idColumn];
             updatedSubjects.push(rowId);
@@ -214,16 +264,6 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
                 if (subjIndex !== -1) {
                     this.notFound.splice(subjIndex, 1);
-                }
-
-                var index = this.subjects.indexOf(rowAlias);
-                if (index === -1 && this.caseInsensitive) {
-                    for (var i = 0; i < this.subjects.length; i++) {
-                        if (rowAlias.toLowerCase() === this.subjects[i].toString().toLowerCase()) {
-                            index = i;
-                            break;
-                        }
-                    }
                 }
 
                 // Resolve aliases
