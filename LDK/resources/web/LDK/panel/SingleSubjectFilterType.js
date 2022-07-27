@@ -197,39 +197,20 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
         var updatedResults = [];
 
         Ext4.each(results.rows, function (row) {
-            if (hasAlias) {
-                var rowAlias = row[this.aliasTable.aliasColumn];
+            var rowValue = hasAlias ? row[this.aliasTable.aliasColumn] : row[this.aliasTable.idColumn];
+            var index = this.subjects.indexOf(rowValue);
 
-                var aliasIndex = this.subjects.indexOf(rowAlias);
-                if (aliasIndex === -1) {
-                    for (var i = 0; i < this.subjects.length; i++) {
-                        if (rowAlias.toLowerCase() === this.subjects[i].toString().toLowerCase()) {
-                            aliasIndex = i;
-                            break;
-                        }
+            if (index === -1) {
+                for (var i = 0; i < this.subjects.length; i++) {
+                    if (rowValue.toLowerCase() === this.subjects[i].toString().toLowerCase()) {
+                        index = i;
+                        break;
                     }
-                }
-
-                if (aliasIndex !== -1) {
-                    updatedResults.push(row);
                 }
             }
-            else {
-                var rowId = row[this.aliasTable.idColumn];
 
-                var rowIndex = this.subjects.indexOf(rowId);
-                if (rowIndex === -1) {
-                    for (var i = 0; i < this.subjects.length; i++) {
-                        if (rowId.toLowerCase() === this.subjects[i].toString().toLowerCase()) {
-                            rowIndex = i;
-                            break;
-                        }
-                    }
-                }
-
-                if (rowIndex !== -1) {
-                    updatedResults.push(row);
-                }
+            if (index !== -1) {
+                updatedResults.push(row);
             }
         }, this)
         return updatedResults;
