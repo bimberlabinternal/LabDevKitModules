@@ -15,15 +15,16 @@
  */
 package org.labkey.api.ldk.notification;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.module.Module;
-import org.labkey.api.query.DetailsURL;
-import org.labkey.api.settings.AppProps;
+import org.labkey.api.query.QueryUrls;
 import org.labkey.api.settings.LookAndFeelProperties;
+import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.util.logging.LogHelper;
+import org.labkey.api.view.ActionURL;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,14 +36,19 @@ import java.text.SimpleDateFormat;
  */
 abstract public class AbstractNotification implements Notification
 {
-    private Module _owner;
+    private final Module _owner;
 
-    protected final static Logger log = LogManager.getLogger(AbstractNotification.class);
+    protected final static Logger log = LogHelper.getLogger(AbstractNotification.class, "LDK notification errors");
     protected final static SimpleDateFormat _timeFormat = new SimpleDateFormat("kk:mm");
+    protected final static QueryUrls _queryUrls = PageFlowUtil.urlProvider(QueryUrls.class);
 
     public AbstractNotification(Module owner)
     {
         _owner = owner;
+
+        // AbstractNotifications must be constructed after QueryUrls has been registered, typically in startup() or
+        // doStartupAfterSpringConfig()
+        assert _queryUrls != null;
     }
 
     @Override
@@ -57,21 +63,21 @@ abstract public class AbstractNotification implements Notification
     }
 
     /**
-     * This should really be using URLHelpers better, but there is a lot of legacy URL strings
-     * migrated into java and its not worth changing all of it at this point
+     * Returned URL always contains a couple parameters and therefore always has a "?". It should return an ActionURL,
+     * but there is a lot of legacy URL string manipulation migrated into java, and it's not worth changing all of it
+     * at this point.
      */
     protected String getExecuteQueryUrl(Container c, String schemaName, String queryName, @Nullable String viewName, @Nullable SimpleFilter filter)
     {
-        DetailsURL url = DetailsURL.fromString("/query/executeQuery.view", c);
-        String ret = AppProps.getInstance().getBaseServerUrl() + url.getActionURL().toString();
-        ret += "schemaName=" + schemaName + "&query.queryName=" + queryName;
+        ActionURL url = _queryUrls.urlExecuteQuery(c, schemaName, queryName);
+
         if (viewName != null)
-            ret += "&query.viewName=" + viewName;
+            url.addParameter("query.viewName", viewName);
 
-        if (filter != null)
-            ret += "&" + filter.toQueryString("query");
+       if (filter != null)
+            filter.applyToURL(url, "query");
 
-        return ret;
+        return url.getURIString(); // Return an absolute URL since links are sent via email
     }
 
     public DateFormat getDateFormat(Container c)

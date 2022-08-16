@@ -44,6 +44,9 @@ abstract public class NotificationService
         _instance = instance;
     }
 
+    /**
+     * Note: Register all notifications in startup() or doStartupAfterSpringConfig() (not init())
+     */
     abstract public void registerNotification(Notification notification);
 
     abstract public Set<Notification> getNotifications(Container c, boolean includeAll);
