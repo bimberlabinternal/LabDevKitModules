@@ -1,2 +1,4 @@
 /.gradle
 /intellijBuild
+*/resources/credits/dependencies.txt
+*/resources/credits/jars.txt
