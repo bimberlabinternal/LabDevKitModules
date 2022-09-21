@@ -17,7 +17,7 @@ package org.labkey.laboratory;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.json.JSONObject;
+import org.json.old.JSONObject;
 import org.labkey.api.assay.AssayFileWriter;
 import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.assay.AssayService;

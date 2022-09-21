@@ -16,9 +16,8 @@
 package org.labkey.api.laboratory.assay;
 
 import org.apache.logging.log4j.Level;
-import org.jetbrains.annotations.Nullable;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.json.old.JSONArray;
+import org.json.old.JSONObject;
 import org.labkey.api.view.ViewContext;
 
 import java.io.File;

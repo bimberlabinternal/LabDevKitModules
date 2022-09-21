@@ -18,7 +18,7 @@ package org.labkey.laboratory.assay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
+import org.json.old.JSONObject;
 import org.labkey.api.assay.AssayBatchDomainKind;
 import org.labkey.api.assay.AssayDataCollector;
 import org.labkey.api.assay.AssayProvider;
