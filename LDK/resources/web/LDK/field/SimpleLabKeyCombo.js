@@ -8,13 +8,15 @@
 Ext4.define('LDK.form.field.SimpleLabKeyCombo', {
     extend: 'LABKEY.ext4.ComboBox',
     alias: 'widget.ldk-simplelabkeycombo',
+    joinReturnValue: false,
+    delimiter: ';',
+    forceSelection: true,
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
 
     initComponent: function(){
         Ext4.apply(this, {
-            forceSelection: true,
-            typeAhead: true,
-            queryMode: 'local',
-            triggerAction: 'all',
             store: {
                 type: 'labkey-store',
                 containerPath: this.containerPath,
@@ -27,6 +29,14 @@ Ext4.define('LDK.form.field.SimpleLabKeyCombo', {
         });
 
         this.callParent(arguments);
+
+        if (this.initialValues) {
+            if (!Ext4.isArray(this.initialValues)) {
+                this.initialValues = this.initialValues.split(';');
+            }
+
+            this.setValue(this.initialValues);
+        }
     },
 
     setValue: function(val){
@@ -39,18 +49,48 @@ Ext4.define('LDK.form.field.SimpleLabKeyCombo', {
 
                 this.setValue.apply(this, args);
             }, this, {defer: 100, single: true});
+
+            // wait for store load:
+            return;
         }
 
-        if (this.store && this.valueField && Ext4.isPrimitive(val)){
+        if (this.multiSelect && val && Ext4.isString(val)) {
+            val = val.split(this.delimiter);
+        }
+
+        if (this.store && this.valueField){
             var field = this.store.getFields().get(this.valueField);
             if (field){
-                val = field.convert(val);
-                if (Ext4.isDefined(val)) {
-                    arguments[0] = val;
+                if (Ext4.isPrimitive(val)) {
+                    val = field.convert(val);
+                    if (Ext4.isDefined(val)) {
+                        arguments[0] = val;
+                    }
+                }
+                else if (Ext4.isArray(val)) {
+                    Ext4.Array.forEach(val, function(v, idx){
+                        v = field.convert(v);
+                        if (Ext4.isDefined(v)) {
+                            val[idx] = v;
+                        }
+                    }, this);
                 }
             }
         }
 
         this.callParent(arguments);
+    },
+
+    getSubmitValue: function(){
+        var val = this.callParent(arguments);
+        if (!Ext4.isArray(val) || !this.joinReturnValue) {
+            return val;
+        }
+
+        return val && val.length ? val.join(this.delimiter) : null;
+    },
+
+    getToolParameterValue : function(){
+        return this.getSubmitValue();
     }
 });
