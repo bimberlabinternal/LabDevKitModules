@@ -40,7 +40,7 @@ Ext4.define('LDK.form.field.SimpleCombo', {
     parseStoreValues: function(){
         this.storeValues = this.storeValues || [];
         if (Ext4.isString(this.storeValues)){
-            this.storeValues = this.storeValues.split(';');
+            this.storeValues = this.storeValues.split(this.delimiter);
         }
 
         var vals = [];
