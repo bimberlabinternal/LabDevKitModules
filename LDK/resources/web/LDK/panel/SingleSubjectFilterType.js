@@ -59,7 +59,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
 
     handleFilters: function (tab, filters) {
         var filterArray = {
-            subjects: LDK.Utils.splitIds(this.down('#subjArea').getValue()),
+            subjects: LDK.Utils.splitIds(this.down('#subjArea').getValue(), false, false, this.caseInsensitive),
             removable: [],
             nonRemovable: []
         };
@@ -122,7 +122,7 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
     },
     
     loadReport: function(tab, callback, panel, forceRefresh){
-        var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
+        var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue(), false, false, this.caseInsensitive);
 
         if (subjectArray.length > 0){
             subjectArray = Ext4.unique(subjectArray);
