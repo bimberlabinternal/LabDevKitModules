@@ -28,6 +28,9 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     autoLoadDefaultTab: false,
     clearBetweenClicks: true,
 
+    // Passed to filters implementing caseInsensitive id search
+    caseInsensitiveSubjects: false,
+
     btnPanelPrefix: 'btnPanel',
     totalPanelPrefix: 'totalPanel',
     btnPrefix: 'btn',
@@ -1015,6 +1018,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             var cfg = Ext4.apply({}, filterType);
             cfg.tabbedReportPanel = this;
             cfg.filterContext = this.getFilterContext();
+            cfg.caseInsensitive = this.caseInsensitiveSubjects;
 
             if (this.activeFilterType){
                 this.activeFilterType.prepareRemove();
