@@ -100,7 +100,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
     },
 
     addId: function (callback, panel) {
-        var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
+        var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue(), false, false, this.caseInsensitive);
 
         if (subjectArray.length > 0) {
             subjectArray = Ext4.unique(subjectArray);
@@ -148,7 +148,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
         //we clean up, combine, then split the subjectBox and subject inputs
         var subjectArray = this.subjects;
         if (subjectArray.length == 0)
-            subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
+            subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue(), false, false, this.caseInsensitive);
 
         if (existing)
             subjectArray = subjectArray.concat(existing);
@@ -187,7 +187,7 @@ Ext4.define('LDK.panel.MultiSubjectFilterType', {
     },
 
     loadReport: function (tab, callback, panel, forceRefresh) {
-        var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue());
+        var subjectArray = LDK.Utils.splitIds(this.down('#subjArea').getValue(), false, false, this.caseInsensitive);
 
         if(subjectArray.length > 0) {
             this.addId(function(){

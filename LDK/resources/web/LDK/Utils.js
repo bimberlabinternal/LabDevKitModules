@@ -538,7 +538,7 @@ LDK.Utils = new function(){
             window.location = LABKEY.ActionURL.buildURL('ldk', 'updateQuery', null, params);
         },
 
-        splitIds: function(subjectArray, unsorted, preserveDuplicates){
+        splitIds: function(subjectArray, unsorted, preserveDuplicates, preserveCase){
             if (!subjectArray){
                 return [];
             }
@@ -546,7 +546,8 @@ LDK.Utils = new function(){
             subjectArray = Ext4.String.trim(subjectArray);
             subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
             subjectArray = subjectArray.replace(/(^;|;$)/g, '');
-            subjectArray = subjectArray.toLowerCase();
+            if (!preserveCase)
+                subjectArray = subjectArray.toLowerCase();
 
             if (subjectArray){
                 subjectArray = subjectArray.split(';');
