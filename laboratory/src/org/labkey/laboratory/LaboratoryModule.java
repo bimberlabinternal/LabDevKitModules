@@ -17,7 +17,7 @@ package org.labkey.laboratory;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.UpgradeCode;
@@ -218,11 +218,10 @@ public class LaboratoryModule extends ExtendedSimpleModule
     @Override
     public JSONObject getPageContextJson(ContainerUser context)
     {
-        Map<String, Object> ret = new HashMap<>(super.getPageContextJson(context));
-
+        JSONObject ret = super.getPageContextJson(context);
         ret.put("isLaboratoryAdmin", context.getContainer().hasPermission(context.getUser(), LaboratoryAdminPermission.class));
 
-        return new JSONObject(ret);
+        return ret;
     }
 
     @Override
