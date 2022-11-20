@@ -84,7 +84,7 @@ import org.labkey.api.view.NavTree;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.laboratory.assay.AssayHelper;
-import org.labkey.laboratory.query.ContainerIncrementingTable;
+import org.labkey.api.laboratory.query.ContainerIncrementingTable;
 import org.labkey.laboratory.query.WorkbookModel;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
