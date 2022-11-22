@@ -11,7 +11,7 @@ import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.security.User;
-import org.labkey.laboratory.query.ContainerIncrementingTable;
+import org.labkey.api.laboratory.query.ContainerIncrementingTable;
 import org.labkey.laboratory.query.LaboratoryWorkbooksTable;
 import org.labkey.api.ldk.table.ContainerScopedTable;
 

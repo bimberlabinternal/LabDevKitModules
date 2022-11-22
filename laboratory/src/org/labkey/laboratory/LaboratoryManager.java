@@ -56,7 +56,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.Portal;
-import org.labkey.laboratory.query.ContainerIncrementingTable;
+import org.labkey.api.laboratory.query.ContainerIncrementingTable;
 import org.labkey.laboratory.query.LaboratoryWorkbooksTable;
 import org.labkey.laboratory.query.WorkbookModel;
 
