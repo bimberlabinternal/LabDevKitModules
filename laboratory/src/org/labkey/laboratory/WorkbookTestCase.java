@@ -1,9 +1,15 @@
 package org.labkey.laboratory;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbSchemaType;
+import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.data.WorkbookContainerType;
@@ -33,7 +39,10 @@ public class WorkbookTestCase extends WorkbookContainerType.AbstractTestCase
     public void setUp() throws Exception
     {
         _context = TestContext.get();
-        doInitialSetUp(PROJECT_NAME);
+        if (_project == null)
+        {
+            doInitialSetUp(PROJECT_NAME);
+        }
     }
 
     @Test
@@ -66,11 +75,26 @@ public class WorkbookTestCase extends WorkbookContainerType.AbstractTestCase
                 testCrossContainerBehaviors(_project, _workbooks, LaboratoryModule.SCHEMA_NAME, LaboratorySchema.TABLE_SAMPLE_TYPE, LaboratorySchema.TABLE_SAMPLES, "samplename", "sampletype", Arrays.asList("Value1", "Value2", "Value3", "Value4"), extraRowValues);
             }
         }
+
+        // Verify laboratory.workbooks rows get deleted:
+        Container newWorkbook = ContainerManager.createContainer(_project, null, "Title3", null, WorkbookContainerType.NAME, _context.getUser());
+
+        TableInfo ti = DbSchema.get(LaboratoryModule.SCHEMA_NAME, DbSchemaType.Module).getTable(LaboratorySchema.TABLE_WORKBOOKS);
+        TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("container"), newWorkbook.getId()), null);
+        Assert.assertTrue("laboratory.workbooks row should exist", ts.exists());
+
+        ContainerManager.delete(newWorkbook, TestContext.get().getUser());
+        Assert.assertFalse("laboratory.workbooks row should have been deleted", ts.exists());
     }
 
     @After
     public void onComplete()
     {
         doCleanup(PROJECT_NAME);
+        if (_project != null)
+        {
+            TableSelector ts = new TableSelector(DbSchema.get(LaboratoryModule.SCHEMA_NAME, DbSchemaType.Module).getTable(LaboratorySchema.TABLE_WORKBOOKS), new SimpleFilter(FieldKey.fromString("parentContainer"), _project.getId()), null);
+            Assert.assertFalse("laboratory.workbooks rows should have been deleted", ts.exists());
+        }
     }
 }

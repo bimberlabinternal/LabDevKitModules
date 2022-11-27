@@ -1,4 +1,4 @@
-package org.labkey.laboratory.query;
+package org.labkey.api.laboratory.query;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
