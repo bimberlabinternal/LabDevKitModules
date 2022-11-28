@@ -22,10 +22,10 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
         Ext4.override(combo, {
             onListSelectionChange: function(list, selectedRecords) {
                 var val;
-                if(selectedRecords && selectedRecords.length && selectedRecords.length == 1)
+                if(selectedRecords && selectedRecords.length && selectedRecords.length === 1)
                     val = selectedRecords[0].get(this.displayField);
 
-                if (this.userEditablePlugin.allowChooseOther && val == 'Other'){
+                if (this.userEditablePlugin.allowChooseOther && val === 'Other'){
                     this.getPicker().getSelectionModel().deselectAll(true); //note: we need to clear selection in case other is clicked twice in a row
                     this.userEditablePlugin.onClickOther();
                     this.collapse();
@@ -42,10 +42,6 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
 
             addValueIfNeeded: function(val){
                 if (Ext4.isEmpty(val))
-                    return;
-
-                //only applies if display/value are the same.  otherwise we cannot accurately do this
-                if (this.valueField != this.displayField)
                     return;
 
                 if (val instanceof Ext4.data.Model || Ext4.isArray(val)){
@@ -66,17 +62,29 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
                     return;
                 }
 
+                //only applies if display/value are the same.  otherwise we cannot accurately do this
+                if (this.valueField !== this.displayField) {
+                    var type1 = this.store.model.fields.get(this.valueField) && this.store.model.fields.get(this.displayField).type ? this.store.model.fields.get(this.valueField).type.type : null;
+                    var type2 = this.store.model.fields.get(this.displayField) && this.store.model.fields.get(this.displayField).type ? this.store.model.fields.get(this.displayField).type.type : null;
+
+                    if (type1 !== 'string' || type2 !== 'string') {
+                        return;
+                    }
+                }
+
                 if (Ext4.isObject(val)){
                     console.log(val);
                     return;
                 }
 
                 var recIdx = this.store.findExact(this.valueField, val);
-                if (recIdx != -1)
+                if (recIdx !== -1)
                     return;
 
                 var rec = this.store.createModel({});
                 rec.set(this.valueField, val);
+                rec.set(this.displayField, val);
+
                 this.store.add(rec);
             },
 
@@ -151,7 +159,7 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
     },
 
     onPrompt: function(btn, val){
-        if (btn == 'ok') {
+        if (btn === 'ok') {
             this.addNewValue(val);
         }
 
@@ -213,7 +221,7 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
             return;
         }
 
-        idx = idx || (this.combo.store.getCount() == 0 ? 0 : this.combo.store.getCount() - 1);
+        idx = idx || (this.combo.store.getCount() === 0 ? 0 : this.combo.store.getCount() - 1);
         this.combo.store.insert(idx, [this.combo.store.createModel(data)]);
 
         return this.combo.store.getAt(idx);
