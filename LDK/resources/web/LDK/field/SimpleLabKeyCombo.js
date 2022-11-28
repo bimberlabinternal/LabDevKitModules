@@ -69,9 +69,11 @@ Ext4.define('LDK.form.field.SimpleLabKeyCombo', {
                 }
                 else if (Ext4.isArray(val)) {
                     Ext4.Array.forEach(val, function(v, idx){
-                        v = field.convert(v);
-                        if (Ext4.isDefined(v)) {
-                            val[idx] = v;
+                        if (Ext4.isPrimitive(v)) {
+                            v = field.convert(v);
+                            if (Ext4.isDefined(v)) {
+                                val[idx] = v;
+                            }
                         }
                     }, this);
                 }
