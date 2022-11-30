@@ -58,8 +58,8 @@ Ext4.apply(LABKEY.ext4.GRIDBUTTONS, {
                 var model = LDK.StoreUtils.createModelInstance(grid.store, null, true);
                 grid.store.insert(0, [model]); //add a blank record in the first position
 
-                if(cellEditing)
-                    cellEditing.startEditByPosition({row: 0, column: this.firstEditableColumn || 0});
+                if (cellEditing)
+                    cellEditing.startEditByPosition({row: 0, column: grid.firstEditableColumn || 0});
             }
         }, config);
     },

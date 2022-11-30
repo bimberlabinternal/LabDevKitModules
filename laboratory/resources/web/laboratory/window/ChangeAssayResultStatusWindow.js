@@ -8,12 +8,12 @@ Ext4.define('Laboratory.window.ChangeAssayResultStatusWindow', {
         buttonHandler: function(dataRegionName, schemaName, queryName){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
             if (!dataRegion || !dataRegion.getChecked() || !dataRegion.getChecked().length){
-                Ext4.Msg.alert('Error', '');
+                Ext4.Msg.alert('Error', 'No rows selected');
                 return;
             }
 
             LDK.Assert.assertTrue('DataRegion not suitable for ChangeAssayResultStatusWindow for: ' + LDK.DataRegionUtils.getDisplayName(dataRegion), (dataRegion.pkCols && dataRegion.pkCols.length == 1));
-            if (dataRegion.pkCols.length != 1){
+            if (dataRegion.pkCols.length !== 1){
                 Ext4.Msg.alert('Error', 'This button cannot be used with this table');
                 return;
             }
