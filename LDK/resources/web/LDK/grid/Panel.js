@@ -26,7 +26,7 @@ Ext4.define('LDK.grid.Panel', {
 
     onMenuCreate: function(headerCt, menu){
         menu.items.each(function(item){
-            if (item.text == 'Columns'){
+            if (item.text === 'Columns'){
                 menu.remove(item);
             }
         }, this);
@@ -37,6 +37,36 @@ Ext4.define('LDK.grid.Panel', {
             pluginId: this.editingPluginId,
             clicksToEdit: this.clicksToEdit
         });
+    },
+
+    // See comments in updateLayout()
+    heightResize: false,
+
+    updateLayout: function(options){
+        this.heightResize = this.possiblyResizeHeight();
+
+        // The resize above will trigger a layout of the parent, which repeats this layout.
+        // Use this test to avoid infinite loop:
+        if (this.heightResize) {
+            console.log('this.heightResize=true!! We might want to stop here and not callParent() to avoid an infinite loop, but I cant repro this situation');
+        }
+
+        this.callParent(options);
+    },
+
+    possiblyResizeHeight: function(){
+        // There are some cases where the gridview does not resize height to match its contents. This explicitly tests
+        // the view height and adjusts as-needed.
+        // TODO: list some specific repro cases?
+        var view = this.getView();
+        if (view && view.body && view.rendered && view.body.dom && view.getHeight() != view.body.getHeight()) {
+            console.log('Updating view height');
+            view.setHeight(view.body.getHeight());
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 });
 
@@ -179,7 +209,7 @@ Ext4.define('LDK.grid.panel.RowSelectionModel', {
             return;
         }
 
-        var deltaY = 20 * (direction == 'down' ? 1 : -1);
+        var deltaY = 20 * (direction === 'down' ? 1 : -1);
         grid.scrollByDeltaY(deltaY);
         me.lastId = newPosition.row;
         if (newPosition)
