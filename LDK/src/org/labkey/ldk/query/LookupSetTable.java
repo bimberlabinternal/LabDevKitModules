@@ -27,7 +27,6 @@ import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.AbstractDataDefinedTable;
-import org.labkey.api.ldk.test.AbstractIntegrationTest;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.BatchValidationException;
