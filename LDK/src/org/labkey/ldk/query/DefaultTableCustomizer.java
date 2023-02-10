@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 import org.labkey.api.assay.AssayResultTable;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.BuiltInButtonConfig;
@@ -59,7 +59,6 @@ import java.util.Set;
 
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 9/27/12
  * Time: 3:09 PM
@@ -69,7 +68,7 @@ public class DefaultTableCustomizer implements TableCustomizer
     private static final String MORE_ACTIONS = "More Actions";
 
     private static final Logger _log = LogManager.getLogger(TableCustomizer.class);
-    private Settings _settings;
+    private final Settings _settings;
 
     public DefaultTableCustomizer()
     {
