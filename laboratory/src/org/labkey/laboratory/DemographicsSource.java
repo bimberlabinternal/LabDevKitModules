@@ -4,8 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
-import org.json.old.JSONException;
-import org.json.old.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -59,11 +59,11 @@ public class DemographicsSource extends AbstractDataSource
         try
         {
             JSONObject json = new JSONObject(value);
-            String schemaName = json.getString("schemaName");
-            String queryName = json.getString("queryName");
-            String containerId = json.getString("containerId");
-            String label = json.getString("label");
-            String targetColumn = json.getString("targetColumn");
+            String schemaName = StringUtils.trimToNull(json.optString("schemaName"));
+            String queryName = StringUtils.trimToNull(json.optString("queryName"));
+            String containerId = StringUtils.trimToNull(json.optString("containerId"));
+            String label = StringUtils.trimToNull(json.optString("label"));
+            String targetColumn = StringUtils.trimToNull(json.optString("targetColumn"));
 
             if (!isValidSource(c, u, containerId, schemaName, queryName, targetColumn, label))
             {
@@ -113,21 +113,21 @@ public class DemographicsSource extends AbstractDataSource
 
     private static boolean isValidSource(Container defaultContainer, User u, @Nullable String containerId, String schemaName, String queryName, String targetColumn, String label) throws IllegalArgumentException
     {
-        Container target;
-        if (containerId == null)
-        {
-            target = defaultContainer;
-        }
-        else
+        Container target = null;
+        if (containerId != null)
         {
             target = ContainerManager.getForId(containerId);
+            if (target == null)
+            {
+                _log.error("Invalid containerId in saved demographics source: " + containerId);
+            }
         }
 
         if (target == null)
         {
             target = defaultContainer;
         }
-        
+
         if (!target.hasPermission(u, ReadPermission.class))
         {
             return false;
@@ -136,7 +136,7 @@ public class DemographicsSource extends AbstractDataSource
         UserSchema us = QueryService.get().getUserSchema(u, target, schemaName);
         if (us == null)
         {
-            throw new IllegalArgumentException("Unknown schema in saved data source: " + schemaName);
+            throw new IllegalArgumentException("Unknown schema in saved demographics source: " + schemaName + ", in container: " + target.getPath());
         }
 
         if (!us.canReadSchema())

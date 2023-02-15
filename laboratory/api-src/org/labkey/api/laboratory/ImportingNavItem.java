@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 LabKey Corporation
+ * Copyright (c) 2012-2016 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,22 @@
  */
 package org.labkey.api.laboratory;
 
-import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.security.User;
+import org.labkey.api.view.ActionURL;
 
 /**
  * User: bimber
- * Date: 4/14/13
- * Time: 9:31 AM
+ * Date: 11/21/12
+ * Time: 5:07 PM
  */
-public class JSTabbedReportItem extends TabbedReportItem
+public interface ImportingNavItem extends NavItem
 {
-    private String _jsHandler;
+    ActionURL getImportUrl(Container c, User u);
 
-    public JSTabbedReportItem(DataProvider provider, String name, String label, String category, String jsHandler)
-    {
-        super(provider, name, label, category);
-        _reportType = "js";
-        _jsHandler = jsHandler;
-    }
+    ActionURL getSearchUrl(Container c, User u);
 
-    @Override
-    public JSONObject toJSON(Container c, User u)
-    {
-        JSONObject json = super.toJSON(c, u);
-        json.put("jsHandler", _jsHandler);
-        return json;
-    }
+    ActionURL getBrowseUrl(Container c, User u);
+
+    boolean isImportIntoWorkbooks(Container c, User u);
 }

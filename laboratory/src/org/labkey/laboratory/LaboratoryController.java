@@ -21,9 +21,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.json.old.JSONArray;
-import org.json.old.JSONException;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.labkey.api.action.AbstractFileUploadAction;
 import org.labkey.api.action.ApiJsonWriter;
 import org.labkey.api.action.ApiResponse;
@@ -75,6 +75,7 @@ import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.util.ErrorRenderer;
 import org.labkey.api.util.ExceptionUtil;
+import org.labkey.api.util.JsonUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
@@ -616,11 +617,10 @@ public class LaboratoryController extends SpringActionController
             if (!PipelineService.get().hasValidPipelineRoot(getContainer()))
                 throw new UploadException("Pipeline root must be configured before uploading assay files", HttpServletResponse.SC_NOT_FOUND);
 
-            AssayFileWriter writer = new AssayFileWriter();
             try
             {
-                File targetDirectory = writer.ensureUploadDirectory(getContainer());
-                return writer.findUniqueFileName(filename, targetDirectory);
+                File targetDirectory = AssayFileWriter.ensureUploadDirectory(getContainer());
+                return AssayFileWriter.findUniqueFileName(filename, targetDirectory);
             }
             catch (ExperimentException e)
             {
@@ -679,7 +679,7 @@ public class LaboratoryController extends SpringActionController
             catch (BatchValidationException e)
             {
                 resp.put("success", false);
-                resp.put("errors", e.getRowErrors());
+                resp.put("errors", e.getRowErrors().stream().map(ValidationException::getMessage).toList());
                 resp.put("exception", e.getMessage());// "There was an error during upload");
             }
             catch (Exception e)
@@ -1294,9 +1294,9 @@ public class LaboratoryController extends SpringActionController
             Set<DemographicsSource> sources = new HashSet<DemographicsSource>();
 
             JSONArray json = new JSONArray(form.getTables());
-            for (JSONObject obj : json.toJSONObjectArray())
+            for (JSONObject obj : JsonUtil.toJSONObjectList(json))
             {
-                String containerId = obj.containsKey("containerId") ? StringUtils.trimToNull(obj.getString("containerId")) : null;
+                String containerId = obj.has("containerId") ? StringUtils.trimToNull(obj.getString("containerId")) : null;
                 String schemaName = obj.getString("schemaName");
                 String queryName = obj.getString("queryName");
                 String targetColumn = obj.getString("targetColumn");
@@ -1333,7 +1333,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(LaboratoryAdminPermission.class)
-    public class SetAdditionalDataSourcesAction extends MutatingApiAction<SetDataSourcesForm>
+    public static class SetAdditionalDataSourcesAction extends MutatingApiAction<SetDataSourcesForm>
     {
         @Override
         public ApiResponse execute(SetDataSourcesForm form, BindException errors)
@@ -1357,17 +1357,17 @@ public class LaboratoryController extends SpringActionController
             Set<AdditionalDataSource> sources = new HashSet<AdditionalDataSource>();
 
             JSONArray json = new JSONArray(form.getTables());
-            for (JSONObject obj : json.toJSONObjectArray())
+            for (JSONObject obj : JsonUtil.toJSONObjectList(json))
             {
-                String containerId = obj.containsKey("containerId") ? StringUtils.trimToNull(obj.getString("containerId")) : null;
-                String schemaName = StringUtils.trimToNull(obj.getString("schemaName"));
-                String queryName = StringUtils.trimToNull(obj.getString("queryName"));
-                String reportCategory = StringUtils.trimToNull(obj.getString("reportCategory"));
-                String itemType = StringUtils.trimToNull(obj.getString("itemType"));
-                String label = StringUtils.trimToNull(obj.getString("label"));
-                String subjectFieldKey = StringUtils.trimToNull(obj.getString("subjectFieldKey"));
-                String sampleDateFieldKey = StringUtils.trimToNull(obj.getString("sampleDateFieldKey"));
-                boolean importIntoWorkbooks = obj.containsKey("importIntoWorkbooks") ? obj.getBoolean("importIntoWorkbooks") : false;
+                String containerId = StringUtils.trimToNull(obj.optString("containerId"));
+                String schemaName = StringUtils.trimToNull(obj.optString("schemaName"));
+                String queryName = StringUtils.trimToNull(obj.optString("queryName"));
+                String reportCategory = StringUtils.trimToNull(obj.optString("reportCategory"));
+                String itemType = StringUtils.trimToNull(obj.optString("itemType"));
+                String label = StringUtils.trimToNull(obj.optString("label"));
+                String subjectFieldKey = StringUtils.trimToNull(obj.optString("subjectFieldKey"));
+                String sampleDateFieldKey = StringUtils.trimToNull(obj.optString("sampleDateFieldKey"));
+                boolean importIntoWorkbooks = obj.has("importIntoWorkbooks") && obj.getBoolean("importIntoWorkbooks");
 
                 if (label == null || queryName == null || schemaName == null)
                 {
@@ -1439,7 +1439,7 @@ public class LaboratoryController extends SpringActionController
             Set<URLDataSource> sources = new HashSet<URLDataSource>();
 
             JSONArray json = new JSONArray(form.getSources());
-            for (JSONObject obj : json.toJSONObjectArray())
+            for (JSONObject obj : JsonUtil.toJSONObjectList(json))
             {
                 String itemType = obj.getString("itemType");
                 String label = obj.getString("label");
@@ -1513,7 +1513,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(LaboratoryAdminPermission.class)
-    public class SetItemVisibilityAction extends MutatingApiAction<JsonDataForm>
+    public static class SetItemVisibilityAction extends MutatingApiAction<JsonDataForm>
     {
         @Override
         public ApiResponse execute(JsonDataForm form, BindException errors)
@@ -1535,7 +1535,7 @@ public class LaboratoryController extends SpringActionController
 
             JSONObject json = new JSONObject(form.getJsonData());
             Set<Module> activeModules = getContainer().getActiveModules();
-            Set<Module> toActivate = new HashSet<Module>();
+            Set<Module> toActivate = new HashSet<>();
             for (String key : json.keySet())
             {
                 String providerName = AbstractNavItem.inferDataProviderNameFromKey(key);
@@ -1546,13 +1546,15 @@ public class LaboratoryController extends SpringActionController
                 if (provider != null && provider.getOwningModule() != null)
                 {
                     if (!activeModules.contains(provider.getOwningModule()))
+                    {
                         toActivate.add(provider.getOwningModule());
+                    }
                 }
 
-                map.put(key, json.getString(key));
+                map.put(key, json.get(key) == null ? null : String.valueOf(json.get(key)));
             }
 
-            if(toActivate.size() > 0)
+            if (toActivate.size() > 0)
             {
                 toActivate.addAll(activeModules);
                 getContainer().setActiveModules(toActivate);

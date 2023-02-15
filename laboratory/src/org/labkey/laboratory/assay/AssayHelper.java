@@ -18,7 +18,7 @@ package org.labkey.laboratory.assay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 import org.labkey.api.assay.AssayBatchDomainKind;
 import org.labkey.api.assay.AssayDataCollector;
 import org.labkey.api.assay.AssayProvider;
@@ -185,24 +185,34 @@ public class AssayHelper
 
     public Pair<ExpExperiment, ExpRun> saveAssayBatch(List<Map<String, Object>> results, JSONObject json, File file, ViewContext ctx, AssayProvider provider, ExpProtocol protocol) throws ValidationException, ExperimentException
     {
-        AssayRunCreator creator = provider.getRunCreator();
-        Map<String, String> runProperties = new CaseInsensitiveHashMap(json.optJSONObject("Run"));
+        AssayRunCreator<AssayProvider> creator = provider.getRunCreator();
+        Map<String, String> runProperties = new CaseInsensitiveHashMap<>();
+        JSONObject runJson = json.optJSONObject("Run");
+        if (runJson != null)
+        {
+            runJson.keySet().forEach(x -> {
+                runProperties.put(x, runJson.get(x) == null ? null : String.valueOf(runJson.get(x)));
+            });
+        }
         String name = runProperties.get(ExperimentJSONConverter.NAME);
         String comments = runProperties.get("comments");
 
-        Map<String, String> batchProperties = (Map)json.optJSONObject("Batch");
-        if (batchProperties == null)
+        Map<String, String> batchProperties = new CaseInsensitiveHashMap<>();
+        JSONObject batchJson = json.optJSONObject("Batch", new JSONObject());
+        if (batchJson != null)
         {
-            batchProperties = new HashMap<>();
-        }
+            if (!batchJson.has("Name"))
+                batchJson.put("Name", name);
 
-        if (!batchProperties.containsKey("Name"))
-            batchProperties.put("Name", name);
+            batchJson.keySet().forEach(x -> {
+                batchProperties.put(x, batchJson.get(x) == null ? null : String.valueOf(batchJson.get(x)));
+            });
+        }
 
         Map<String, File> uploadedFiles = saveResultsFile(results, json, file, provider, protocol);
 
         //TODO: see AssayRunAsyncContext
-        AssayRunUploadContext uploadContext = new RunUploadContext(protocol, provider, name, comments, runProperties, batchProperties, ctx, uploadedFiles);
+        AssayRunUploadContext uploadContext = new RunUploadContext<>(protocol, provider, name, comments, runProperties, batchProperties, ctx, uploadedFiles);
         Pair<ExpExperiment, ExpRun> resultRows = creator.saveExperimentRun(uploadContext, null);
         return resultRows;
     }

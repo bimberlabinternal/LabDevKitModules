@@ -16,11 +16,12 @@
 package org.labkey.api.laboratory.assay;
 
 import org.apache.logging.log4j.Level;
-import org.json.old.JSONArray;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.api.view.ViewContext;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * User: bimber
@@ -43,7 +44,7 @@ public class ImportContext
         _ctx = ctx;
 
         Level level = Level.ALL;
-        if (json != null && json.containsKey("errorLevel"))
+        if (json != null && json.has("errorLevel"))
         {
             level = Level.toLevel((String)json.get("errorLevel"));
         }
@@ -80,11 +81,11 @@ public class ImportContext
         return null;
     }
 
-    public JSONObject getPromotedResultsFromJson()
+    public Map<String, Object> getPromotedResultsFromJson()
     {
         if (_json.has("Results"))
         {
-            return _json.getJSONObject("Results");
+            return _json.getJSONObject("Results").toMap();
         }
 
         return null;
@@ -100,8 +101,8 @@ public class ImportContext
         return _errors;
     }
 
-    public JSONObject getRunProperties()
+    public Map<String, Object> getRunProperties()
     {
-        return _json.getJSONObject("Run");
+        return _json.getJSONObject("Run").toMap();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 LabKey Corporation
+ * Copyright (c) 2012-2016 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,26 +20,30 @@ import org.labkey.api.data.Container;
 import org.labkey.api.security.User;
 
 /**
- * User: bimber
- * Date: 4/14/13
- * Time: 9:31 AM
+ * Experimental
  */
-public class JSTabbedReportItem extends TabbedReportItem
+public interface NavItem
 {
-    private String _jsHandler;
+    String PROPERTY_CATEGORY = "ldk.navItem";
+    String VIEW_PROPERTY_CATEGORY = "ldk.navItemDefaultView";
 
-    public JSTabbedReportItem(DataProvider provider, String name, String label, String category, String jsHandler)
-    {
-        super(provider, name, label, category);
-        _reportType = "js";
-        _jsHandler = jsHandler;
-    }
+    DataProvider getDataProvider();
 
-    @Override
-    public JSONObject toJSON(Container c, User u)
-    {
-        JSONObject json = super.toJSON(c, u);
-        json.put("jsHandler", _jsHandler);
-        return json;
-    }
+    String getName();
+
+    String getLabel();
+
+    String getReportCategory();
+
+    String getRendererName();
+
+    boolean isVisible(Container c, User u);
+
+    boolean getDefaultVisibility(Container c, User u);
+
+    JSONObject toJSON(Container c, User u);
+
+    String getPropertyManagerKey();
+
+    LaboratoryService.NavItemCategory getItemType();
 }

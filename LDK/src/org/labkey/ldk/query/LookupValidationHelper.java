@@ -137,7 +137,7 @@ public class LookupValidationHelper
             String[] vals = ts.getArray(String.class);
             if (vals != null)
             {
-                Map<String, String> map = new CaseInsensitiveHashMap();
+                Map<String, String> map = new CaseInsensitiveHashMap<>();
                 for (String val : vals)
                 {
                     map.put(val, val);
@@ -181,7 +181,7 @@ public class LookupValidationHelper
         List<Map<String, Object>> oldPKs = new ArrayList<>();
         for (Map<String, Object> oldPk : pks)
         {
-            CaseInsensitiveHashMap map = new CaseInsensitiveHashMap();
+            CaseInsensitiveHashMap<Object> map = new CaseInsensitiveHashMap<>();
             map.put(targetField, newVal);
             map.putAll(oldPk);
             toUpdate.add(map);

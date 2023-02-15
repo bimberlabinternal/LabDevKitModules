@@ -4,8 +4,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.json.old.JSONArray;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.CoreSchema;
@@ -21,6 +21,7 @@ import org.labkey.api.ldk.notification.Notification;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
+import org.labkey.api.util.JsonUtil;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -211,7 +212,7 @@ public class LabSummaryNotification implements Notification
 
             newValueMap.put(key, total.toString());
             Long previousCount = null;
-            if (oldValueMap != null && oldValueMap.containsKey(key))
+            if (oldValueMap != null && oldValueMap.has(key))
             {
                 previousCount = oldValueMap.getLong(key);
             }
@@ -257,7 +258,7 @@ public class LabSummaryNotification implements Notification
 
             newValueMap.put(key, total.toString());
             Long previousCount = null;
-            if (oldValueMap != null && oldValueMap.containsKey(key))
+            if (oldValueMap != null && oldValueMap.has(key))
             {
                 previousCount = oldValueMap.getLong(key);
             }
@@ -299,20 +300,20 @@ public class LabSummaryNotification implements Notification
         msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'>");
         msg.append("<td>").append("Folder Path").append("</td><td>").append("File Path").append("</td><td>").append("Size").append("</td><td>").append("Previous Value").append("</td><td>").append("% Change").append("</td><td>").append("Total Files").append("</td><td>").append("Previous Value").append("</td><td>").append("% Change").append("</td></tr>");
 
-        for (JSONObject json : ret.toJSONObjectArray())
+        for (JSONObject json : JsonUtil.toJSONObjectList(ret))
         {
             if (json.has("fileRoots"))
             {
                 JSONArray fileRoots = json.getJSONArray("fileRoots");
-                for (JSONObject fr : fileRoots.toJSONObjectArray())
+                for (JSONObject fr : JsonUtil.toJSONObjectList(fileRoots))
                 {
                     //find previous value for filesize
                     String key = json.getString("path");
-                    Long size = fr.containsKey("rootSizeInt") ? fr.getLong("rootSizeInt") : null;
+                    Long size = fr.has("rootSizeInt") ? fr.getLong("rootSizeInt") : null;
 
                     newValueMap.put(key, String.valueOf(size));
                     Long previousSize = null;
-                    if (oldValueMap != null && oldValueMap.containsKey(key))
+                    if (oldValueMap != null && oldValueMap.has(key))
                     {
                         previousSize = oldValueMap.getLong(key);
                     }
@@ -322,11 +323,11 @@ public class LabSummaryNotification implements Notification
 
                     //then do the same for file count
                     String fileCountKey = json.getString("path");
-                    Long totalFiles = fr.containsKey("totalFiles") ? fr.getLong("totalFiles") : null;
+                    Long totalFiles = fr.has("totalFiles") ? fr.getLong("totalFiles") : null;
 
                     newValueMapCounts.put(fileCountKey, String.valueOf(totalFiles));
                     Long previousCount = null;
-                    if (oldValueMapCounts != null && oldValueMapCounts.containsKey(fileCountKey))
+                    if (oldValueMapCounts != null && oldValueMapCounts.has(fileCountKey))
                     {
                         previousCount = oldValueMapCounts.getLong(fileCountKey);
                     }

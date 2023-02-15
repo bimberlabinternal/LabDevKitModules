@@ -67,8 +67,8 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
         _providerType = providerType;
         _name = name;
         _comments = comments;
-        _runProperties = new CaseInsensitiveHashMap(runProperties);
-        _batchProperties = new CaseInsensitiveHashMap(batchProperties);
+        _runProperties = new CaseInsensitiveHashMap<>(runProperties);
+        _batchProperties = new CaseInsensitiveHashMap<>(batchProperties);
         _ctx = ctx;
         _uploadedData = uploadedData;
     }

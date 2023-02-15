@@ -17,8 +17,8 @@ package org.labkey.api.laboratory.assay;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jetbrains.annotations.Nullable;
-import org.json.old.JSONArray;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.ExcelWriter;
@@ -36,6 +36,7 @@ import org.labkey.api.reader.ExcelFactory;
 import org.labkey.api.security.User;
 import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.assay.AssayService;
+import org.labkey.api.util.JsonUtil;
 import org.labkey.api.view.ViewContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -144,7 +145,7 @@ public class DefaultAssayImportMethod implements AssayImportMethod
         runDate.put("extFormat", "Y-m-d");
         runMeta.put("performedBy", new JSONObject().put("defaultValue", ctx.getUser().getDisplayName(ctx.getUser())));
         runMeta.put("runDate", runDate);
-        runMeta.put("Comments", new JSONObject().put("height", 100));
+        runMeta.put("comments", new JSONObject().put("height", 100));
         meta.put("Run", runMeta);
 
         JSONObject resultsMeta = new JSONObject();
@@ -165,7 +166,7 @@ public class DefaultAssayImportMethod implements AssayImportMethod
 
     protected JSONObject getJsonObject(JSONObject parent, String key)
     {
-        return parent.containsKey(key) ? parent.getJSONObject(key): new JSONObject();
+        return parent.has(key) ? parent.getJSONObject(key): new JSONObject();
     }
 
     @Override
@@ -244,7 +245,7 @@ public class DefaultAssayImportMethod implements AssayImportMethod
             JSONArray results = json.getJSONArray("ResultRows");
 
             //append global results
-            for (JSONObject row : results.toJSONObjectArray())
+            for (JSONObject row : JsonUtil.toJSONObjectList(results))
             {
                 for (String prop : resultDefaults.keySet())
                 {
@@ -263,7 +264,7 @@ public class DefaultAssayImportMethod implements AssayImportMethod
                 rowsForExcel.put(new JSONArray(headerCols));
             }
 
-            for (JSONObject row : results.toJSONObjectArray())
+            for (JSONObject row : JsonUtil.toJSONObjectList(results))
             {
                 JSONArray toAdd = new JSONArray();
                 if (headerCols != null)
@@ -290,14 +291,16 @@ public class DefaultAssayImportMethod implements AssayImportMethod
 
             JSONArray sheetsArray = new JSONArray();
             sheetsArray.put(sheet);
-            Workbook workbook =  ExcelFactory.createFromArray(sheetsArray, docType);
 
-            response.setContentType(docType.getMimeType());
-            response.setHeader("Content-disposition", "attachment; filename=\"" + filename +"\"");
-            response.setHeader("Pragma", "private");
-            response.setHeader("Cache-Control", "private");
+            try (Workbook workbook =  ExcelFactory.createFromArray(sheetsArray, docType))
+            {
+                response.setContentType(docType.getMimeType());
+                response.setHeader("Content-disposition", "attachment; filename=\"" + filename + "\"");
+                response.setHeader("Pragma", "private");
+                response.setHeader("Cache-Control", "private");
 
-            workbook.write(response.getOutputStream());
+                workbook.write(response.getOutputStream());
+            }
         }
         catch (IOException e)
         {
@@ -367,8 +370,8 @@ public class DefaultAssayImportMethod implements AssayImportMethod
         JSONObject json = getMetadata(ctx, protocol).getJSONObject("Results");
         for (DomainProperty dp : resultDomain.getProperties())
         {
-            JSONObject meta = json.containsKey(dp.getName()) ? json.getJSONObject(dp.getName()) : null;
-            if (meta != null && meta.containsKey("setGlobally") && meta.getBoolean("setGlobally"))
+            JSONObject meta = json.has(dp.getName()) ? json.getJSONObject(dp.getName()) : null;
+            if (meta != null && meta.has("setGlobally") && meta.getBoolean("setGlobally"))
                 continue;
             else
                 columns.add(dp.getLabel() == null ? dp.getName() : dp.getLabel());

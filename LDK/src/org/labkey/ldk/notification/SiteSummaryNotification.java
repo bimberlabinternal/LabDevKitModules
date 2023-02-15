@@ -21,8 +21,8 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.json.old.JSONArray;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.audit.AuditLogService;
 import org.labkey.api.audit.AuditTypeProvider;
@@ -58,6 +58,7 @@ import org.labkey.api.study.StudyService;
 import org.labkey.api.assay.AssayProtocolSchema;
 import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.assay.AssayService;
+import org.labkey.api.util.JsonUtil;
 import org.labkey.ldk.LDKServiceImpl;
 
 import java.sql.ResultSet;
@@ -330,7 +331,7 @@ public class SiteSummaryNotification implements Notification
 
                 newValueMap.put(s.getEntityId(), count.toString());
                 Long previousValue = null;
-                if (oldValueMap != null && oldValueMap.containsKey(s.getEntityId()))
+                if (oldValueMap != null && oldValueMap.has(s.getEntityId()))
                 {
                     previousValue = oldValueMap.getLong(s.getEntityId());
                 }
@@ -414,20 +415,20 @@ public class SiteSummaryNotification implements Notification
         msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'>");
         msg.append("<td>").append("Folder Path").append("</td><td>").append("File Path").append("</td><td>").append("Size").append("</td><td>").append("Previous Value").append("</td><td>").append("% Change").append("</td><td>").append("Total Files").append("</td><td>").append("Previous Value").append("</td><td>").append("% Change").append("</td></tr>");
 
-        for (JSONObject json : ret.toJSONObjectArray())
+        for (JSONObject json : JsonUtil.toJSONObjectList(ret))
         {
             if (json.has("fileRoots"))
             {
                 JSONArray fileRoots = json.getJSONArray("fileRoots");
-                for (JSONObject fr : fileRoots.toJSONObjectArray())
+                for (JSONObject fr : JsonUtil.toJSONObjectList(fileRoots))
                 {
                     //find previous value for filesize
                     String key = json.getString("path");
-                    Long size = fr.containsKey("rootSizeInt") ? fr.getLong("rootSizeInt") : null;
+                    Long size = fr.has("rootSizeInt") ? fr.getLong("rootSizeInt") : null;
 
                     newValueMap.put(key, size == null ? null : String.valueOf(size));
                     Long previousSize = null;
-                    if (oldValueMap != null && oldValueMap.containsKey(key))
+                    if (oldValueMap != null && oldValueMap.has(key))
                     {
                         previousSize = oldValueMap.get(key) == null || "null".equals(oldValueMap.get(key)) ? null : oldValueMap.getLong(key);
                     }
@@ -437,11 +438,11 @@ public class SiteSummaryNotification implements Notification
 
                     //then do the same for file count
                     String fileCountKey = json.getString("path");
-                    Long totalFiles = fr.containsKey("totalFiles") ? fr.getLong("totalFiles") : null;
+                    Long totalFiles = fr.has("totalFiles") ? fr.getLong("totalFiles") : null;
 
                     newValueMapCounts.put(fileCountKey, totalFiles == null ? null : totalFiles.toString());
                     Long previousCount = null;
-                    if (oldValueMapCounts != null && oldValueMapCounts.containsKey(fileCountKey))
+                    if (oldValueMapCounts != null && oldValueMapCounts.has(fileCountKey))
                     {
                         previousCount = oldValueMapCounts.get(key) == null || "null".equals(oldValueMapCounts.get(key)) ? null : oldValueMapCounts.getLong(fileCountKey);
                     }
@@ -512,7 +513,7 @@ public class SiteSummaryNotification implements Notification
 
                     newValueMap.put(key, total.toString());
                     Long previousValue = null;
-                    if (oldValueMap != null && oldValueMap.containsKey(key))
+                    if (oldValueMap != null && oldValueMap.has(key))
                     {
                         previousValue = oldValueMap.getLong(key);
                     }
@@ -563,7 +564,7 @@ public class SiteSummaryNotification implements Notification
 
                     newValueMap.put(key, size.toString());
                     Long previousValue = null;
-                    if (oldValueMap != null && oldValueMap.containsKey(key))
+                    if (oldValueMap != null && oldValueMap.has(key))
                     {
                         previousValue = oldValueMap.getLong(key);
                     }
@@ -620,7 +621,7 @@ public class SiteSummaryNotification implements Notification
 
             newValueMap.put(key, entry.getValue().toString());
             Long previousValue = null;
-            if (oldValueMap != null && oldValueMap.containsKey(key))
+            if (oldValueMap != null && oldValueMap.has(key))
             {
                 previousValue = oldValueMap.getLong(key);
             }
@@ -703,7 +704,7 @@ public class SiteSummaryNotification implements Notification
 
                 newValueMap.put(key, totals[1].toString());
                 Long previousValue = null;
-                if (oldValueMap != null && oldValueMap.containsKey(key))
+                if (oldValueMap != null && oldValueMap.has(key))
                 {
                     previousValue = oldValueMap.getLong(key);
                 }

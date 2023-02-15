@@ -144,7 +144,7 @@ Ext4.define('Laboratory.panel.AssayImportPanel', {
         resultFields.add(resultItems);
 
         templatePanel.setVisible(this.selectedMethod.supportsTemplates);
-        if(this.selectedMethod.supportsTemplates){
+        if (this.selectedMethod.supportsTemplates){
             templatePanel.add(this.getTemplatePanelItems())
         }
 
@@ -167,19 +167,21 @@ Ext4.define('Laboratory.panel.AssayImportPanel', {
 
         //display errors
         var responseJson = Ext4.JSON.decode(response.responseText);
-        if(responseJson){
+        if (responseJson){
             Ext4.Msg.alert("Upload Failed", responseJson.exception ? responseJson.exception : "There was an error during the upload");
 
             var hasWarnings = false;
-            if(responseJson.errors){
+            if (responseJson.errors){
                 var html = '<div style="color: red;padding-bottom: 10px;">There were errors in the upload: </div>';
 
-                if(Ext4.isArray(responseJson.errors)){
+                if (Ext4.isArray(responseJson.errors)){
                     html += '<div style="padding-left:5px;color: red;">';
                     html += responseJson.errors.join('<br>');
                     html += '</div>';
 
                     Ext4.each(responseJson.errors, function(error){
+                        LDK.Assert.assertNotEmpty('AssayImportPanel error object lacks match method: ' + typeof(error) + ", was: " + JSON.stringify(error), error.match);
+
                         if (error.match(/^WARN/))
                             hasWarnings = true;
                     }, this);
@@ -229,7 +231,7 @@ Ext4.define('Laboratory.panel.AssayImportPanel', {
         });
 
         var grid = this.down('#resultGrid');
-        if(this.selectedMethod.enterResultsInGrid){
+        if (this.selectedMethod.enterResultsInGrid){
             if (!grid)
                 this.add(this.getResultGridConfig());
         }
@@ -324,7 +326,7 @@ Ext4.define('Laboratory.panel.AssayImportPanel', {
 
         if (uploadType == 'text'){
             var text = this.down('#fileContent').getValue() || '';
-            if(text.replace(/\s/g, '') == ''){
+            if (text.replace(/\s/g, '') == ''){
                 Ext4.Msg.hide();
                 Ext4.Msg.alert('Error', 'You must either cut/paste from a spreadsheet or choose a file to import');
                 return;
@@ -336,7 +338,7 @@ Ext4.define('Laboratory.panel.AssayImportPanel', {
             this.form.fileUpload = true;
             this.form.baseParams = {};
 
-            if(!this.down('#upload-run-field').getValue()){
+            if (!this.down('#upload-run-field').getValue()){
                 Ext4.Msg.hide();
                 Ext4.Msg.alert('Error', 'You must either cut/paste from a spreadsheet or choose a file to import');
                 return;
@@ -483,7 +485,7 @@ Ext4.define('Laboratory.ext.AssayPreviewPanel', {
 
     getField: function(domain, name){
         domain = this.metadata[domain];
-        if(domain)
+        if (domain)
             return domain[name];
     },
 
@@ -492,7 +494,7 @@ Ext4.define('Laboratory.ext.AssayPreviewPanel', {
         Ext4.each(this.results.batches, function(batch, idx){
             items = items.concat(this.getBatchConfig(batch));
 
-            if(idx < this.results.batches.length -1){
+            if (idx < this.results.batches.length -1){
                 items.push({
                     html: '<hr>',
                     style: 'margin-bottom: 5px;'
@@ -590,7 +592,7 @@ Ext4.define('Laboratory.ext.AssayPreviewPanel', {
                     console.error(this.metadata[domain]);
                     continue;
                 }
-                if(!meta.hidden){
+                if (!meta.hidden){
                     cfg.items.push({
                         xtype: 'displayfield',
                         fieldLabel: meta.caption,

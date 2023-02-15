@@ -4,8 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
-import org.json.old.JSONException;
-import org.json.old.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.laboratory.LaboratoryService;
@@ -54,22 +54,22 @@ public class AdditionalDataSource extends AbstractDataSource
         try
         {
             JSONObject json = new JSONObject(value);
-            String schemaName = json.getString("schemaName");
-            String queryName = json.getString("queryName");
-            String containerId = json.getString("containerId");
-            String label = json.getString("label");
-            String itemType = json.getString("itemType");
-            String subjectFieldKey = json.optString("subjectFieldKey");
-            String sampleDateFieldKey = json.optString("sampleDateFieldKey");
+            String schemaName = StringUtils.trimToNull(json.optString("schemaName"));
+            String queryName = StringUtils.trimToNull(json.optString("queryName"));
+            String containerId = StringUtils.trimToNull(json.optString("containerId"));
+            String label = StringUtils.trimToNull(json.optString("label"));
+            String itemType = StringUtils.trimToNull(json.optString("itemType"));
+            String subjectFieldKey = StringUtils.trimToNull(json.optString("subjectFieldKey"));
+            String sampleDateFieldKey = StringUtils.trimToNull(json.optString("sampleDateFieldKey"));
 
             //for legacy data:
-            if (json.containsKey("category") && !json.containsKey("reportCategory"))
+            if (json.has("category") && !json.has("reportCategory"))
             {
                 json.put("reportCategory", json.getString("category"));
             }
 
-            String reportCategory = json.getString("reportCategory");
-            Boolean importIntoWorkbooks = json.containsKey("importIntoWorkbooks") ? json.getBoolean("importIntoWorkbooks") : false;
+            String reportCategory = StringUtils.trimToNull(json.optString("reportCategory"));
+            boolean importIntoWorkbooks = json.has("importIntoWorkbooks") && json.getBoolean("importIntoWorkbooks");
 
             validateKey(c, u, containerId, schemaName, queryName, label, itemType, reportCategory, importIntoWorkbooks);
             LaboratoryService.NavItemCategory cat = LaboratoryService.NavItemCategory.valueOf(itemType);
@@ -132,19 +132,25 @@ public class AdditionalDataSource extends AbstractDataSource
 
     private static boolean validateKey(Container defaultContainer, User u, @Nullable String containerId, String schemaName, String queryName, String label, String navItemCategory, String reportCategory, boolean importIntoWorkbooks) throws IllegalArgumentException
     {
-        Container target;
-        if (containerId == null)
-            target = defaultContainer;
-        else
+        Container target = null;
+        if (containerId != null)
+        {
             target = ContainerManager.getForId(containerId);
+            if (target == null)
+            {
+                _log.error("Invalid containerId in saved data source: " + containerId);
+            }
+        }
 
-        if (target == null)
-            target = defaultContainer;
-
-        UserSchema us = QueryService.get().getUserSchema(u, target, schemaName);
         if (target == null)
         {
-            throw new IllegalArgumentException("Unknown schema in saved data source: " + schemaName);
+            target = defaultContainer;
+        }
+
+        UserSchema us = QueryService.get().getUserSchema(u, target, schemaName);
+        if (us == null)
+        {
+            throw new IllegalArgumentException("Unknown schema in saved data source: " + schemaName + ", in container: " + target.getPath());
         }
 
         QueryDefinition qd = us.getQueryDefForTable(queryName);
