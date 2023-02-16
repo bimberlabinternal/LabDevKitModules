@@ -33,8 +33,8 @@ import org.labkey.api.view.ActionURL;
  */
 public class QueryImportNavItem extends AbstractImportingNavItem
 {
-    private String _schema;
-    private String _query;
+    private final String _schema;
+    private final String _query;
     private boolean _visible = true;
 
     public QueryImportNavItem(DataProvider provider, String schema, String query, LaboratoryService.NavItemCategory itemType, String reportCategory, QueryCache cache)

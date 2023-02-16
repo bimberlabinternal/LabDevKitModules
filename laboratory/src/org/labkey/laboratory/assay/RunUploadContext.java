@@ -50,16 +50,16 @@ import java.util.Map;
  */
 public class RunUploadContext<ProviderType extends AssayProvider> implements AssayRunUploadContext<ProviderType>
 {
-    private ExpProtocol _protocol;
-    private ProviderType _providerType;
-    private String _name;
-    private String _comments;
-    private Map<String, String> _runProperties;
-    private Map<String, String> _batchProperties;
-    private ViewContext _ctx;
+    private final ExpProtocol _protocol;
+    private final ProviderType _providerType;
+    private final String _name;
+    private final String _comments;
+    private final Map<String, String> _runProperties;
+    private final Map<String, String> _batchProperties;
+    private final ViewContext _ctx;
 
     private TransformResult _transformResult;
-    private Map _uploadedData;
+    private final Map _uploadedData;
 
     public RunUploadContext(ExpProtocol protocol, ProviderType providerType, String name, String comments, Map<String, String> runProperties, Map<String, String> batchProperties, ViewContext ctx, Map<String, File> uploadedData)
     {

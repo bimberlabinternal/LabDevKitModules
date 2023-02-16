@@ -1081,7 +1081,7 @@ public class LaboratoryController extends SpringActionController
         {
             Map<String, Object> results = new HashMap<>();
 
-            LaboratoryServiceImpl service = (LaboratoryServiceImpl)LaboratoryServiceImpl.get();
+            LaboratoryServiceImpl service = LaboratoryServiceImpl.get();
 
             Set<DemographicsSource> tables = service.getDemographicsSources(getContainer(), getUser());
             JSONArray sources = new JSONArray();
@@ -1158,7 +1158,7 @@ public class LaboratoryController extends SpringActionController
         {
             Map<String, Object> results = new HashMap<>();
 
-            LaboratoryServiceImpl service = (LaboratoryServiceImpl)LaboratoryServiceImpl.get();
+            LaboratoryServiceImpl service = LaboratoryServiceImpl.get();
 
             Set<AdditionalDataSource> tables = service.getAdditionalDataSources(getContainer(), getUser());
             JSONArray sources = new JSONArray();
@@ -1283,7 +1283,7 @@ public class LaboratoryController extends SpringActionController
                 return null;
             }
 
-            LaboratoryServiceImpl service = (LaboratoryServiceImpl)LaboratoryServiceImpl.get();
+            LaboratoryServiceImpl service = LaboratoryServiceImpl.get();
 
             if (form.getTables() == null)
             {
@@ -1346,7 +1346,7 @@ public class LaboratoryController extends SpringActionController
                 return null;
             }
 
-            LaboratoryServiceImpl service = (LaboratoryServiceImpl)LaboratoryServiceImpl.get();
+            LaboratoryServiceImpl service = LaboratoryServiceImpl.get();
 
             if (form.getTables() == null)
             {
@@ -1428,7 +1428,7 @@ public class LaboratoryController extends SpringActionController
                 return null;
             }
 
-            LaboratoryServiceImpl service = (LaboratoryServiceImpl)LaboratoryServiceImpl.get();
+            LaboratoryServiceImpl service = LaboratoryServiceImpl.get();
 
             if (form.getSources() == null)
             {
@@ -1651,8 +1651,7 @@ public class LaboratoryController extends SpringActionController
 
                 if (toSave.keySet().size() > 0)
                     propMap.put(key, toSave.toString());
-                else if (propMap.containsKey(key))
-                    propMap.remove(key);
+                else propMap.remove(key);
             }
 
             propMap.save();

@@ -27,11 +27,11 @@ import java.util.Map;
 public class UniqueConstraintHelper
 {
     private Container _container;
-    private User _user;
-    private TableInfo _table;
-    private String _targetColName;
+    private final User _user;
+    private final TableInfo _table;
+    private final String _targetColName;
 
-    private List<Object> _encounteredKeys = new ArrayList<>();
+    private final List<Object> _encounteredKeys = new ArrayList<>();
 
     private static final Logger _log = LogManager.getLogger(UniqueConstraintHelper.class);
 

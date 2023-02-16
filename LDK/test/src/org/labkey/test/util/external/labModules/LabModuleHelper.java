@@ -43,7 +43,7 @@ import static org.labkey.test.BaseWebDriverTest.WAIT_FOR_PAGE;
 
 public class LabModuleHelper
 {
-    private BaseWebDriverTest _test;
+    private final BaseWebDriverTest _test;
     public final static SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final Random _random = new Random(System.currentTimeMillis());
     public static final String IMPORT_DATA_TEXT = "Import Data";
@@ -141,7 +141,7 @@ public class LabModuleHelper
         _test.clickButton("Submit");
         _test.waitForText("Folder Summary");
 
-        String path[] = _test.getCurrentContainerPath().split("/");
+        String[] path = _test.getCurrentContainerPath().split("/");
         return path[path.length - 1];
     }
 
@@ -154,7 +154,7 @@ public class LabModuleHelper
     {
         _test.setFormElement(Locator.name(name), value);
         //there is a deliberate delay after user input for a change to commit in the Ext store
-        _test.sleep(250);
+        WebDriverWrapper.sleep(250);
     }
 
     public void waitForField(final String label)
@@ -164,19 +164,19 @@ public class LabModuleHelper
 
     public void waitForField(final String label, int wait)
     {
-        _test.waitFor(() -> Ext4FieldRef.isFieldPresent(_test, label),
+        WebDriverWrapper.waitFor(() -> Ext4FieldRef.isFieldPresent(_test, label),
                 "Field did not appear: " + label, wait);
     }
 
     public void waitForCmp(final String query)
     {
-        _test.waitFor(() -> _test._ext4Helper.queryOne(query, Ext4CmpRef.class) != null,
+        WebDriverWrapper.waitFor(() -> _test._ext4Helper.queryOne(query, Ext4CmpRef.class) != null,
                 "Ext4 component did not appear for query: " + query, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
     }
 
     public void waitForDisabled(final Ext4CmpRef cmp, final boolean state)
     {
-        _test.waitFor(() -> (Boolean)cmp.getEval("isDisabled() == arguments[0]", state),
+        WebDriverWrapper.waitFor(() -> (Boolean)cmp.getEval("isDisabled() == arguments[0]", state),
                 "Component did not change to disabled = " + state, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
     }
 
@@ -203,7 +203,7 @@ public class LabModuleHelper
         if (expectedColumns != null)
         {
             Ext4CmpRef win = _test._ext4Helper.queryOne("window[title=Spreadsheet Import]", Ext4CmpRef.class);
-            _test.sleep(1000);
+            WebDriverWrapper.sleep(1000);
             String fields = (String)win.getEval("getFieldsInTemplateTest()");
             String[] fieldArray = fields.split(";");
             assertEquals("Incorrect column number in template", expectedColumns.size(), fieldArray.length);
@@ -443,7 +443,7 @@ public class LabModuleHelper
 
     public void waitForFile(final File file)
     {
-        _test.waitFor(file::exists, "Unable to find file: " + file.getPath(), WAIT_FOR_PAGE);
+        WebDriverWrapper.waitFor(file::exists, "Unable to find file: " + file.getPath(), WAIT_FOR_PAGE);
     }
 
     public static String getBaseName(String fileName)

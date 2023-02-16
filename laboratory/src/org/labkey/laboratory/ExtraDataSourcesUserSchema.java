@@ -45,7 +45,7 @@ public class ExtraDataSourcesUserSchema extends SimpleUserSchema
     @Override
     public TableInfo createTable(String name, ContainerFilter cf)
     {
-        LaboratoryServiceImpl service = (LaboratoryServiceImpl)LaboratoryServiceImpl.get();
+        LaboratoryServiceImpl service = LaboratoryServiceImpl.get();
         Set<AdditionalDataSource> sources = service.getAdditionalDataSources(getContainer(), getUser());
         for (AdditionalDataSource source : sources)
         {

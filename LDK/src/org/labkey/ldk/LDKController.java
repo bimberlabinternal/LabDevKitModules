@@ -104,7 +104,7 @@ import java.util.function.Predicate;
 public class LDKController extends SpringActionController
 {
     private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(LDKController.class);
-    private static Logger _log = LogManager.getLogger(LDKController.class);
+    private static final Logger _log = LogManager.getLogger(LDKController.class);
 
     public LDKController()
     {
@@ -445,11 +445,10 @@ public class LDKController extends SpringActionController
             LDKServiceImpl service = (LDKServiceImpl)LDKServiceImpl.get();
             List<String> messages = service.validateContainerScopedTables(false);
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("This page is designed to inspect all registered container scoped tables and report any tables with duplicate keys in the same container.  This should be enforced by the user schema; however, direct DB inserts will bypass this check.<p>");
-            sb.append(StringUtils.join(messages, "<br>"));
+            String sb = "This page is designed to inspect all registered container scoped tables and report any tables with duplicate keys in the same container.  This should be enforced by the user schema; however, direct DB inserts will bypass this check.<p>" +
+                    StringUtils.join(messages, "<br>");
 
-            return new HtmlView(sb.toString());
+            return new HtmlView(sb);
         }
 
         @Override
@@ -914,11 +913,10 @@ public class LDKController extends SpringActionController
                 return new SimpleErrorView(errors);
             }
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("This will move this workbook to the selected folder, renaming this workbook to match the series in that container.  Note: there are many reasons this can be problematic, so please do this with great care<p>");
-            sb.append("<input name=\"targetContainer\" type=\"text\"></input>");
+            String sb = "This will move this workbook to the selected folder, renaming this workbook to match the series in that container.  Note: there are many reasons this can be problematic, so please do this with great care<p>" +
+                    "<input name=\"targetContainer\" type=\"text\"></input>";
 
-            return new HtmlView(sb.toString());
+            return new HtmlView(sb);
         }
 
         @Override

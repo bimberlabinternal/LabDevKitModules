@@ -76,10 +76,10 @@ public class LaboratoryServiceImpl extends LaboratoryService
     private static final LaboratoryServiceImpl _instance = new LaboratoryServiceImpl();
     private static final Logger _log = LogManager.getLogger(LaboratoryServiceImpl.class);
 
-    private Set<Module> _registeredModules = new HashSet<>();
-    private Map<String, Map<String, List<ButtonConfigFactory>>> _assayButtons = new CaseInsensitiveHashMap<>();
-    private Map<String, DataProvider> _dataProviders = new HashMap<>();
-    private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
+    private final Set<Module> _registeredModules = new HashSet<>();
+    private final Map<String, Map<String, List<ButtonConfigFactory>>> _assayButtons = new CaseInsensitiveHashMap<>();
+    private final Map<String, DataProvider> _dataProviders = new HashMap<>();
+    private final Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
 
     public static final String DEMOGRAPHICS_PROPERTY_CATEGORY = "laboratory.demographicsSource";
     public static final String DATASOURCE_PROPERTY_CATEGORY = "laboratory.additionalDataSource";
@@ -573,8 +573,8 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return items;
     }
 
-    private Map<String, List<List<String>>> _assayResultIndexes = new HashMap<>();
-    private Map<String, Map<String, List<List<String>>>> _tableIndexes = new HashMap<>();
+    private final Map<String, List<List<String>>> _assayResultIndexes = new HashMap<>();
+    private final Map<String, Map<String, List<List<String>>>> _tableIndexes = new HashMap<>();
 
     @Override
     public void registerAssayResultsIndex(String providerName, List<String> columnsToIndex)

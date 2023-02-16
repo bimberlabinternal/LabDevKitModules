@@ -30,7 +30,7 @@ import org.labkey.api.view.ActionURL;
  */
 public class AssaySummaryNavItem extends QueryCountNavItem
 {
-    private ExpProtocol _protocol;
+    private final ExpProtocol _protocol;
 
     public AssaySummaryNavItem(DataProvider provider, String schema, String query, LaboratoryService.NavItemCategory itemType, String reportCategory, String label, ExpProtocol p)
     {

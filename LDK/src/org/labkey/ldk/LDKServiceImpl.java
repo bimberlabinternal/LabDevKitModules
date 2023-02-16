@@ -57,10 +57,10 @@ import java.util.Set;
 public class LDKServiceImpl extends LDKService
 {
     private static final Logger _log = LogManager.getLogger(LDKServiceImpl.class);
-    private Set<NotificationSection> _summaryNotificationSections = new HashSet<>();
-    private List<List<String>> _containerScopedTables = new ArrayList<>();
+    private final Set<NotificationSection> _summaryNotificationSections = new HashSet<>();
+    private final List<List<String>> _containerScopedTables = new ArrayList<>();
     private Boolean _isNaturalizeInstalled = null;
-    private Map<String, Map<String, List<ButtonConfigFactory>>> _queryButtons = new CaseInsensitiveHashMap<Map<String, List<ButtonConfigFactory>>>();
+    private final Map<String, Map<String, List<ButtonConfigFactory>>> _queryButtons = new CaseInsensitiveHashMap<Map<String, List<ButtonConfigFactory>>>();
     private static final String BACKGROUND_USER_PROPNAME = "BackgroundAdminUser";
 
     public LDKServiceImpl()

@@ -73,7 +73,7 @@ public class PivotingAssayParser extends DefaultAssayParser
                 int cellIdx = 0;
                 for (String cell : line)
                 {
-                    if (resultCols.keySet().contains(cellIdx))
+                    if (resultCols.containsKey(cellIdx))
                     {
                         if (!StringUtils.isEmpty(cell))
                             otherFields.add(Pair.of(resultCols.get(cellIdx), cell));

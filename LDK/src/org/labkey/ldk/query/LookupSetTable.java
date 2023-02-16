@@ -226,7 +226,7 @@ public class LookupSetTable extends AbstractDataDefinedTable
             }
 
             //Test duplicate keys, expect failure
-            ti.getUpdateService().insertRows(getUser(), project, Arrays.asList(row1), errors1, null, null);
+            ti.getUpdateService().insertRows(getUser(), project, List.of(row1), errors1, null, null);
             if (errors1.hasErrors())
             {
                 String msg = errors1.getRowErrors().get(0).getMessage();
@@ -251,7 +251,7 @@ public class LookupSetTable extends AbstractDataDefinedTable
 
             // Expect failure
             BatchValidationException errors1 = new BatchValidationException();
-            us.getTable(TABLE1).getUpdateService().insertRows(getUser(), project, Arrays.asList(row1), errors1, null, null);
+            us.getTable(TABLE1).getUpdateService().insertRows(getUser(), project, List.of(row1), errors1, null, null);
             if (errors1.hasErrors())
             {
                 String msg = errors1.getRowErrors().get(0).getMessage();
@@ -265,7 +265,7 @@ public class LookupSetTable extends AbstractDataDefinedTable
             //this will pass
             row1.put("vaLuE", "CBA");
             errors1 = new BatchValidationException();
-            us.getTable(TABLE1).getUpdateService().insertRows(getUser(), project, Arrays.asList(row1), errors1, null, null);
+            us.getTable(TABLE1).getUpdateService().insertRows(getUser(), project, List.of(row1), errors1, null, null);
             if (errors1.hasErrors())
             {
                 throw errors1;
@@ -281,7 +281,7 @@ public class LookupSetTable extends AbstractDataDefinedTable
 
             try
             {
-                us.getTable(TABLE1).getUpdateService().updateRows(getUser(), project, Arrays.asList(row1), oldKeys, null, null);
+                us.getTable(TABLE1).getUpdateService().updateRows(getUser(), project, List.of(row1), oldKeys, null, null);
 
                 //Ben's change
                 throw new ValidationException("Expected update to fail because of row validators");

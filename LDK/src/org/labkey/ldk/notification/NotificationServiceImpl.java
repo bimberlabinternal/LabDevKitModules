@@ -88,8 +88,8 @@ public class NotificationServiceImpl extends NotificationService
     private static final String RETURN_EMAIL = "returnEmail";
     private static final String USER_PROP = "user";
 
-    private List<Notification> _notifications = new ArrayList<>();
-    private Map<Notification, Trigger> _triggerMap = new HashMap<>();
+    private final List<Notification> _notifications = new ArrayList<>();
+    private final Map<Notification, Trigger> _triggerMap = new HashMap<>();
 
     public static NotificationServiceImpl get()
     {
@@ -292,9 +292,8 @@ public class NotificationServiceImpl extends NotificationService
         List<UserPrincipal> ups = new ArrayList<>();
         for (UserPrincipal up : NotificationServiceImpl.get().getRecipients(n, c))
         {
-            if (up instanceof Group)
+            if (up instanceof Group g)
             {
-                Group g = (Group)up;
                 Set<UserPrincipal> members = SecurityManager.getAllGroupMembers(g, MemberType.ALL_GROUPS_AND_USERS);
                 if (members.contains(u))
                     ups.add(up);
@@ -376,7 +375,7 @@ public class NotificationServiceImpl extends NotificationService
     {
         if (user instanceof User)
         {
-            if (!((User) user).isActive())
+            if (!user.isActive())
             {
                 //_log.error("an inactive user is a notification recipient: " + user.getName());
                 return Collections.emptyList();
@@ -461,7 +460,7 @@ public class NotificationServiceImpl extends NotificationService
     public Set<UserPrincipal> getRecipients(Notification n, Container c)
     {
         final Set<UserPrincipal> recipients = new HashSet<>();
-        TableInfo t = LDKSchema.getInstance().getTable(LDKSchema.TABLE_NOTIFICATION_RECIPIENTS);
+        TableInfo t = LDKSchema.getTable(LDKSchema.TABLE_NOTIFICATION_RECIPIENTS);
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("notificationtype"), n.getName(), CompareType.EQUAL);
         filter.addCondition(FieldKey.fromString("container"), c.getId(), CompareType.EQUAL);
         TableSelector ts = new TableSelector(t, Collections.singleton("recipient"), filter, null);

@@ -30,9 +30,8 @@ public class DefaultAssayCustomizer implements TableCustomizer
         TableCustomizer tc = LDKService.get().getBuiltInColumnsCustomizer(true);
         tc.customize(ti);
 
-        if (ti instanceof AbstractTableInfo)
+        if (ti instanceof AbstractTableInfo ati)
         {
-            AbstractTableInfo ati = (AbstractTableInfo)ti;
             customizeAssayTable(ati);
         }
     }
@@ -71,9 +70,8 @@ public class DefaultAssayCustomizer implements TableCustomizer
 
     private AssayProvider getAssayProvider(AbstractTableInfo ti)
     {
-        if (ti.getUserSchema() instanceof AssayProtocolSchema)
+        if (ti.getUserSchema() instanceof AssayProtocolSchema schema)
         {
-            AssayProtocolSchema schema = (AssayProtocolSchema)ti.getUserSchema();
             return schema.getProvider();
         }
 

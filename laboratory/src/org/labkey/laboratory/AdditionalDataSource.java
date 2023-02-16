@@ -21,11 +21,11 @@ import org.labkey.api.security.User;
  */
 public class AdditionalDataSource extends AbstractDataSource
 {
-    private LaboratoryService.NavItemCategory _itemType;
-    private String _reportCategory;
-    private boolean _importIntoWorkbooks;
-    private String _subjectFieldKey;
-    private String _sampleDateFieldKey;
+    private final LaboratoryService.NavItemCategory _itemType;
+    private final String _reportCategory;
+    private final boolean _importIntoWorkbooks;
+    private final String _subjectFieldKey;
+    private final String _sampleDateFieldKey;
     private static final Logger _log = LogManager.getLogger(AdditionalDataSource.class);
 
     public AdditionalDataSource(LaboratoryService.NavItemCategory itemType, String label, @Nullable String containerId, String schemaName, String queryName, String reportCategory, boolean importIntoWorkbooks, String subjectFieldKey, String sampleDateFieldKey)

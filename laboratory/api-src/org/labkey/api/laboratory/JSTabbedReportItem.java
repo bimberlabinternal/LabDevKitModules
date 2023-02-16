@@ -26,7 +26,7 @@ import org.labkey.api.security.User;
  */
 public class JSTabbedReportItem extends TabbedReportItem
 {
-    private String _jsHandler;
+    private final String _jsHandler;
 
     public JSTabbedReportItem(DataProvider provider, String name, String label, String category, String jsHandler)
     {

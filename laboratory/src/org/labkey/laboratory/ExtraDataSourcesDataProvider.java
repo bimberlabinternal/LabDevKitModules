@@ -37,7 +37,7 @@ import java.util.Set;
 public class ExtraDataSourcesDataProvider extends AbstractDataProvider
 {
     public static final String NAME = "ExtraDataSources";
-    private Module _module;
+    private final Module _module;
 
     public ExtraDataSourcesDataProvider(Module m)
     {
@@ -62,7 +62,7 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
         List<NavItem> items = new ArrayList<>();
         if (c.getActiveModules().contains(getOwningModule()))
         {
-            LaboratoryServiceImpl service = (LaboratoryServiceImpl)LaboratoryServiceImpl.get();
+            LaboratoryServiceImpl service = LaboratoryServiceImpl.get();
             Set<AdditionalDataSource> sources = service.getAdditionalDataSources(c, u);
             for (AdditionalDataSource source : sources)
             {
@@ -139,9 +139,8 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
         List<NavItem> dataItems = getItems(c, u, LaboratoryService.NavItemCategory.data);
         for (NavItem owner : dataItems)
         {
-            if (owner instanceof ExtraDataSourceImportNavItem)
+            if (owner instanceof ExtraDataSourceImportNavItem sq)
             {
-                ExtraDataSourceImportNavItem sq = (ExtraDataSourceImportNavItem)owner;
                 ReportItem reportItem = new ReportItem(this, sq.getTargetContainer(null), sq.getSchema(), sq.getQuery(), owner.getReportCategory(), sq.getLabel(), sq.getQueryCache());
                 reportItem.setOwnerKey(owner.getPropertyManagerKey());
 
@@ -186,7 +185,7 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
     {
         List<SummaryNavItem> items = new ArrayList<>();
 
-        LaboratoryServiceImpl service = (LaboratoryServiceImpl)LaboratoryServiceImpl.get();
+        LaboratoryServiceImpl service = LaboratoryServiceImpl.get();
         Set<AdditionalDataSource> sources = service.getAdditionalDataSources(c, u);
         for (AdditionalDataSource source : sources)
         {
@@ -207,7 +206,7 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
     {
         List<NavItem> items = new ArrayList<NavItem>();
 
-        LaboratoryServiceImpl service = (LaboratoryServiceImpl)LaboratoryServiceImpl.get();
+        LaboratoryServiceImpl service = LaboratoryServiceImpl.get();
         Set<AdditionalDataSource> sources = service.getAdditionalDataSources(c, u);
         for (AdditionalDataSource source : sources)
         {
@@ -234,9 +233,8 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
         List<NavItem> reportItems = getReportItems(c, u);
         for (NavItem owner : reportItems)
         {
-            if (owner instanceof ReportItem)
+            if (owner instanceof ReportItem sq)
             {
-                ReportItem sq = (ReportItem)owner;
                 QueryCache cache = ((ReportItem) owner).getQueryCache();
                 TabbedReportItem reportItem = new QueryTabbedReportItem(cache, this, sq.getSchema(), sq.getQuery(), sq.getLabel(), owner.getReportCategory());
                 if (sq.getTargetContainer(c) != null)

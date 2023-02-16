@@ -30,11 +30,11 @@ import java.util.Map;
  */
 public class ImportContext
 {
-    private JSONObject _json;
-    private File _file;
-    private String _fileName;
-    private ViewContext _ctx;
-    private ParserErrors _errors;
+    private final JSONObject _json;
+    private final File _file;
+    private final String _fileName;
+    private final ViewContext _ctx;
+    private final ParserErrors _errors;
 
     public ImportContext(JSONObject json, File file, String fileName, ViewContext ctx)
     {

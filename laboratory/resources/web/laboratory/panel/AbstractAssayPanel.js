@@ -383,7 +383,7 @@ Ext4.define('Laboratory.panel.AbstractAssayPanel', {
     },
 
     handleImportMethods: function(){
-        this.importMethods = this.importMethods || new Array();
+        this.importMethods = this.importMethods || [];
 
         for (var i=0;i<this.importMethods.length;i++){
             if (this.importMethods[i].init){

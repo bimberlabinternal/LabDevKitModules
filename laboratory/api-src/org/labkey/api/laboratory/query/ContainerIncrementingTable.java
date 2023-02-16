@@ -46,7 +46,7 @@ import java.util.concurrent.Callable;
  */
 public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
 {
-    private String _incrementingCol;
+    private final String _incrementingCol;
     private static final String SELF_ASSIGNED_COL = "_selfAssignedId_";
     private static final String PROPERT_CATEGORY_BASE = "laboratory.tableRowId";
 
@@ -207,9 +207,8 @@ public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
             {
                 //did the return type of aggregates change between 12.3 -> 13.1??
                 Integer rowId;
-                if (r.getValue() instanceof Long)
+                if (r.getValue() instanceof Long val)
                 {
-                    Long val = (Long)r.getValue();
                     rowId = val == null ? null : val.intValue();
                 }
                 else
@@ -355,8 +354,8 @@ public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
      */
     private class IncrementIdGenerator
     {
-        private Map<Container, Integer> _idMap = new HashMap<Container, Integer>();
-        private Map<Container, Set<Integer>> _existingIdsMap = new HashMap<Container, Set<Integer>>();
+        private final Map<Container, Integer> _idMap = new HashMap<Container, Integer>();
+        private final Map<Container, Set<Integer>> _existingIdsMap = new HashMap<Container, Set<Integer>>();
 
         public IncrementIdGenerator()
         {

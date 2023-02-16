@@ -119,7 +119,7 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             }
         };
 
-        private Class dataType;
+        private final Class dataType;
 
         COL_ENUM(Class dataType){
             this.dataType = dataType;

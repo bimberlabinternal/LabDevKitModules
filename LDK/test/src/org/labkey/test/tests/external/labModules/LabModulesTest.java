@@ -557,7 +557,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         SelectRowsCommand sr = new SelectRowsCommand("laboratory", "project_usage");
         List<String> columns = Arrays.asList("subjectId", "project", "groupname", "startdate", "enddate");
         sr.setColumns(columns);
-        sr.setSorts(Arrays.asList(new Sort("rowid")));
+        sr.setSorts(List.of(new Sort("rowid")));
 
         SelectRowsResponse resp = sr.execute(cn, getProjectName());
 
@@ -628,7 +628,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         impersonateRole("Reader");
         _helper.goToLabHome();
 
-        waitForElement(_helper.getNavPanelRow("Sequence:"), WAIT_FOR_PAGE);
+        waitForElement(LabModuleHelper.getNavPanelRow("Sequence:"), WAIT_FOR_PAGE);
         _helper.verifyNavPanelRowItemPresent("Sequence:");
 
         for(Pair<String, String> pair : getAssaysToCreate())
@@ -803,8 +803,8 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
      * requires that the subject/project info was populated by calculatedColumnsTest() in order to run
      */
 
-    private String manageDemographicsSources = "manageDemographicsSources";
-    private String manageDataSources = "manageDataSources";
+    private final String manageDemographicsSources = "manageDemographicsSources";
+    private final String manageDataSources = "manageDataSources";
 
     private void dataSourcesTest() throws Exception
     {
@@ -1367,7 +1367,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitForElement(Locator.name("samplename"));  //ensure we're on the correct Ext4 override page
         verifyFreezerColOrder();
         String containerPath = getCurrentContainerPath();
-        Assert.assertTrue("Container is not a workbook: " + containerPath + "(" + containerPath.split("/").length + " elements)", containerPath.split("/").length == 3);
+        assertEquals("Container is not a workbook: " + containerPath + "(" + containerPath.split("/").length + " elements)", 3, containerPath.split("/").length);
 
         //now repeat from within this workbook
         clickButton("Cancel");

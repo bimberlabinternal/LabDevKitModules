@@ -29,13 +29,13 @@ import java.util.Map;
  */
 abstract public class AbstractDataSource
 {
-    private String _containerId;
-    private String _schemaName;
-    private String _queryName;
-    private String _label;
+    private final String _containerId;
+    private final String _schemaName;
+    private final String _queryName;
+    private final String _label;
     protected static final String DELIM = "<>";
     protected static final Logger _log = LogManager.getLogger(AbstractDataSource.class);
-    private Map<String, TableInfo> _cachedTables = new HashMap<>();
+    private final Map<String, TableInfo> _cachedTables = new HashMap<>();
     
     public AbstractDataSource(String label, @Nullable String containerId, String schemaName, String queryName)
     {
@@ -74,8 +74,6 @@ abstract public class AbstractDataSource
             return null;
 
         QueryDefinition qd = us.getQueryDefForTable(_queryName);
-        if (qd == null)
-            return null;
 
         return qd;
     }
@@ -143,7 +141,7 @@ abstract public class AbstractDataSource
         obj.put("canRead", target.hasPermission(u, ReadPermission.class));
 
         Container current = c.isWorkbookOrTab() ? c.getParent() : c;
-        obj.put("fromCurrentContainer", getContainerId() == null ? true : current.equals(target));
+        obj.put("fromCurrentContainer", getContainerId() == null || current.equals(target));
 
         if (includeTotals && target.hasPermission(u, ReadPermission.class))
         {

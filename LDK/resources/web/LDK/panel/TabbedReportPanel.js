@@ -1418,7 +1418,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                     console.log('param is too long for URL: ' + i + '/' + filters[i].length);
                 }
                 else if (['removable', 'nonRemovable'].indexOf(i) !== -1){
-                    continue;
+
                 }
                 else {
                     token.push(i + ':' + filters[i]);

@@ -36,9 +36,8 @@ public class AssayRunTemplatesCustomizer implements TableCustomizer
         TableCustomizer tc = LDKService.get().getDefaultTableCustomizer();
         tc.customize(ti);
 
-        if (ti instanceof AbstractTableInfo)
+        if (ti instanceof AbstractTableInfo ati)
         {
-            AbstractTableInfo ati = (AbstractTableInfo)ti;
             ati.setInsertURL(AbstractTableInfo.LINK_DISABLER);
             ati.setImportURL(AbstractTableInfo.LINK_DISABLER);
             ati.setUpdateURL(AbstractTableInfo.LINK_DISABLER);

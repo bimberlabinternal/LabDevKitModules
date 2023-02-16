@@ -394,7 +394,7 @@ public class AssayHelper
 
                                     ActionURL returnUrl = new ActionURL("laboratory", "synchronizeAssayFields.view", ContainerManager.getSharedContainer());
                                     url.addReturnURL(returnUrl);
-                                    msg += "This will not be changed automatically.  If do you want to correct this, <a href=\"" + url.toString() + "\">CLICK HERE</a>.";
+                                    msg += "This will not be changed automatically.  If do you want to correct this, <a href=\"" + url + "\">CLICK HERE</a>.";
                                 }
                                 else
                                 {

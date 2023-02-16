@@ -445,13 +445,12 @@ public class LaboratoryManager
         if (table == null)
             throw new IllegalArgumentException("Unknown table: " + schemaName + "." + queryName);
 
-        if (!(table instanceof ContainerIncrementingTable))
+        if (!(table instanceof ContainerIncrementingTable ct))
             throw new IllegalArgumentException("Table is not a ContainerIncrementingTable: " + schemaName + "." + queryName);
 
         if (table.getPkColumnNames().size() != 1)
             throw new IllegalArgumentException("Table does not have a single PK");
 
-        ContainerIncrementingTable ct = (ContainerIncrementingTable)table;
         QueryUpdateService qus = ct.getUpdateService();
         String colName = ct.getIncrementingCol();
         Set<String> toSelect = new HashSet<String>();
@@ -496,7 +495,7 @@ public class LaboratoryManager
         try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
         {
             //add indexes to assays first
-            Map<String, List<List<String>>> assayIndexes = ((LaboratoryServiceImpl)LaboratoryServiceImpl.get()).getAssayIndexes();
+            Map<String, List<List<String>>> assayIndexes = LaboratoryServiceImpl.get().getAssayIndexes();
             DbSchema assayResultSchema = DbSchema.get("assayresult");
             Set<String> distinctIndexes = new HashSet<>();
             for (ExpProtocol p : ExperimentService.get().getAllExpProtocols())
@@ -521,7 +520,7 @@ public class LaboratoryManager
                 processIndexes(assayResultSchema, realTable, indexes, distinctIndexes, messages, commitChanges, rebuildIndexes);
             }
 
-            Map<String, Map<String, List<List<String>>>> tableIndexes = ((LaboratoryServiceImpl)LaboratoryServiceImpl.get()).getTableIndexes();
+            Map<String, Map<String, List<List<String>>>> tableIndexes = LaboratoryServiceImpl.get().getTableIndexes();
             for (String schemaName : tableIndexes.keySet())
             {
                 DbSchema schema = DbSchema.get(schemaName);

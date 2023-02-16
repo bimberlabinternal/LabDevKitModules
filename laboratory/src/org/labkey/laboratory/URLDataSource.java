@@ -18,9 +18,9 @@ import org.labkey.api.util.StringExpressionFactory;
  */
 public class URLDataSource
 {
-    private LaboratoryService.NavItemCategory _itemType;
-    private String _label;
-    private StringExpression _url;
+    private final LaboratoryService.NavItemCategory _itemType;
+    private final String _label;
+    private final StringExpression _url;
 
     protected static final String DELIM = "<>";
 

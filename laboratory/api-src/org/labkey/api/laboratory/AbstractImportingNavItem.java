@@ -26,8 +26,8 @@ import org.labkey.api.security.User;
  */
 abstract public class AbstractImportingNavItem extends AbstractNavItem implements ImportingNavItem
 {
-    private String _name;
-    private String _label;
+    private final String _name;
+    private final String _label;
 
     public AbstractImportingNavItem(DataProvider provider, String name, String label, LaboratoryService.NavItemCategory itemType, String reportCategory)
     {

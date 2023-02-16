@@ -25,7 +25,7 @@ import org.labkey.api.security.User;
  */
 public interface NotificationSection
 {
-    public String getMessage(Container c, User u);
+    String getMessage(Container c, User u);
 
-    public boolean isAvailable(Container c, User u);
+    boolean isAvailable(Container c, User u);
 }

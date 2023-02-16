@@ -523,7 +523,7 @@ Ext.define('Ext.calendar.view.AbstractCalendar', {
             this.doAddFx(this.getEventEls(rec.data[Ext.calendar.data.EventMappings.EventId.name]), {
                 scope: this
             });
-        };
+        }
     },
 
     doAddFx: function(els, o) {

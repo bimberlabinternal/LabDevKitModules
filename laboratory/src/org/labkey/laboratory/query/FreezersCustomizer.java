@@ -25,9 +25,8 @@ public class FreezersCustomizer implements TableCustomizer
         TableCustomizer tc = LDKService.get().getBuiltInColumnsCustomizer(true);
         tc.customize(ti);
 
-        if (ti instanceof AbstractTableInfo)
+        if (ti instanceof AbstractTableInfo ati)
         {
-            AbstractTableInfo ati = (AbstractTableInfo)ti;
 
             String schemaName = ati.getPublicSchemaName();
             assert schemaName != null;

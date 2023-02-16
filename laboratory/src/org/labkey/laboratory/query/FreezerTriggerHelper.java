@@ -32,10 +32,10 @@ import java.util.Map;
 public class FreezerTriggerHelper
 {
     private Container _container;
-    private User _user;
-    private TableInfo _table;
+    private final User _user;
+    private final TableInfo _table;
 
-    private Map<String, Map<String, Integer>> _cachedRows = new HashMap<String, Map<String, Integer>>();
+    private final Map<String, Map<String, Integer>> _cachedRows = new HashMap<String, Map<String, Integer>>();
 
     private FreezerTriggerHelper(String containerId, int userId)
     {
@@ -72,14 +72,10 @@ public class FreezerTriggerHelper
 
         if (cached.containsKey(key))
         {
-            if (rowId != null && rowId.equals(cached.get(key)))
-            {
-                //this indicates the matching sample is the same as the incoming sample, such a row update
-                return false;
-            }
+            //this indicates the matching sample is the same as the incoming sample, such a row update
+            return rowId == null || !rowId.equals(cached.get(key));
 
             //this means we have a newly inserted sample matching an existing one
-            return true;
         }
         else
         {

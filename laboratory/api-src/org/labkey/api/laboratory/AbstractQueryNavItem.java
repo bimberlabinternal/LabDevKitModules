@@ -28,10 +28,10 @@ import org.labkey.api.view.ActionURL;
  */
 abstract public class AbstractQueryNavItem extends AbstractNavItem
 {
-    private String _name;
-    private String _label;
-    private String _schema;
-    private String _query;
+    private final String _name;
+    private final String _label;
+    private final String _schema;
+    private final String _query;
     private boolean _visible = true;
 
     public AbstractQueryNavItem(DataProvider provider, String schema, String query, LaboratoryService.NavItemCategory itemType, String reportCategory, String label)

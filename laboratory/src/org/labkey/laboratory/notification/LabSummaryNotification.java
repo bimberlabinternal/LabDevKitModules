@@ -45,7 +45,7 @@ public class LabSummaryNotification implements Notification
     protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
     private static final String lastSave = "lastSave";
     private NumberFormat _pctFormat = null;
-    private Module _owner;
+    private final Module _owner;
     private static final String PROP_CATEGORY = "laboratory.LabSummaryNotification";
 
     public LabSummaryNotification(Module owner)

@@ -28,11 +28,11 @@ import org.labkey.api.view.ActionURL;
  */
 public interface LaboratoryUrls extends UrlProvider
 {
-    public ActionURL getSearchUrl(Container c, String schemaName, String queryName);
+    ActionURL getSearchUrl(Container c, String schemaName, String queryName);
 
-    public ActionURL getImportUrl(Container c, User u, String schemaName, String queryName);
+    ActionURL getImportUrl(Container c, User u, String schemaName, String queryName);
 
-    public ActionURL getAssayRunTemplateUrl(Container c, ExpProtocol protocol);
+    ActionURL getAssayRunTemplateUrl(Container c, ExpProtocol protocol);
 
-    public ActionURL getViewAssayRunTemplateUrl(Container c, User u, ExpProtocol protocol);
+    ActionURL getViewAssayRunTemplateUrl(Container c, User u, ExpProtocol protocol);
 }

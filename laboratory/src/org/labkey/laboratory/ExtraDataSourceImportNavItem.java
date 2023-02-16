@@ -10,7 +10,7 @@ import org.labkey.api.security.User;
  */
 public class ExtraDataSourceImportNavItem extends QueryImportNavItem
 {
-    private AdditionalDataSource _source;
+    private final AdditionalDataSource _source;
 
     public ExtraDataSourceImportNavItem(DataProvider provider, AdditionalDataSource source)
     {
@@ -27,7 +27,7 @@ public class ExtraDataSourceImportNavItem extends QueryImportNavItem
     public boolean isImportIntoWorkbooks(Container c, User u)
     {
         //if disabled, dont attempt to use workbooks
-        if (_source.isImportIntoWorkbooks() == false)
+        if (!_source.isImportIntoWorkbooks())
         {
             return false;
         }

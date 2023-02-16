@@ -35,9 +35,9 @@ import org.labkey.api.view.ActionURL;
  */
 public class AssayNavItem extends AbstractImportingNavItem
 {
-    private AssayDataProvider _provider;
-    private AssayProvider _ap;
-    private ExpProtocol _protocol;
+    private final AssayDataProvider _provider;
+    private final AssayProvider _ap;
+    private final ExpProtocol _protocol;
 
     public AssayNavItem(AssayDataProvider provider, ExpProtocol protocol)
     {

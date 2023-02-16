@@ -212,7 +212,7 @@ public class DefaultTableCustomizer implements TableCustomizer
         sortCol.setLabel(col.getLabel() + " - Sort Field");
         ti.addColumn(sortCol);
 
-        col.setSortFieldKeys(Arrays.asList(sortCol.getFieldKey()));
+        col.setSortFieldKeys(Collections.singletonList(sortCol.getFieldKey()));
     }
 
     public static void appendCalculatedDateColumns(AbstractTableInfo ti, @Nullable String dateColName, @Nullable String enddateColName)
@@ -373,9 +373,8 @@ public class DefaultTableCustomizer implements TableCustomizer
         {
             for (ButtonConfig btn : existingBtns)
             {
-                if (btn instanceof UserDefinedButtonConfig)
+                if (btn instanceof UserDefinedButtonConfig ub)
                 {
-                    UserDefinedButtonConfig ub = (UserDefinedButtonConfig)btn;
                     if (MORE_ACTIONS.equals(ub.getText()))
                     {
                         moreActionsBtn = ub;
@@ -432,9 +431,9 @@ public class DefaultTableCustomizer implements TableCustomizer
 
     public static class Settings
     {
-        private Map<PROPERIES, Object> propertyMap;
+        private final Map<PROPERIES, Object> propertyMap;
 
-        public static enum PROPERIES
+        public enum PROPERIES
         {
             disableAllEditUI(Boolean.class, false),
             setEditLinkOverrides(Boolean.class, true),
@@ -442,8 +441,8 @@ public class DefaultTableCustomizer implements TableCustomizer
             disableFacetingForNumericCols(Boolean.class, true),
             overrideDetailsUrl(Boolean.class, true);
 
-            private Class _clazz;
-            private Object _defaultVal;
+            private final Class _clazz;
+            private final Object _defaultVal;
 
             PROPERIES(Class clazz, Object defaultVal)
             {

@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class DemographicsSource extends AbstractDataSource
 {
-    private String _targetColumn;
+    private final String _targetColumn;
     private static final Logger _log = LogManager.getLogger(DemographicsSource.class);
     
     public DemographicsSource(String label, String containerId, String schemaName, String queryName, String targetColumn)

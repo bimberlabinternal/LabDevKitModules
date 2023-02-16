@@ -386,7 +386,7 @@ public class DefaultAssayImportMethod implements AssayImportMethod
         return null;
     }
 
-    public static enum SAMPLE_CATEGORY
+    public enum SAMPLE_CATEGORY
     {
         Blank("Blank"),
         Control("Control"),
@@ -395,7 +395,7 @@ public class DefaultAssayImportMethod implements AssayImportMethod
         Standard("Standard"),
         Unknown("Unknown");
 
-        private String _label;
+        private final String _label;
 
         SAMPLE_CATEGORY(String label)
         {

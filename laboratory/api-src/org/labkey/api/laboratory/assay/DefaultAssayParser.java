@@ -88,7 +88,7 @@ public class DefaultAssayParser implements AssayParser
     protected Container _container;
     protected User _user;
     protected AssayImportMethod _method;
-    private String HAS_RESULT = "__hasResult__";
+    private final String HAS_RESULT = "__hasResult__";
 
     protected String RESULT_FIELD = "result";
 
@@ -198,9 +198,8 @@ public class DefaultAssayParser implements AssayParser
         for (Map<String, Object> row : rows)
         {
             Object resultObj = row.get(resultFieldName);
-            if (resultObj != null && resultObj instanceof String)
+            if (resultObj != null && resultObj instanceof String resultString)
             {
-                String resultString = (String)resultObj;
                 if (p.matcher(resultString).matches())
                 {
                     String oor = resultString.substring(0, 1);

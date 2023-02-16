@@ -139,12 +139,11 @@ public class LaboratoryContainerListener extends SimpleModuleContainerListener
      */
     private void updateWorkbookTableOnNameChange(PropertyChangeEvent evt)
     {
-        if (!(evt instanceof ContainerManager.ContainerPropertyChangeEvent))
+        if (!(evt instanceof ContainerManager.ContainerPropertyChangeEvent ce))
         {
             return;
         }
 
-        ContainerManager.ContainerPropertyChangeEvent ce = (ContainerManager.ContainerPropertyChangeEvent) evt;
         if (!ce.container.isWorkbook())
         {
             return;
@@ -174,12 +173,10 @@ public class LaboratoryContainerListener extends SimpleModuleContainerListener
      */
     private void possiblyInitializeOnActiveModuleChange(PropertyChangeEvent evt)
     {
-        if (!(evt instanceof ContainerManager.ContainerPropertyChangeEvent))
+        if (!(evt instanceof ContainerManager.ContainerPropertyChangeEvent ce))
         {
             return;
         }
-
-        ContainerManager.ContainerPropertyChangeEvent ce = (ContainerManager.ContainerPropertyChangeEvent)evt;
 
         //Only make these changes from the parent container for performance reasons
         if (ce.container.isWorkbook())

@@ -60,7 +60,7 @@ import java.util.Set;
 public class LaboratoryDataProvider extends AbstractDataProvider
 {
     public static final String NAME = "Laboratory";
-    private Module _module;
+    private final Module _module;
 
     public LaboratoryDataProvider(Module m)
     {
@@ -283,9 +283,8 @@ public class LaboratoryDataProvider extends AbstractDataProvider
 
         for (NavItem nav : getSampleNavItems(c, u))
         {
-            if (nav.isVisible(c, u) && nav instanceof QueryImportNavItem)
+            if (nav.isVisible(c, u) && nav instanceof QueryImportNavItem item)
             {
-                QueryImportNavItem item = ((QueryImportNavItem)nav);
                 UserSchema us = item.getQueryCache().getUserSchema(c, u, item.getSchema());
                 if (us != null)
                 {

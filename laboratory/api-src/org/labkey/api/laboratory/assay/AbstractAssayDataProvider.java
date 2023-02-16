@@ -121,7 +121,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
     @Override
     public boolean isModuleEnabled(Container c)
     {
-        return _module == null ? true : c.getActiveModules().contains(_module);
+        return _module == null || c.getActiveModules().contains(_module);
     }
 
     @Override

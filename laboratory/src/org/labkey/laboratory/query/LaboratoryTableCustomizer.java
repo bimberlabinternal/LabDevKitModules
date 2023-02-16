@@ -56,7 +56,7 @@ import java.util.Set;
 public class LaboratoryTableCustomizer implements TableCustomizer
 {
     private static final Logger _log = LogManager.getLogger(LaboratoryTableCustomizer.class);
-    private MultiValuedMap _props;
+    private final MultiValuedMap _props;
 
     public LaboratoryTableCustomizer()
     {
@@ -261,7 +261,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
     private void appendDemographicsCols(final UserSchema us, AbstractTableInfo ti, ColumnInfo subjectCol)
     {
-       LaboratoryServiceImpl service = (LaboratoryServiceImpl)LaboratoryServiceImpl.get();
+       LaboratoryServiceImpl service = LaboratoryServiceImpl.get();
         Set<DemographicsSource> qds = service.getDemographicsSources(us.getContainer(), us.getUser());
         if (qds != null)
         {
@@ -362,7 +362,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
         MutableColumnInfo col = new WrappedColumn(pk, name);
         col.setLabel("Major Events");
-        col.setDescription("This column shows all major events recorded in this subject\'s history and will calculate the time elapsed between the current sample and these dates.");
+        col.setDescription("This column shows all major events recorded in this subject's history and will calculate the time elapsed between the current sample and these dates.");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);

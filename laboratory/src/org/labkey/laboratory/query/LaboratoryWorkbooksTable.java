@@ -315,7 +315,7 @@ public class LaboratoryWorkbooksTable extends SimpleUserSchema.SimpleTable
      */
     private class WorkbookIdGenerator
     {
-        private Map<String, Integer> _idMap = new HashMap<String, Integer>();
+        private final Map<String, Integer> _idMap = new HashMap<String, Integer>();
 
         public WorkbookIdGenerator()
         {

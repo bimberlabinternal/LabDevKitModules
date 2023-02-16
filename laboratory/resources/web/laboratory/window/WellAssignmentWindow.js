@@ -292,7 +292,7 @@ Ext4.define('Laboratory.window.WellAssignmentWindow', {
                 Ext4.Msg.hide();
                 return false;
             }
-        };
+        }
 
         if (stop1 >= this.wellStore.getCount()){
             alert('Error: ' + category + ' extends beyond the plate');
