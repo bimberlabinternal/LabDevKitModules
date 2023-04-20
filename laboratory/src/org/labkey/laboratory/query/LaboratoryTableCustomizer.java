@@ -299,7 +299,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
                             if (null == _table)
                             {
                                 // get forWrite==true because we modify this table
-                                TableInfo ti = ((UserSchema)getSchema()).getTable(_tableName, getLookupContainerFilter(), true, true);
+                                TableInfo ti = ((UserSchema)getLookupSchema()).getTable(_tableName, getLookupContainerFilter(), true, true);
 
                                 ((MutableColumnInfo)ti.getColumn(qd.getTargetColumn())).setKeyField(true);
 
