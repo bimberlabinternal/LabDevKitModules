@@ -1,12 +1,12 @@
 package org.labkey.ldk.query;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.MutableColumnInfo;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
+import org.labkey.api.util.logging.LogHelper;
 
 import java.sql.Timestamp;
 
@@ -18,7 +18,7 @@ import java.sql.Timestamp;
  */
 public class BuiltInColumnsCustomizer implements TableCustomizer
 {
-    private static final Logger _log = LogManager.getLogger(TableCustomizer.class);
+    private static final Logger _log = LogHelper.getLogger(TableCustomizer.class, "Logs information from BuiltInColumnsCustomizer");
     private boolean _disableFacetingForNumericCols = true;
 
     public BuiltInColumnsCustomizer()
@@ -136,6 +136,12 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
 
         public static void processColumn(MutableColumnInfo col)
         {
+            if (col.isLocked())
+            {
+                _log.debug("BuiltInColumnsCustomizer was called on a locked column: " + col.getName(), new Exception());
+                return;
+            }
+
             for (COL_ENUM colEnum : COL_ENUM.values())
             {
                 if (colEnum.name().equalsIgnoreCase(col.getName()))

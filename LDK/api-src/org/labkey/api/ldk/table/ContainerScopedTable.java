@@ -124,12 +124,12 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
     {
         private KeyManager _keyManager = new KeyManager();
 
-        public UpdateService(SimpleUserSchema.SimpleTable ti)
+        public UpdateService(SimpleUserSchema.SimpleTable<?> ti)
         {
             super(ti, ti.getRealTable());
         }
 
-        public UpdateService(SimpleUserSchema.SimpleTable simpleTable, TableInfo table, DefaultQueryUpdateService.DomainUpdateHelper helper)
+        public UpdateService(SimpleUserSchema.SimpleTable<?> simpleTable, TableInfo table, DefaultQueryUpdateService.DomainUpdateHelper helper)
         {
             super(simpleTable, table, helper);
         }
