@@ -71,7 +71,7 @@ public class LDKNaturalizeInstallationManager extends AbstractClrInstallationMan
     @Override
     protected String getInstallationCheckSql()
     {
-        return "SELECT x.G, ldk.Naturalize('Foo') FROM (SELECT 1 AS G) x GROUP BY G;";
+        return "SELECT x.G, ldk.Naturalize('Foo') FROM (SELECT 1 AS G) x GROUP BY G";
     }
 
     @Override
