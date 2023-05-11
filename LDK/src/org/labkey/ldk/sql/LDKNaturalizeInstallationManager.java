@@ -2,6 +2,7 @@ package org.labkey.ldk.sql;
 
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbSchemaType;
+import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.bigiron.AbstractClrInstallationManager;
 import org.labkey.api.view.template.Warnings;
 import org.labkey.ldk.LDKController;
@@ -69,9 +70,9 @@ public class LDKNaturalizeInstallationManager extends AbstractClrInstallationMan
     }
 
     @Override
-    protected String getInstallationCheckSql()
+    protected SQLFragment getInstallationCheckSql()
     {
-        return "SELECT x.G, ldk.Naturalize('Foo') FROM (SELECT 1 AS G) x GROUP BY G;";
+        return new SQLFragment("SELECT x.G, ldk.Naturalize('Foo') FROM (SELECT 1 AS G) x GROUP BY G");
     }
 
     @Override
