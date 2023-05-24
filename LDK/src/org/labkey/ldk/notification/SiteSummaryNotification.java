@@ -288,7 +288,7 @@ public class SiteSummaryNotification implements Notification
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DATE, -1);
-        SQLFragment sql = new SQLFragment("SELECT t.formtype, count(*) as total FROM ehr.tasks t WHERE cast(t.created as date) = '" + new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime()) + "' GROUP BY t.formtype ORDER BY t.formtype");
+        SQLFragment sql = new SQLFragment("SELECT t.formtype, count(*) as total FROM ehr.tasks t WHERE cast(t.created as date) = ").appendValue(new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime())).append(" GROUP BY t.formtype ORDER BY t.formtype");
 
         UserSchema us = QueryService.get().getUserSchema(u, c, "core");
         SqlSelector ss = new SqlSelector(us.getDbSchema(), sql);
