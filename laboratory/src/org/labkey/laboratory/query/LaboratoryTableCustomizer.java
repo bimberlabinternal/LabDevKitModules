@@ -985,14 +985,14 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             SQLFragment containerSql = ContainerFilter.current(c).getSQLFragment(LaboratorySchema.getInstance().getSchema(), new SQLFragment(ti.getContainerFieldKey().toString()));
 
             SQLFragment sql = new SQLFragment("(SELECT count(*) as _expr FROM laboratory.samples s WHERE " +
-                    " (s.").append(containerSql).append(")" +
-                    " AND " + getNullSafeEqual("s.subjectid", ExprColumn.STR_TABLE_ALIAS + ".subjectid") +
-                    " AND " + getNullSafeEqual("CAST(s.sampledate as DATE)", "CAST(" + ExprColumn.STR_TABLE_ALIAS + ".sampledate as DATE)") +
-                    " AND " + getNullSafeEqual("s.sampletype", ExprColumn.STR_TABLE_ALIAS + ".sampletype") +
-                    " AND " + getNullSafeEqual("s.samplesubtype", ExprColumn.STR_TABLE_ALIAS + ".samplesubtype") +
-                    " AND " + ExprColumn.STR_TABLE_ALIAS + ".dateremoved IS NULL" +
-                    " AND s.rowid != " + ExprColumn.STR_TABLE_ALIAS + ".rowid" +
-                    ")");
+                    " (s.").append(containerSql).append(")" + " AND ").
+                    append(getNullSafeEqual("s.subjectid", ExprColumn.STR_TABLE_ALIAS + ".subjectid")).
+                    append(" AND ").append(getNullSafeEqual("CAST(s.sampledate as DATE)", "CAST(" + ExprColumn.STR_TABLE_ALIAS + ".sampledate as DATE)")).
+                    append(" AND ").append(getNullSafeEqual("s.sampletype", ExprColumn.STR_TABLE_ALIAS + ".sampletype")).
+                    append(" AND ").append(getNullSafeEqual("s.samplesubtype", ExprColumn.STR_TABLE_ALIAS + ".samplesubtype")).
+                    append(" AND ").append(ExprColumn.STR_TABLE_ALIAS).append(".dateremoved IS NULL").
+                    append(" AND s.rowid != ").append(ExprColumn.STR_TABLE_ALIAS).append(".rowid").
+                    append(")");
 
             ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.INTEGER, ti.getColumn("subjectid"), ti.getColumn("sampledate"), ti.getColumn("sampletype"), ti.getColumn("samplesubtype"));
             col.setLabel("Matching Samples");
