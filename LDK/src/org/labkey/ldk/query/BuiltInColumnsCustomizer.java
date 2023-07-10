@@ -39,6 +39,12 @@ public class BuiltInColumnsCustomizer implements TableCustomizer
             }
         }
 
+        if (table.isLocked())
+        {
+            _log.debug("BuildInColumnsCustomizer called on a locked table: " + table.getPublicSchemaName() + " / " + table.getName(), new Exception());
+            return;
+        }
+
         table.setDefaultVisibleColumns(null);
     }
 
