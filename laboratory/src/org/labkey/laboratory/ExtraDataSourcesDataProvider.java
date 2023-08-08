@@ -189,12 +189,16 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
         Set<AdditionalDataSource> sources = service.getAdditionalDataSources(c, u);
         for (AdditionalDataSource source : sources)
         {
-            TableInfo ti = source.getTableInfo(c, u);
-            if (ti != null)
+            if (source.getItemType() == LaboratoryService.NavItemCategory.data || source.getItemType() == LaboratoryService.NavItemCategory.samples)
             {
-                assert ti.getPublicSchemaName() != null;
-                assert ti.getPublicName() != null;
-                items.add(new QueryCountNavItem(this, ti.getPublicSchemaName(), ti.getPublicName(), source.getItemType(), source.getReportCategory(), source.getLabel()));
+                TableInfo ti = source.getTableInfo(c, u);
+                if (ti != null)
+                {
+                    assert ti.getPublicSchemaName() != null;
+                    assert ti.getPublicName() != null;
+
+                    items.add(new QueryCountNavItem(this, ti.getPublicSchemaName(), ti.getPublicName(), source.getItemType(), source.getReportCategory(), source.getLabel()));
+                }
             }
         }
 
