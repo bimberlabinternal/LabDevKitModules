@@ -88,7 +88,7 @@ GO
 -- Create (or replace) a simple function that returns the version number of the newly installed assembly
 IF EXISTS (SELECT  *
     FROM  sys.objects
-      WHERE   object_id = OBJECT_ID(N' ldk.NaturalizeVersion')
+      WHERE   object_id = OBJECT_ID(N'ldk.NaturalizeVersion')
         AND type = N'FN')
   DROP FUNCTION  ldk.NaturalizeVersion;
 GO
