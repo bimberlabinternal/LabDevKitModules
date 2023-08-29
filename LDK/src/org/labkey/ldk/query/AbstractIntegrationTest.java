@@ -31,7 +31,7 @@ public class AbstractIntegrationTest extends Assert
         Container project = ContainerManager.getForPath(projectName);
         if (project == null)
         {
-            ContainerManager.createContainer(ContainerManager.getRoot(), projectName);
+            ContainerManager.createContainer(ContainerManager.getRoot(), projectName, TestContext.get().getUser());
         }
     }
 
