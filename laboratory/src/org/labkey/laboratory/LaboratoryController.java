@@ -243,7 +243,7 @@ public class LaboratoryController extends SpringActionController
             catch (ChangePropertyDescriptorException e)
             {
                 ExceptionUtil.logExceptionToMothership(getViewContext().getRequest(), e);
-                return new HtmlView("There was an error inspecting this assay: " + e.getMessage());
+                return HtmlView.of("There was an error inspecting this assay: " + e.getMessage());
             }
         }
 
