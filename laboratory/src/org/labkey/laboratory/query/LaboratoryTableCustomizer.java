@@ -71,6 +71,12 @@ public class LaboratoryTableCustomizer implements TableCustomizer
     @Override
     public void customize(TableInfo ti)
     {
+        if (ti.isLocked())
+        {
+            _log.debug("LaboratoryTableCustomizer called on a locked table: " + ti.getPublicSchemaName() + " / " + ti.getName(), new Exception());
+            return;
+        }
+
         //apply defaults
         TableCustomizer tc = LDKService.get().getBuiltInColumnsCustomizer(true);
         tc.customize(ti);
@@ -164,7 +170,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
     public void customizeColumns(AbstractTableInfo  ti)
     {
-        var container = ti.getMutableColumn("container");
+        MutableColumnInfo container = ti.getMutableColumn("container");
         if (container == null)
         {
             container = ti.getMutableColumn("folder");
