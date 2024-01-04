@@ -6,6 +6,6 @@ subprojects.each  {
     {
         p.evaluationDependsOn(BuildUtils.getApiProjectPath(project.gradle))
         p.apply plugin: 'java'
-        p.apply plugin: 'org.labkey.module'
+        p.apply plugin: 'org.labkey.build.module'
     }
 }
