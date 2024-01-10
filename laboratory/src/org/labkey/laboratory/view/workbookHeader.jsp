@@ -47,7 +47,7 @@
     }
 </style>
 
-<div id=<%=q(wpId)%>></div>
+<div id="<%=h(wpId)%>"></div>
 
 <script type="text/javascript">
     Ext4.onReady(function(){
