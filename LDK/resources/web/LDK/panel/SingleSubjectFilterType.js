@@ -64,6 +64,10 @@ Ext4.define('LDK.panel.SingleSubjectFilterType', {
             nonRemovable: []
         };
 
+        if (this.reportQCStates?.length) {
+            filterArray.nonRemovable.push(LABKEY.Filter.create('qcstate/label', this.reportQCStates, LABKEY.Filter.Types.EQUALS_ONE_OF));
+        }
+
         var subjectFieldName;
         if(tab.report) {
             subjectFieldName = tab.report.subjectFieldName;
