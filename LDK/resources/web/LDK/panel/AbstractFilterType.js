@@ -1,6 +1,9 @@
 Ext4.define('LDK.panel.AbstractFilterType', {
     extend: 'Ext.panel.Panel',
 
+    // This is passed to the filter types to apply a non-removable filter on these QC state labels
+    reportQCStates: [],
+
     initComponent: function(){
         Ext4.apply(this, {
             layout: 'hbox',
@@ -31,10 +34,16 @@ Ext4.define('LDK.panel.AbstractFilterType', {
     },
 
     getFilterArray: function(tab, subject){
-        return {
+        let filterArray = {
             removable: [],
             nonRemovable: []
         };
+
+        if (this.reportQCStates?.length) {
+            filterArray.nonRemovable.push(LABKEY.Filter.create('qcstate/label', this.reportQCStates, LABKEY.Filter.Types.EQUALS_ONE_OF));
+        }
+
+        return filterArray;
     },
 
     getTitle: function(){
