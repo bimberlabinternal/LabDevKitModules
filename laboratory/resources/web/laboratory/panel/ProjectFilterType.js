@@ -77,6 +77,10 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
             nonRemovable: []
         };
 
+        if (this.reportQCStates?.length) {
+            filterArray.nonRemovable.push(LABKEY.Filter.create('qcstate/label', this.reportQCStates, LABKEY.Filter.Types.EQUALS_ONE_OF));
+        }
+
         var filters = this.getFilters();
         var report = tab.report;
         var projectFieldName = (filters.projectFilterMode === 'overlappingProjects') ? report.overlappingProjectsFieldName : report.allProjectsFieldName;
