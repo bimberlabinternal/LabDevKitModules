@@ -15,10 +15,14 @@
  */
 package org.labkey.ldk.notification;
 
+import jakarta.mail.Address;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -54,10 +58,6 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -71,7 +71,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
  * User: bbimber
  * Date: 7/14/12
  * Time: 2:49 PM

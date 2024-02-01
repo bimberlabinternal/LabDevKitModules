@@ -15,6 +15,7 @@
  */
 package org.labkey.api.ldk;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.module.ModuleContext;
@@ -24,8 +25,6 @@ import org.labkey.api.security.User;
 import org.labkey.api.view.ActionURL;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.servlet.mvc.Controller;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * User: bimber

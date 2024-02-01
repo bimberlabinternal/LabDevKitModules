@@ -16,6 +16,7 @@
 
 package org.labkey.ldk;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -86,7 +87,6 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletResponse;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -97,9 +97,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-
-
-
 
 public class LDKController extends SpringActionController
 {
@@ -115,7 +112,7 @@ public class LDKController extends SpringActionController
     public class GetNotificationsAction extends ReadOnlyApiAction<Object>
     {
         @Override
-        public ApiResponse execute(Object form, BindException errors) throws Exception
+        public ApiResponse execute(Object form, BindException errors)
         {
             Map<String, Object> result = new HashMap<>();
             Set<Notification> set = NotificationServiceImpl.get().getNotifications(getContainer(), false);

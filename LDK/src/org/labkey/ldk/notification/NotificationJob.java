@@ -1,36 +1,19 @@
 package org.labkey.ldk.notification;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.labkey.api.data.Container;
 import org.labkey.api.ldk.notification.Notification;
 import org.labkey.api.ldk.notification.NotificationService;
-import org.labkey.api.security.User;
-import org.labkey.api.security.permissions.AdminPermission;
-import org.labkey.api.util.ExceptionUtil;
-import org.labkey.api.util.MailHelper;
-import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.impl.StdSchedulerFactory;
 
-import javax.mail.Address;
-import javax.mail.Message;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 12/19/12
  * Time: 7:59 PM
