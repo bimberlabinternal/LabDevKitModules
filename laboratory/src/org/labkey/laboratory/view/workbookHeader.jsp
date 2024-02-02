@@ -21,6 +21,8 @@
 <%@ page import="org.labkey.api.view.template.ClientDependencies" %>
 <%@ page import="org.labkey.laboratory.query.WorkbookModel" %>
 <%@ page import="java.util.Arrays" %>
+<%@ page import="org.json.JSONArray" %>
+<%@ page import="org.labkey.api.util.JavaScriptFragment" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%!
     @Override
@@ -69,7 +71,7 @@
             materials: <%=q(model.getMaterials())%>,
             methods: <%=q(model.getMethods())%>,
             results: <%=q(model.getResults())%>,
-            tags: <%=text(model.getTags() == null || model.getTags().length == 0 ? "null" : "['" + text(StringUtils.join(Arrays.asList(model.getTags()), "','")) + "']")%>
+            tags: <% if (model.getTags() == null || model.getTags().length == 0) { %><%=JavaScriptFragment.NULL%><% } else { %><%=new JSONArray(model.getTags())%><% } %>
         }).render(webpartId);
 
         if (LABKEY.Security.currentUser.canInsert) {
