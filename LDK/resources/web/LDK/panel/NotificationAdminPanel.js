@@ -198,7 +198,7 @@ Ext4.define('LDK.panel.NotificationAdminPanel', {
                 helpPopup: 'This will be used as the reply email for all sent messages.',
                 dataIndex: 'replyEmail',
                 vtype: 'email',
-                value: results.replyEmail
+                value: results.replyEmail.address
             },{
                 xtype: 'panel',
                 border: false,
