@@ -16,6 +16,7 @@
 
 package org.labkey.ldk;
 
+import jakarta.mail.Address;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -125,7 +126,8 @@ public class LDKController extends SpringActionController
             User u = NotificationServiceImpl.get().getUser(getContainer());
             result.put("serviceEnabled", NotificationServiceImpl.get().isServiceEnabled());
             result.put("notificationUser", u == null ? null : u.getEmail());
-            result.put("replyEmail", NotificationServiceImpl.get().getReturnEmail(getContainer()));
+            Address replyEmail = NotificationServiceImpl.get().getReturnEmail(getContainer());
+            result.put("replyEmail", replyEmail == null ? null : replyEmail.toString());
             result.put("success", true);
 
             return new ApiSimpleResponse(result);
