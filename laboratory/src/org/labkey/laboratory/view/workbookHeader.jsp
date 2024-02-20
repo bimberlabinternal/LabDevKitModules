@@ -51,7 +51,7 @@
 
 <div id="<%=h(wpId)%>"></div>
 
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%=getScriptNonce()%>">
     Ext4.onReady(function(){
         var webpartId = <%=q(wpId)%>;
         var workbookId = <%=h(workbookId)%>;

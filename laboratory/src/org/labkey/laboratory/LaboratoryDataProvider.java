@@ -133,7 +133,7 @@ public class LaboratoryDataProvider extends AbstractDataProvider
 
             for (Study study : StudyService.get().getAllStudies(c, u))
             {
-                items.add(new DetailsUrlWithoutLabelNavItem(this, study.getLabel(), DetailsURL.fromString("/study/begin.view", study.getContainer()), LaboratoryService.NavItemCategory.reports, "Studies"));
+                items.add(new DetailsUrlWithoutLabelNavItem(this, study.getLabel(), DetailsURL.fromString("/study-begin.view", study.getContainer()), LaboratoryService.NavItemCategory.reports, "Studies"));
             }
 
 //            FileContentService service = FileContentService.get();

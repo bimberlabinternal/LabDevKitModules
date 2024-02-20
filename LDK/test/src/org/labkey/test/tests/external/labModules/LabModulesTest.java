@@ -242,7 +242,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     protected void setUpTest() throws Exception
     {
         goToHome();
-        beginAt("/project/shared/begin.view");
+        beginAt("/shared/project-begin.view");
         _containerHelper.enableModule("Laboratory");
         goToHome();
 

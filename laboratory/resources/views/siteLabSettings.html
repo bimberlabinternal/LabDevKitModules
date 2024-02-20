@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%=scriptNonce%>">
     if (!LABKEY.Security.currentUser.isSystemAdmin){
         window.location = LABKEY.ActionURL.buildURL('project', 'start', 'home');
     }
