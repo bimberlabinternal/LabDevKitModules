@@ -19,7 +19,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.util.MemTracker;
 import org.labkey.api.util.PageFlowUtil;
-import org.springframework.dao.DeadlockLoserDataAccessException;
+import org.springframework.dao.PessimisticLockingFailureException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -149,9 +149,9 @@ public class LookupValidationHelper
 
             return _allowableValueMap.get(name);
         }
-        catch (DeadlockLoserDataAccessException e)
+        catch (PessimisticLockingFailureException e)
         {
-            _log.error("DeadlockLoserException in LookupValidationHelper for table: " + _table.getPublicSchemaName() + "." +  _table.getPublicName(), e);
+            _log.error("PessimisticLockingFailureException in LookupValidationHelper for table: " + _table.getPublicSchemaName() + "." +  _table.getPublicName(), e);
             throw e;
         }
     }
@@ -190,7 +190,7 @@ public class LookupValidationHelper
         }
 
         QueryUpdateService qus = ti.getUpdateService();
-        qus.updateRows(_user, _container, toUpdate, oldPKs, null, new HashMap<String, Object>());
+        qus.updateRows(_user, _container, toUpdate, oldPKs, null, new HashMap<>());
     }
 
     public boolean verifyNotUsed(String targetSchema, String targetTable, String targetField, Object val) throws SQLException
