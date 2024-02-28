@@ -121,7 +121,7 @@ public class LaboratoryManager
 
         if (!rows.isEmpty())
         {
-            try (DbScope.Transaction t = workbookDbTable.getSchema().getScope().beginTransaction())
+            try (DbScope.Transaction t = workbookDbTable.getSchema().getScope().ensureTransaction())
             {
                 rows.forEach(wb -> Table.insert(u, workbookDbTable, wb));
                 t.commit();
