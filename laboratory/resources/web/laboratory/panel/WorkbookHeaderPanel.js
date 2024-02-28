@@ -6,41 +6,47 @@
  */
 Ext4.define('Laboratory.panel.WorkbookHeaderPanel', {
     extend: 'LDK.panel.WebpartPanel',
+    panelTitle: 'Details',
+
     initComponent: function(){
         Ext4.apply(this, {
-            title: 'Details',
+            title: this.panelTitle,
             defaults: {
                 border: false
             },
-            items: [{
-                html: 'Description:',
-                style: 'font-weight: bold;'
-            },
-                this.getFieldCfg('description', this.description)
-                ,{
-                    html: 'Materials:',
-                    style: 'font-weight: bold;padding-top: 10px;'
-                },
-                this.getFieldCfg('materials', this.materials)
-                ,{
-                    html: 'Methods:',
-                    style: 'font-weight: bold;padding-top: 10px;'
-                },
-                this.getFieldCfg('methods', this.methods)
-                ,{
-                    html: 'Results:',
-                    style: 'font-weight: bold;padding-top: 10px;'
-                },
-                this.getFieldCfg('results', this.results)
-                ,{
-                    html: 'Tags:',
-                    style: 'font-weight: bold;padding-top: 10px;'
-                },
-                this.getTagFieldCfg()
-            ]
+            items: this.getPanelItems()
         });
 
         this.callParent(arguments);
+    },
+
+    getPanelItems: function() {
+        return [{
+            html: 'Description:',
+            style: 'font-weight: bold;'
+        },
+            this.getFieldCfg('description', this.description)
+            ,{
+                html: 'Materials:',
+                style: 'font-weight: bold;padding-top: 10px;'
+            },
+            this.getFieldCfg('materials', this.materials)
+            ,{
+                html: 'Methods:',
+                style: 'font-weight: bold;padding-top: 10px;'
+            },
+            this.getFieldCfg('methods', this.methods)
+            ,{
+                html: 'Results:',
+                style: 'font-weight: bold;padding-top: 10px;'
+            },
+            this.getFieldCfg('results', this.results)
+            ,{
+                html: 'Tags:',
+                style: 'font-weight: bold;padding-top: 10px;'
+            },
+            this.getTagFieldCfg()
+        ];
     },
 
     getTagFieldCfg: function(){
