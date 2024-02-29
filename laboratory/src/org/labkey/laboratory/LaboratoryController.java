@@ -773,6 +773,33 @@ public class LaboratoryController extends SpringActionController
         }
     }
 
+    @RequiresPermission(ReadPermission.class)
+    public class GetDemographicsProvidersAction extends ReadOnlyApiAction<Object>
+    {
+        @Override
+        public ApiResponse execute(Object form, BindException errors) throws Exception
+        {
+            Map<String, Object> results = new HashMap<>();
+
+            Container target = getContainer().isWorkbook() ? getContainer().getParent() : getContainer();
+
+            JSONArray providers = new JSONArray();
+
+            LaboratoryService.get().getDemographicsProviders(target, getUser()).forEach(d -> {
+                JSONObject json = new JSONObject();
+                json.put("label", d.getLabel());
+                json.put("isValidForPedigree", d.isValidForPedigree());
+
+                providers.put(json);
+            });
+
+            results.put("success", true);
+            results.put("providers", providers);
+
+            return new ApiSimpleResponse(results);
+        }
+    }
+
     @RequiresPermission(UpdatePermission.class)
     public class UpdateWorkbookTagsAction extends MutatingApiAction<UpdateWorkbookForm>
     {

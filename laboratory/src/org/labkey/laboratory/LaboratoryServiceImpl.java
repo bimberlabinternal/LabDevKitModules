@@ -17,6 +17,7 @@ package org.labkey.laboratory;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.assay.AssayFileWriter;
 import org.labkey.api.assay.AssayProvider;
@@ -35,6 +36,7 @@ import org.labkey.api.exp.api.ExpProtocol;
 import org.labkey.api.exp.api.ExpRun;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.laboratory.DataProvider;
+import org.labkey.api.laboratory.DemographicsProvider;
 import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.laboratory.NavItem;
 import org.labkey.api.laboratory.TabbedReportItem;
@@ -80,6 +82,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
     private final Map<String, Map<String, List<ButtonConfigFactory>>> _assayButtons = new CaseInsensitiveHashMap<>();
     private final Map<String, DataProvider> _dataProviders = new HashMap<>();
     private final Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
+    private final List<DemographicsProvider> _demographicsProviders = new ArrayList<>();
 
     public static final String DEMOGRAPHICS_PROPERTY_CATEGORY = "laboratory.demographicsSource";
     public static final String DATASOURCE_PROPERTY_CATEGORY = "laboratory.additionalDataSource";
@@ -673,6 +676,32 @@ public class LaboratoryServiceImpl extends LaboratoryService
         catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
         {
             _log.error("Unable to create instance of class '" + customizerClass.getName() + "'", e);
+        }
+
+        return null;
+    }
+
+    @Override
+    public void registerDemographicsProvider(DemographicsProvider provider)
+    {
+        _demographicsProviders.add(provider);
+    }
+
+    @Override
+    public List<DemographicsProvider> getDemographicsProviders(final Container c, final User u)
+    {
+        return _demographicsProviders.stream().filter(d -> d.isAvailable(c, u)).toList();
+    }
+
+    @Override
+    public @Nullable DemographicsProvider getDemographicsProviderByName(Container c, User u, String name)
+    {
+        for (DemographicsProvider d : getDemographicsProviders(c, u))
+        {
+            if (name.equals(d.getLabel()))
+            {
+                return d;
+            }
         }
 
         return null;
