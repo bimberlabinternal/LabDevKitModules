@@ -696,6 +696,11 @@ public class LaboratoryServiceImpl extends LaboratoryService
     @Override
     public @Nullable DemographicsProvider getDemographicsProviderByName(Container c, User u, String name)
     {
+        if (name == null)
+        {
+            throw new IllegalArgumentException("The DemographicsProvider name cannot be null");
+        }
+
         for (DemographicsProvider d : getDemographicsProviders(c, u))
         {
             if (name.equals(d.getLabel()))
