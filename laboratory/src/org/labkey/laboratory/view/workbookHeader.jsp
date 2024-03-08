@@ -36,7 +36,7 @@
     }
 %>
 <%
-    JspView me = (JspView) HttpView.currentView();
+    JspView<?> me = (JspView<?>) HttpView.currentView();
     WorkbookModel model = (WorkbookModel)me.getModelBean();
     Integer workbookId = model.getWorkbookId();
     String wpId = "wp_" + me.getWebPartRowId();

@@ -83,6 +83,12 @@ public class DefaultTableCustomizer implements TableCustomizer
     @Override
     public void customize(TableInfo table)
     {
+        if (table.isLocked())
+        {
+            _log.debug("DefaultTableCustomizer called on a locked table: " + table.getPublicSchemaName() + " / " + table.getName(), new Exception());
+            return;
+        }
+
         if (table instanceof SchemaTableInfo)
             _log.error("Table customizer is being passed a SchemaTableInfo for: " + table.getPublicSchemaName() + "." + table.getPublicName());
         else if (table instanceof AbstractTableInfo)
