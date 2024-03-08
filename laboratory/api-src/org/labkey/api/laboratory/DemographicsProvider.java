@@ -1,10 +1,10 @@
 package org.labkey.api.laboratory;
 
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.module.Module;
 import org.labkey.api.security.User;
 
-import javax.annotation.Nullable;
 
 public class DemographicsProvider
 {
