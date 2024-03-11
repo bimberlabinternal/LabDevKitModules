@@ -15,6 +15,7 @@
  */
 package org.labkey.api.laboratory;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.data.Container;
@@ -115,6 +116,12 @@ abstract public class LaboratoryService
     abstract public void registerTableIndex(String schemaName, String queryName, List<String> columnsToIndex);
 
     abstract public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizerClass, String schemaName, String queryName);
+
+    abstract public void registerDemographicsProvider(DemographicsProvider provider);
+
+    abstract public List<DemographicsProvider> getDemographicsProviders(Container c, User u);
+
+    abstract public @Nullable DemographicsProvider getDemographicsProviderByName(Container c, User u, String name);
 
     public static enum NavItemCategory
     {
