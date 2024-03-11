@@ -17,6 +17,7 @@ package org.labkey.api.ldk.table;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
@@ -174,7 +175,7 @@ abstract public class AbstractDataDefinedTable extends CustomPermissionsTable
         }
 
         @Override
-        protected Map<String, Object> updateRow(User user, Container container, Map<String, Object> row, @NotNull Map<String, Object> oldRow) throws InvalidKeyException, ValidationException, QueryUpdateServiceException, SQLException
+        protected Map<String, Object> updateRow(User user, Container container, Map<String, Object> row, @NotNull Map<String, Object> oldRow, @Nullable Map<Enum, Object> configParameters) throws InvalidKeyException, ValidationException, QueryUpdateServiceException, SQLException
         {
             String oldValue = (String)oldRow.get(_valueColumn);
             String newValue = (String)row.get(_valueColumn);
@@ -186,7 +187,7 @@ abstract public class AbstractDataDefinedTable extends CustomPermissionsTable
                 _vm.uncacheValue(oldValue);
 
             row.put(_filterColumn, _filterValue);
-            return super.updateRow(user, container, row, oldRow);
+            return super.updateRow(user, container, row, oldRow, configParameters);
         }
 
         @Override

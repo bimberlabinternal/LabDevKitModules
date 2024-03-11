@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
@@ -137,7 +138,7 @@ public class LaboratoryWorkbooksTable extends SimpleUserSchema.SimpleTable
         }
 
         @Override
-        protected Map<String, Object> updateRow(User user, Container container, Map<String, Object> row, @NotNull Map<String, Object> oldRow) throws InvalidKeyException, ValidationException, QueryUpdateServiceException, SQLException
+        protected Map<String, Object> updateRow(User user, Container container, Map<String, Object> row, @NotNull Map<String, Object> oldRow, @Nullable Map<Enum, Object> configParameters) throws InvalidKeyException, ValidationException, QueryUpdateServiceException, SQLException
         {
             Object oldValue = oldRow.get(WORKBOOK_ID_COl);
             Object newValue = row.get(WORKBOOK_ID_COl);
@@ -145,7 +146,7 @@ public class LaboratoryWorkbooksTable extends SimpleUserSchema.SimpleTable
             if (oldValue != null && newValue != null && !oldValue.equals(newValue))
                 throw new ValidationException("Cannot change the workbook Id");
 
-            return super.updateRow(user, container, row, oldRow);
+            return super.updateRow(user, container, row, oldRow, configParameters);
         }
 
         /**
