@@ -19,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.query.DefaultSchema;
@@ -75,6 +76,11 @@ abstract public class AbstractTableCustomizer implements TableCustomizer
         return us.getTable(queryName);
     }
 
+    protected SQLFragment getNewlineSql(TableInfo ti)
+    {
+        return new SQLFragment(getChr(ti) + "(10)");
+    }
+    
     protected String getChr(TableInfo ti)
     {
         return ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
