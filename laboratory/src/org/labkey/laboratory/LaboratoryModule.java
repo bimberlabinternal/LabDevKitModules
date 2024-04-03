@@ -48,6 +48,7 @@ import org.labkey.api.view.WebPartView;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.api.writer.ContainerUser;
 import org.labkey.laboratory.notification.LabSummaryNotification;
+import org.labkey.laboratory.query.LaboratoryDemographicsProvider;
 import org.labkey.laboratory.query.WorkbookModel;
 import org.labkey.laboratory.security.LaboratoryAdminRole;
 
@@ -162,6 +163,7 @@ public class LaboratoryModule extends ExtendedSimpleModule
         LaboratoryService.get().registerDataProvider(new LaboratoryDataProvider(this));
         LaboratoryService.get().registerDataProvider(new SampleTypeDataProvider());
         LaboratoryService.get().registerDataProvider(new ExtraDataSourcesDataProvider(this));
+        LaboratoryService.get().registerDemographicsProvider(new LaboratoryDemographicsProvider());
 
         DetailsURL details = DetailsURL.fromString("/laboratory/siteLabSettings.view");
         details.setContainerContext(ContainerManager.getSharedContainer());
