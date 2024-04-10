@@ -7,12 +7,11 @@ Ext4.define('Laboratory.button.IconButton', {
 
     renderTpl: [
         '<div id="{id}-wrap" class="tool-icon">',
-        '<a style="display: block" ' +
+        '<a style="display: block;cursor: pointer;" ' +
         '<tpl if="href">href="{href}"</tpl>' +
-        '<tpl if="!href">href="javascript:void(0)"</tpl>' +
         '<tpl if="tooltip"> data-qtip="{tooltip}"</tpl>' +
             '>' +
-            '<tpl if="icon"><div><img id="{id}-btnIconEl" src="{icon}"/ ></div></tpl>' +
+            '<tpl if="icon"><div><img alt="{text}" id="{id}-btnIconEl" src="{icon}"/ ></div></tpl>' +
             '{text}</a>',
         '</div>'
     ],
