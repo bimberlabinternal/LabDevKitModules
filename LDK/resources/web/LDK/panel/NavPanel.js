@@ -443,7 +443,6 @@ Ext4.define('LDK.panel.NavPanel', {
         return {
             xtype: 'ldk-linkbutton',
             text: config.text || 'Import Data',
-            href: 'javascript:void(0);',
             tooltip: config.importTooltip || 'Click to import new data',
             hidden: config.showImport===false || !LABKEY.Security.currentUser.canInsert,
             importIntoWorkbooks: config.importIntoWorkbooks,
