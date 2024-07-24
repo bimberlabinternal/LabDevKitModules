@@ -53,8 +53,7 @@ public class ExtraDataSourcesUserSchema extends SimpleUserSchema
             {
                 if (!getContainer().isWorkbook() || source.isImportIntoWorkbooks())
                 {
-                    // TODO: QueryDefinition.getTable doesn't yet have ContainerFilter option
-                    TableInfo ti = source.getTableInfo(getContainer(), getUser());
+                    TableInfo ti = createWrappedTable(name, source.getTableInfo(getContainer(), getUser()), cf);
                     new WrappingTableCustomizer().customize(ti);
 
                     return ti;
@@ -63,6 +62,14 @@ public class ExtraDataSourcesUserSchema extends SimpleUserSchema
         }
 
         return null;
+    }
+
+    @Override
+    protected void afterConstruct(TableInfo info)
+    {
+        // No-op to avoid double-adding query metadata. Rely on the source table for this.
+        // This bug appears in the schema browser in production mode only. If there is a container with any extra data sources present, the table details
+        // page will asynchronously load an 'Error: null' message, coming from the query analyzer
     }
 
     @Override
