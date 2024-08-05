@@ -38,11 +38,13 @@ public class ShowEditUIButton extends SimpleButtonConfigFactory
 
     protected Class<? extends Permission>[] _perms;
 
+    @SafeVarargs
     public ShowEditUIButton(Module owner, String schemaName, String queryName, Class<? extends Permission>... perms)
     {
         this(owner, schemaName, queryName, "Edit Records", perms);
     }
 
+    @SafeVarargs
     public ShowEditUIButton(Module owner, String schemaName, String queryName, String label, Class<? extends Permission>... perms)
     {
         super(owner, label, "");
@@ -87,20 +89,20 @@ public class ShowEditUIButton extends SimpleButtonConfigFactory
     {
         String schema = _schemaName == null || LDKService.ALL_SCHEMAS.equals(_schemaName) ? ti.getPublicSchemaName() : _schemaName;
         String query = _queryName == null || LDKService.ALL_TABLES.equalsIgnoreCase(_queryName) ? ti.getPublicName() : _queryName;
-        String ret = getHandlerName() + "(" + PageFlowUtil.jsString(schema) + "," + PageFlowUtil.jsString(query) + ",dataRegionName, {";
+        StringBuilder ret = new StringBuilder(getHandlerName() + "(" + PageFlowUtil.jsString(schema) + "," + PageFlowUtil.jsString(query) + ",dataRegionName, {");
 
         String delim = "";
         if (_urlParamMap != null)
         {
             for (String key : _urlParamMap.keySet())
             {
-                ret += delim + PageFlowUtil.jsString(key) + ":" + PageFlowUtil.jsString(_urlParamMap.get(key));
+                ret.append(delim).append(PageFlowUtil.jsString(key)).append(":").append(PageFlowUtil.jsString(_urlParamMap.get(key)));
                 delim = ",";
             }
         }
 
-        ret += "}, " + _copyFilters + ");";
+        ret.append("}, ").append(_copyFilters).append(");");
 
-        return ret;
+        return ret.toString();
     }
 }
