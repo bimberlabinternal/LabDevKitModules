@@ -1,10 +1,10 @@
 /**
  * This is designed to help with the problem of rendering dynamic content into Ext4 panels.  It's a little ugly, but this
- * component provides a div into which you render the webpart or report.  On load, it will listen for that element's DOMSubtreeModified/DOMNodeInserted
- * event, and resize the Ext containers if needed.  It attempts to batch these events and only actually trigger a layout when a resize
- * is needed.
+ * component provides a div into which you render the webpart or report.  On load, it will use a mutation observer to listen for
+ * events that indicate content has been inserted.  When that happens, it will fire a 'contentsizechange' event and resize
+ * the Ext containers if needed.  It attempts to batch these events and only actually trigger a layout when a resize is needed.
  *
- * NOTE: this currently handles the problem by adding DOMSubtreeModified/DOMNodeInserted listeners and manually resizing on change.
+ * NOTE: this currently handles the problem by adding a mutation observer and manually resizing on change.
  * A more elegant solution would be to dig into Ext's layout engine and make a custom layout that will
  * auto-size itself based on the width of our target element.  We'd need to override the methods that calculate weight and height.
  * Figuring that out will make WebPartPanel work better too.
@@ -40,41 +40,15 @@ Ext4.define('LDK.mixin.ContentResizing', {
             return;
         }
 
-        if (Ext4.isIE){
-            var cmp = this;
-
-            el = el.query('*[name="webpart"]')[0];
-            if (!Ext4.isDefined(el) && !isRetry){
-                Ext4.defer(this.createListeners, 250, this, [true]);
-                return;
-            }
-
-            if (!el && isRetry) {
-                return;
-            }
-
-            if (el.addEventListener){
-                el.addEventListener('DOMSubtreeModified', function(){
-                    cmp.fireEvent('contentsizechange');
-                }, false);
-            }
-            else if (el.attachEvent){
-                el.attachEvent('DOMSubtreeModified', function(){
-                    cmp.fireEvent('contentsizechange');
-                });
-            }
-            else {
-                LDK.Utils.logToServer({
-                    message: 'Unable to find appropriate event in ContentResizingPanel',
-                    level: 'ERROR',
-                    includeContext: true
-                });
-            }
-        }
-        else if (Ext4.isDefined(el)) {
-            el.on('DOMNodeInserted', function(){
-                this.fireEvent('contentsizechange');
-            }, this);
+        if (Ext4.isDefined(el)) {
+            // Issue 50942: Removal of support for mutation events. This replaces DOMNodeInserted event handler.
+            const observer = new MutationObserver(mutationList =>
+                    mutationList.filter(m => m.type === 'childList').forEach(m => {
+                        m.addedNodes.forEach(function(){
+                            this.fireEvent('contentsizechange');
+                        }, this);
+                    }));
+            observer.observe(el.dom,{childList: true, subtree: true});
 
             // Issue 31454: if the output has a clickable labkey-wp-header, also listen for that event
             Ext4.each(el.query('.labkey-wp-header'), function(wpHeader) {
