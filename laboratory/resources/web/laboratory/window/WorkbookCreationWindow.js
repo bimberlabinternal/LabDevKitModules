@@ -126,7 +126,7 @@ Ext4.define('Laboratory.panel.WorkbookCreationPanel', {
         var urlParams = this.urlParams || {};
 
         var url = LABKEY.ActionURL.buildURL(controller, action, containerPath, urlParams);
-        if (url.length > 1000){
+        if (url.length > 500){
             Ext4.create('Ext.form.Panel', {
                 url: LABKEY.ActionURL.buildURL(controller, action, containerPath),
                 method: 'POST',
