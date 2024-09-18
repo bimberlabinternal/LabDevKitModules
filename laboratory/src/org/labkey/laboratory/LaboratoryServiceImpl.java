@@ -15,6 +15,7 @@
  */
 package org.labkey.laboratory;
 
+import org.apache.commons.vfs2.FileObject;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
@@ -196,10 +197,10 @@ public class LaboratoryServiceImpl extends LaboratoryService
 
         try
         {
-            File targetDirectory = AssayFileWriter.ensureUploadDirectory(ctx.getContainer());
-            File file = AssayFileWriter.findUniqueFileName(basename, targetDirectory);
+            FileObject targetDirectory = AssayFileWriter.ensureUploadDirectory(ctx.getContainer());
+            FileObject file = AssayFileWriter.findUniqueFileName(basename, targetDirectory);
 
-            return this.saveAssayBatch(results, json, file, ctx, provider, protocol);
+            return this.saveAssayBatch(results, json, file.getPath().toFile(), ctx, provider, protocol);
         }
         catch (ExperimentException e)
         {

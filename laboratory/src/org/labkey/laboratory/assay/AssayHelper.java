@@ -15,6 +15,7 @@
  */
 package org.labkey.laboratory.assay;
 
+import org.apache.commons.vfs2.FileObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +47,7 @@ import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.exp.property.DomainKind;
 import org.labkey.api.exp.property.DomainProperty;
+import org.labkey.api.files.virtual.AuthorizedFileSystem;
 import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.laboratory.assay.AssayDataProvider;
 import org.labkey.api.laboratory.assay.AssayImportMethod;
@@ -88,9 +90,8 @@ public class AssayHelper
         return _instance;
     }
 
-    public Map<String, File> saveResultsFile(List<Map<String, Object>> results, JSONObject json, File file, AssayProvider provider, ExpProtocol protocol) throws ExperimentException, ValidationException
+    public Map<String, FileObject> saveResultsFile(List<Map<String, Object>> results, JSONObject json, File file, AssayProvider provider, ExpProtocol protocol) throws ExperimentException, ValidationException
     {
-        Map<String, File> files = new HashMap<String, File>();
         //TODO: consider adding as input??
         //files.put("RawInput", file);
 
@@ -111,7 +112,8 @@ public class AssayHelper
             throw new ExperimentException(e.getMessage());
         }
 
-        files.put(AssayDataCollector.PRIMARY_FILE, newFile);
+        Map<String, FileObject> files = new HashMap<String, FileObject>();
+        files.put(AssayDataCollector.PRIMARY_FILE, AuthorizedFileSystem.convertToFileObject(newFile));
 
         return files;
     }
@@ -209,7 +211,7 @@ public class AssayHelper
             });
         }
 
-        Map<String, File> uploadedFiles = saveResultsFile(results, json, file, provider, protocol);
+        Map<String, FileObject> uploadedFiles = saveResultsFile(results, json, file, provider, protocol);
 
         //TODO: see AssayRunAsyncContext
         AssayRunUploadContext uploadContext = new RunUploadContext<>(protocol, provider, name, comments, runProperties, batchProperties, ctx, uploadedFiles);
@@ -243,10 +245,10 @@ public class AssayHelper
         File parent = input.getParentFile();
         String basename = FileUtil.getBaseName(input);
         int suffix = 1;
-        File newFile = new File(parent,  basename + "." + extension);
+        File newFile = FileUtil.appendName(parent,  basename + "." + extension);
         while (newFile.exists())
         {
-            newFile = new File(parent,  basename + "-" + suffix + "." + extension);
+            newFile = FileUtil.appendName(parent,  basename + "-" + suffix + "." + extension);
             suffix++;
         }
         return newFile;
