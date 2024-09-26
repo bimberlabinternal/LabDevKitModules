@@ -15,7 +15,6 @@
  */
 package org.labkey.laboratory;
 
-import org.apache.commons.vfs2.FileObject;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +55,7 @@ import org.labkey.api.view.ViewContext;
 import org.labkey.laboratory.assay.AssayHelper;
 import org.labkey.laboratory.query.DefaultAssayCustomizer;
 import org.labkey.laboratory.query.LaboratoryTableCustomizer;
+import org.labkey.vfs.FileLike;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -197,10 +197,10 @@ public class LaboratoryServiceImpl extends LaboratoryService
 
         try
         {
-            FileObject targetDirectory = AssayFileWriter.ensureUploadDirectory(ctx.getContainer());
-            FileObject file = AssayFileWriter.findUniqueFileName(basename, targetDirectory);
+            FileLike targetDirectory = AssayFileWriter.ensureUploadDirectory(ctx.getContainer());
+            FileLike file = AssayFileWriter.findUniqueFileName(basename, targetDirectory);
 
-            return this.saveAssayBatch(results, json, file.getPath().toFile(), ctx, provider, protocol);
+            return this.saveAssayBatch(results, json, file.toNioPathForRead().toFile(), ctx, provider, protocol);
         }
         catch (ExperimentException e)
         {

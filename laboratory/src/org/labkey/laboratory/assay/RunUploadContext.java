@@ -16,7 +16,6 @@
 package org.labkey.laboratory.assay;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.vfs2.FileObject;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.assay.AssayProvider;
@@ -33,6 +32,7 @@ import org.labkey.api.qc.TransformResult;
 import org.labkey.api.security.User;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.ViewContext;
+import org.labkey.vfs.FileLike;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,9 +53,9 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
     private final ViewContext _ctx;
 
     private TransformResult _transformResult;
-    private final Map<String, FileObject> _uploadedData;
+    private final Map<String, FileLike> _uploadedData;
 
-    public RunUploadContext(ExpProtocol protocol, ProviderType providerType, String name, String comments, Map<String, String> runProperties, Map<String, String> batchProperties, ViewContext ctx, Map<String, FileObject> uploadedData)
+    public RunUploadContext(ExpProtocol protocol, ProviderType providerType, String name, String comments, Map<String, String> runProperties, Map<String, String> batchProperties, ViewContext ctx, Map<String, FileLike> uploadedData)
     {
         _protocol = protocol;
         _providerType = providerType;
@@ -154,7 +154,7 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
 
     @Override
     @NotNull
-    public Map<String, FileObject> getUploadedData() throws ExperimentException
+    public Map<String, FileLike> getUploadedData() throws ExperimentException
     {
         return _uploadedData;
     }

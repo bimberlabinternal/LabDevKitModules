@@ -15,7 +15,6 @@
  */
 package org.labkey.laboratory.assay;
 
-import org.apache.commons.vfs2.FileObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -47,7 +46,6 @@ import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.exp.property.DomainKind;
 import org.labkey.api.exp.property.DomainProperty;
-import org.labkey.api.files.virtual.AuthorizedFileSystem;
 import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.laboratory.assay.AssayDataProvider;
 import org.labkey.api.laboratory.assay.AssayImportMethod;
@@ -60,6 +58,8 @@ import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.ViewContext;
 import org.labkey.laboratory.LaboratoryController;
 import org.labkey.laboratory.LaboratorySchema;
+import org.labkey.vfs.FileLike;
+import org.labkey.vfs.FileSystemLike;
 
 import java.beans.Introspector;
 import java.io.File;
@@ -90,7 +90,7 @@ public class AssayHelper
         return _instance;
     }
 
-    public Map<String, FileObject> saveResultsFile(List<Map<String, Object>> results, JSONObject json, File file, AssayProvider provider, ExpProtocol protocol) throws ExperimentException, ValidationException
+    public Map<String, FileLike> saveResultsFile(List<Map<String, Object>> results, JSONObject json, File file, AssayProvider provider, ExpProtocol protocol) throws ExperimentException, ValidationException
     {
         //TODO: consider adding as input??
         //files.put("RawInput", file);
@@ -112,9 +112,8 @@ public class AssayHelper
             throw new ExperimentException(e.getMessage());
         }
 
-        Map<String, FileObject> files = new HashMap<String, FileObject>();
-        files.put(AssayDataCollector.PRIMARY_FILE, AuthorizedFileSystem.convertToFileObject(newFile));
-
+        Map<String, FileLike> files = new HashMap<String, FileLike>();
+        files.put(AssayDataCollector.PRIMARY_FILE, FileSystemLike.wrapFile(newFile));
         return files;
     }
 
@@ -211,7 +210,7 @@ public class AssayHelper
             });
         }
 
-        Map<String, FileObject> uploadedFiles = saveResultsFile(results, json, file, provider, protocol);
+        Map<String, FileLike> uploadedFiles = saveResultsFile(results, json, file, provider, protocol);
 
         //TODO: see AssayRunAsyncContext
         AssayRunUploadContext uploadContext = new RunUploadContext<>(protocol, provider, name, comments, runProperties, batchProperties, ctx, uploadedFiles);
