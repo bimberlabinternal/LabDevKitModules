@@ -15,8 +15,8 @@
  */
 package org.labkey.laboratory;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.labkey.api.assay.AssayFileWriter;
@@ -27,6 +27,7 @@ import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.ChangePropertyDescriptorException;
@@ -402,7 +403,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
     public void setDemographicsSources(Container c, User u, Set<DemographicsSource> sources) throws IllegalArgumentException
     {
         Container target = c.isWorkbookOrTab() ? c.getParent() : c;
-        PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(target, DEMOGRAPHICS_PROPERTY_CATEGORY, true);
+        WritablePropertyMap props = PropertyManager.getWritableProperties(target, DEMOGRAPHICS_PROPERTY_CATEGORY, true);
         props.clear();
 
         Set<String> labels = new HashSet<>();
@@ -541,7 +542,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
     public void setURLDataSources(Container c, User u, Set<URLDataSource> sources)
     {
         Container cc = c.isWorkbookOrTab() ? c.getParent() : c;
-        PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(cc, URL_DATASOURCE_PROPERTY_CATEGORY, true);
+        WritablePropertyMap props = PropertyManager.getWritableProperties(cc, URL_DATASOURCE_PROPERTY_CATEGORY, true);
         props.clear();
 
         for (URLDataSource qd : sources)
@@ -554,7 +555,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
     public void setAdditionalDataSources(Container c, User u, Set<AdditionalDataSource> sources)
     {
         Container cc = c.isWorkbookOrTab() ? c.getParent() : c;
-        PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(cc, DATASOURCE_PROPERTY_CATEGORY, true);
+        WritablePropertyMap props = PropertyManager.getWritableProperties(cc, DATASOURCE_PROPERTY_CATEGORY, true);
         props.clear();
 
         for (AdditionalDataSource qd : sources)

@@ -39,6 +39,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.CoreSchema;
 import org.labkey.api.data.DbSequenceManager;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.SqlScriptRunner;
 import org.labkey.api.data.TableInfo;
@@ -1079,7 +1080,7 @@ public class LDKController extends SpringActionController
                 return null;
             }
 
-            PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(getContainer(), REDIRECT_URL_DOMAIN, true);
+            WritablePropertyMap props = PropertyManager.getWritableProperties(getContainer(), REDIRECT_URL_DOMAIN, true);
             props.put(REDIRECT_URL_PROP, StringUtils.trimToNull(form.getUrl()));
             props.save();
 

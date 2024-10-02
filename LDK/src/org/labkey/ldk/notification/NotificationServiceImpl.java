@@ -30,6 +30,7 @@ import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
@@ -169,7 +170,7 @@ public class NotificationServiceImpl extends NotificationService
 
     public void setServiceEnabled(Boolean status)
     {
-        PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(ContainerManager.getRoot(), NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
+        WritablePropertyMap pm = PropertyManager.getWritableProperties(ContainerManager.getRoot(), NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
         pm.put(ENABLED_PROP, status.toString());
         pm.save();
     }
@@ -226,7 +227,7 @@ public class NotificationServiceImpl extends NotificationService
             {
                 ValidEmail email = new ValidEmail(returnEmail);
 
-                PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
+                WritablePropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
                 pm.put(RETURN_EMAIL, email.getEmailAddress());
                 pm.save();
             }
@@ -250,7 +251,7 @@ public class NotificationServiceImpl extends NotificationService
     {
         if(userId != null)
         {
-            PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
+            WritablePropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
             pm.put(USER_PROP, String.valueOf(userId));
             pm.save();
         }
@@ -344,7 +345,7 @@ public class NotificationServiceImpl extends NotificationService
 
     public void setLastRun(Notification n, Long lastRun)
     {
-        PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(NotificationServiceImpl.TIMESTAMP_PROPERTY_DOMAIN, true);
+        WritablePropertyMap pm = PropertyManager.getWritableProperties(NotificationServiceImpl.TIMESTAMP_PROPERTY_DOMAIN, true);
         pm.put(getKey(n), lastRun.toString());
         pm.save();
     }
@@ -363,7 +364,7 @@ public class NotificationServiceImpl extends NotificationService
 
     public void setActive(Notification n, Container c, boolean active)
     {
-        PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.STATUS_PROPERTY_DOMAIN, true);
+        WritablePropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.STATUS_PROPERTY_DOMAIN, true);
         pm.put(getKey(n), active ? String.valueOf(active) : null);
         pm.save();
     }
