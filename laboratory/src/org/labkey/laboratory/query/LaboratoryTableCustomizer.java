@@ -385,15 +385,16 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, us, colName);
+                UserSchema effectiveUs = us.getContainer().isWorkbookOrTab() ? QueryService.get().getUserSchema(us.getUser(), target, us.getSchemaPath()) : us;
+                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, effectiveUs, colName);
 
                 qd.setSql(getMajorEventsSql(target, schemaName, querySelectName, pkColSelectName, subjectSelectName, dateSelectName));
                 qd.setIsTemporary(true);
 
-                List<QueryException> errors = new ArrayList<QueryException>();
+                List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
 
-                if (errors.size() > 0){
+                if (!errors.isEmpty()){
                     _log.error("Problem with table customizer: " + publicTableName);
                     for (QueryException e : errors)
                     {
@@ -454,15 +455,16 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, us, colName);
+                UserSchema effectiveUs = us.getContainer().isWorkbookOrTab() ? QueryService.get().getUserSchema(us.getUser(), target, us.getSchemaPath()) : us;
+                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, effectiveUs, colName);
 
                 qd.setSql(getOverlapSql(target, schemaName, querySelectName, pkColSelectName, subjectSelectName, dateSelectName));
                 qd.setIsTemporary(true);
 
-                List<QueryException> errors = new ArrayList<QueryException>();
+                List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
 
-                if (errors.size() > 0){
+                if (!errors.isEmpty()){
                     _log.error("Problem with table customizer: " + publicTableName);
                     for (QueryException e : errors)
                     {
@@ -506,10 +508,10 @@ public class LaboratoryTableCustomizer implements TableCustomizer
                 qd.setSql(getOverlapPivotSql(target, schemaName, querySelectName, pkColSelectName, subjectColName, dateColName));
                 qd.setIsTemporary(true);
 
-                List<QueryException> errors = new ArrayList<QueryException>();
+                List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
 
-                if (errors.size() > 0){
+                if (!errors.isEmpty()){
                     _log.error("Problem with table customizer: " + publicTableName);
                     for (QueryException e : errors)
                     {
@@ -564,15 +566,16 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, us, colName);
+                UserSchema effectiveUs = us.getContainer().isWorkbookOrTab() ? QueryService.get().getUserSchema(us.getUser(), target, us.getSchemaPath()) : us;
+                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, effectiveUs, colName);
 
                 qd.setSql(getOverlapSql(target, schemaName, querySelectName, pkColSelectName, subjectSelectName, null));
                 qd.setIsTemporary(true);
 
-                List<QueryException> errors = new ArrayList<QueryException>();
+                List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
 
-                if (errors.size() > 0){
+                if (!errors.isEmpty()){
                     _log.error("Problem with table customizer: " + publicTableName);
                     for (QueryException e : errors)
                     {
@@ -611,15 +614,16 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, us, lookupName);
+                UserSchema effectiveUs = us.getContainer().isWorkbookOrTab() ? QueryService.get().getUserSchema(us.getUser(), target, us.getSchemaPath()) : us;
+                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, effectiveUs, lookupName);
 
                 qd.setSql(getOverlapPivotSql(target, schemaName, querySelectName, pkColSelectName, subjectSelectName, null));
                 qd.setIsTemporary(true);
 
-                List<QueryException> errors = new ArrayList<QueryException>();
+                List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
 
-                if (errors.size() > 0){
+                if (!errors.isEmpty()){
                     _log.error("Problem with table customizer: " + publicTableName);
                     for (QueryException e : errors)
                     {
@@ -670,7 +674,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
                 "\n" +
                 ") s\n" +
                 "\n" +
-                "GROUP BY s." + pkColSelectName + "";
+                "GROUP BY s." + pkColSelectName;
     }
 
     private String getOverlapPivotSql(Container source, String schemaName, String querySelectName, String pkColSelectName, String subjectSelectName, @Nullable String dateSelectName)
@@ -762,7 +766,8 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, us, colName);
+                UserSchema effectiveUs = us.getContainer().isWorkbookOrTab() ? QueryService.get().getUserSchema(us.getUser(), target, us.getSchemaPath()) : us;
+                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, effectiveUs, colName);
 
                 qd.setSql("SELECT\n" +
                 "t." + pkColSelectName + ",\n" +
@@ -801,9 +806,9 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
                 qd.setIsTemporary(true);
 
-                List<QueryException> errors = new ArrayList<QueryException>();
+                List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
-                if (errors.size() > 0){
+                if (!errors.isEmpty()){
                     _log.error("Problem with table customizer: " + publicTableName);
                     for (QueryException e : errors)
                     {
