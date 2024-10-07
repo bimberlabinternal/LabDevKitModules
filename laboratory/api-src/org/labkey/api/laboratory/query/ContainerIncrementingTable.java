@@ -10,6 +10,7 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
@@ -184,7 +185,7 @@ public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
     public void saveId(Container c, Integer value)
     {
         Container target = c.isWorkbook() ? c.getParent() : c;
-        PropertyManager.PropertyMap map = PropertyManager.getWritableProperties(target, PROPERT_CATEGORY_BASE, true);
+        WritablePropertyMap map = PropertyManager.getWritableProperties(target, PROPERT_CATEGORY_BASE, true);
         map.put(getPropertyKey(), value.toString());
         map.save();
     }

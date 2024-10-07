@@ -42,6 +42,7 @@ import org.labkey.api.assay.AssayService;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.ChangePropertyDescriptorException;
 import org.labkey.api.exp.ExperimentException;
@@ -1558,7 +1559,7 @@ public class LaboratoryController extends SpringActionController
             }
 
             Map<String, Object> results = new HashMap<>();
-            PropertyManager.PropertyMap map = PropertyManager.getWritableProperties(getContainer(), NavItem.PROPERTY_CATEGORY, true);
+            WritablePropertyMap map = PropertyManager.getWritableProperties(getContainer(), NavItem.PROPERTY_CATEGORY, true);
             map.clear();
 
             JSONObject json = new JSONObject(form.getJsonData());
@@ -1614,7 +1615,7 @@ public class LaboratoryController extends SpringActionController
             }
 
             Map<String, Object> results = new HashMap<>();
-            PropertyManager.PropertyMap map = PropertyManager.getWritableProperties(getContainer(), NavItem.VIEW_PROPERTY_CATEGORY, true);
+            WritablePropertyMap map = PropertyManager.getWritableProperties(getContainer(), NavItem.VIEW_PROPERTY_CATEGORY, true);
 
             JSONObject json = new JSONObject(form.getJsonData());
             for (String key : json.keySet())
@@ -1649,7 +1650,7 @@ public class LaboratoryController extends SpringActionController
 
             Map<String, Object> results = new HashMap<>();
 
-            PropertyManager.PropertyMap propMap = PropertyManager.getWritableProperties(getContainer(), TabbedReportItem.OVERRIDES_PROP_KEY, true);
+            WritablePropertyMap propMap = PropertyManager.getWritableProperties(getContainer(), TabbedReportItem.OVERRIDES_PROP_KEY, true);
 
             List<TabbedReportItem> tabbedReports = LaboratoryService.get().getTabbedReportItems(getContainer(), getUser());
             Map<String, TabbedReportItem> reportMap = new HashMap<String, TabbedReportItem>();
@@ -1708,7 +1709,7 @@ public class LaboratoryController extends SpringActionController
             }
 
             Map<String, Object> results = new HashMap<>();
-            PropertyManager.PropertyMap map = PropertyManager.getWritableProperties(getContainer(), AbstractAssayDataProvider.PROPERTY_CATEGORY, true);
+            WritablePropertyMap map = PropertyManager.getWritableProperties(getContainer(), AbstractAssayDataProvider.PROPERTY_CATEGORY, true);
 
             JSONObject json = new JSONObject(form.getJsonData());
             for (String key : json.keySet())
