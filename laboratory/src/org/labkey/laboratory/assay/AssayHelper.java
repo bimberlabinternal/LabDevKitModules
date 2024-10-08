@@ -29,6 +29,7 @@ import org.labkey.api.assay.AssayRunUploadContext;
 import org.labkey.api.assay.AssayService;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.collections.CollectionUtils;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.RuntimeSQLException;
@@ -112,7 +113,7 @@ public class AssayHelper
             throw new ExperimentException(e.getMessage());
         }
 
-        Map<String, FileLike> files = new HashMap<String, FileLike>();
+        Map<String, FileLike> files = CollectionUtils.enforceValueClass(new HashMap<>(),FileLike.class);
         files.put(AssayDataCollector.PRIMARY_FILE, FileSystemLike.wrapFile(newFile));
         return files;
     }
