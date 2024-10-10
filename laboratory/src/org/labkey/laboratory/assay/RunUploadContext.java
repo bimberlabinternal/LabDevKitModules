@@ -22,6 +22,7 @@ import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.assay.AssayRunUploadContext;
 import org.labkey.api.assay.AssayService;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.collections.CollectionUtils;
 import org.labkey.api.data.Container;
 import org.labkey.api.exp.ExperimentException;
 import org.labkey.api.exp.api.ExpProtocol;
@@ -64,7 +65,8 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
         _runProperties = new CaseInsensitiveHashMap<>(runProperties);
         _batchProperties = new CaseInsensitiveHashMap<>(batchProperties);
         _ctx = ctx;
-        _uploadedData = uploadedData;
+        _uploadedData = CollectionUtils.checkValueClass(uploadedData, FileLike.class);
+        CollectionUtils.checkValueClass(_uploadedData, FileLike.class);
     }
 
     @Override
