@@ -56,6 +56,7 @@ import org.labkey.api.view.ViewContext;
 import org.labkey.laboratory.assay.AssayHelper;
 import org.labkey.laboratory.query.DefaultAssayCustomizer;
 import org.labkey.laboratory.query.LaboratoryTableCustomizer;
+import org.labkey.vfs.FileLike;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -197,10 +198,10 @@ public class LaboratoryServiceImpl extends LaboratoryService
 
         try
         {
-            File targetDirectory = AssayFileWriter.ensureUploadDirectory(ctx.getContainer());
-            File file = AssayFileWriter.findUniqueFileName(basename, targetDirectory);
+            FileLike targetDirectory = AssayFileWriter.ensureUploadDirectory(ctx.getContainer());
+            FileLike file = AssayFileWriter.findUniqueFileName(basename, targetDirectory);
 
-            return this.saveAssayBatch(results, json, file, ctx, provider, protocol);
+            return this.saveAssayBatch(results, json, file.toNioPathForRead().toFile(), ctx, provider, protocol);
         }
         catch (ExperimentException e)
         {
