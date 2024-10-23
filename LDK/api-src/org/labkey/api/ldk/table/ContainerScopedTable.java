@@ -204,8 +204,17 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
             Object oldValue = oldRow.get(_pseudoPk);
             Object newValue = row.get(_pseudoPk);
 
-            if (oldRow != null && newValue != null && !oldValue.equals(newValue) && _keyManager.rowExists(container,  newValue))
-                throw new ValidationException("There is already a record where " + _pseudoPk + " equals " + newValue);
+            if (newValue != null && !oldValue.equals(newValue) && _keyManager.rowExists(container,  newValue))
+            {
+                if (!getSqlDialect().isCaseSensitive() & String.valueOf(newValue).equalsIgnoreCase(String.valueOf(oldValue)) & !String.valueOf(newValue).equals(String.valueOf(oldValue)))
+                {
+                    // Changing case of the PK is allowable. If the DB is case-insensitive, then our DB test should tell us if this would create a violation
+                }
+                else
+                {
+                    throw new ValidationException("There is already a record where " + _pseudoPk + " equals " + newValue);
+                }
+            }
 
             return super.updateRow(user, container, row, oldRow, configParameters);
         }
