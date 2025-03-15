@@ -59,7 +59,7 @@ public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
     }
 
     @Override
-    public SimpleUserSchema.SimpleTable init()
+    public SimpleUserSchema.SimpleTable<?> init()
     {
         super.init();
 

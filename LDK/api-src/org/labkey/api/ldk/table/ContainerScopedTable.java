@@ -122,7 +122,7 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
 
     protected class UpdateService extends SimpleQueryUpdateService
     {
-        private KeyManager _keyManager = new KeyManager();
+        private final KeyManager _keyManager = new KeyManager();
 
         public UpdateService(SimpleUserSchema.SimpleTable<?> ti)
         {
