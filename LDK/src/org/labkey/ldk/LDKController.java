@@ -847,14 +847,10 @@ public class LDKController extends SpringActionController
 
             if (keyField != null)
             {
+                // Note: the ContainerContext will need to be set within QueryView
                 DetailsURL importUrl = DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField);
-                importUrl.setContainerContext(getContainer());
-
                 DetailsURL updateUrl = DetailsURL.fromString("/ldk/manageRecord.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&key=${" + keyField + "}");
-                updateUrl.setContainerContext(getContainer());
-
                 DetailsURL deleteUrl = DetailsURL.fromString("/query/deleteQueryRows.view?schemaName=" + schemaName + "&query.queryName=" + queryName);
-                deleteUrl.setContainerContext(getContainer());
 
                 url.addParameter("importURL", importUrl.toString());
                 url.addParameter("updateURL", updateUrl.toString());
@@ -866,7 +862,7 @@ public class LDKController extends SpringActionController
             url.addParameter("queryName", queryName);
             url.addParameter("allowChooseQuery", false);
 
-            WebPartFactory factory = Portal.getPortalPartCaseInsensitive("Query");
+            WebPartFactory factory = Portal.getPortalPart("Query");
             Portal.WebPart part = factory.createWebPart();
             part.setProperties(url.getQueryString());
 
