@@ -193,7 +193,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
                         .from(ti.getUserSchema(), ti.getContainerFilter())
                         .schema(us)
                         .to("workbooks", LaboratoryWorkbooksTable.WORKBOOK_COL, "workbookId"));
-                wrappedContainer.setURL(DetailsURL.fromString("/project/start.view"));
+                wrappedContainer.setURL(DetailsURL.fromString("/project/begin.view"));
                 wrappedContainer.setShownInDetailsView(true);
                 wrappedContainer.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
                 wrappedContainer.setDisplayColumnFactory(new DisplayColumnFactory()
