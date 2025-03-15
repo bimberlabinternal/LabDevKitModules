@@ -186,6 +186,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
                 BaseColumnInfo wrappedContainer = WrappedColumnInfo.wrapAsCopy(ti, FieldKey.fromString("workbook"), container, "Workbook", null);
                 wrappedContainer.setName("workbook");
+                wrappedContainer.setCalculated(true);
                 wrappedContainer.setFk(QueryForeignKey
                         .from(ti.getUserSchema(), ti.getContainerFilter())
                         .schema(us)
@@ -293,6 +294,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
                     BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ti, FieldKey.fromString(name), subjectCol, qd.getLabel(), null);
                     col.setName(name);
+                    col.setCalculated(true);
                     col.setReadOnly(true);
                     col.setIsUnselectable(true);
                     col.setUserEditable(false);
@@ -371,6 +373,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Major Events", null);
         col.setDescription("This column shows all major events recorded in this subject's history and will calculate the time elapsed between the current sample and these dates.");
         col.setName(name);
+        col.setCalculated(true);
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);
@@ -449,6 +452,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Overlapping Groups", null);
         col.setDescription("This column shows all groups to which this subject belonged at the time of this sample.");
         col.setName(name);
+        col.setCalculated(true);
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);
@@ -494,6 +498,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         String pivotColName = "overlappingProjectsPivot";
         BaseColumnInfo col2 = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(pivotColName), pk, "Overlapping Group List", null);
         col2.setName(pivotColName);
+        col2.setCalculated(true);
         col2.setDescription("Shows groups to which this subject belonged at the time of this sample.");
         col2.setHidden(true);
         col2.setReadOnly(true);
@@ -560,6 +565,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String colName = ds.getName() + "_allProjects";
         BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Groups", null);
         col.setName(name);
+        col.setCalculated(true);
         col.setDescription("This column shows all groups to which this subject has ever been a member, regardless of whether that assignment overlaps with the current data point");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
@@ -607,6 +613,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String lookupName = ds.getName() + "_allProjectsPivot";
         BaseColumnInfo col2 = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(pivotColName), pk, "Group Summary List", null);
         col2.setName(pivotColName);
+        col2.setCalculated(true);
         col2.setDescription("Shows groups to which this subject belonged at any point in time.");
         col2.setHidden(true);
         col2.setReadOnly(true);
@@ -754,6 +761,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
         BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Relative Dates", null);
         col.setName(name);
+        col.setCalculated(true);
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);
