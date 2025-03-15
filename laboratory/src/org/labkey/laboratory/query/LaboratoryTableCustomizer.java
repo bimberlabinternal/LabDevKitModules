@@ -294,6 +294,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
                     col.setReadOnly(true);
                     col.setIsUnselectable(true);
                     col.setUserEditable(false);
+                    col.setKeyField(false);
 
                     UserSchema targetSchema = qd.getTableInfo(targetContainer, us.getUser()).getUserSchema();
                     col.setFk(new QueryForeignKey(us, ti.getContainerFilter(), targetSchema, null, qd.getQueryName(), qd.getTargetColumn(), qd.getTargetColumn())
@@ -370,6 +371,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);
+        col.setKeyField(false);
 
         final String schemaName = ds.getUserSchema().getSchemaPath().toSQLString();
         final String subjectSelectName = ds.getSqlDialect().makeLegalIdentifier(subjectColName);
@@ -446,6 +448,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);
+        col.setKeyField(false);
         col.setFk(new LookupForeignKey(){
             @Override
             public TableInfo getLookupTableInfo()
@@ -491,6 +494,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         col2.setReadOnly(true);
         col2.setIsUnselectable(true);
         col2.setUserEditable(false);
+        col2.setKeyField(false);
         final String lookupColName = ds.getName() + "_overlappingProjectsPivot";
         col2.setFk(new LookupForeignKey(){
             @Override
@@ -554,6 +558,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);
+        col.setKeyField(false);
         col.setFk(new LookupForeignKey(){
             @Override
             public TableInfo getLookupTableInfo()
@@ -600,6 +605,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         col2.setReadOnly(true);
         col2.setIsUnselectable(true);
         col2.setUserEditable(false);
+        col2.setKeyField(false);
         col2.setFk(new LookupForeignKey(){
             @Override
             public TableInfo getLookupTableInfo()
@@ -743,6 +749,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);
+        col.setKeyField(false);
 
         final String colName = ds.getName() + "_relativeDates";
         final String schemaName = ds.getUserSchema().getSchemaPath().toSQLString();
