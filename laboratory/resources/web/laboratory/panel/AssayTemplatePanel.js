@@ -112,7 +112,7 @@ Ext4.define('Laboratory.panel.AssayTemplatePanel', {
                         fields.push(col.editor.dataIndex || col.editor.name);
                 }
 
-                if (col.dataIndex == 'category'){
+                if (col.dataIndex === 'category'){
                     categoryCol = col;
                 }
             }, this);

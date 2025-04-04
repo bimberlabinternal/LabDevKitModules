@@ -115,15 +115,19 @@ LDK.StoreUtils = new function(){
 
             var fields = store.model.getFields();
             Ext4.each(fields, function(field){
+                var extType = field.extType || LABKEY.ext4.Util.EXT_TYPE_MAP[field.jsonType];
+
                 var val;
                 if (!Ext4.isEmpty(data[field.name])){
                     val = data[field.name];
-                    var type = Ext4.data.Types[field.extType];
+                    var type = Ext4.data.Types[extType];
                     if (type && type.convert){
-                        if (field.extType == LABKEY.ext4.Util.EXT_TYPE_MAP.date)
+                        if (extType === LABKEY.ext4.Util.EXT_TYPE_MAP.date) {
                             val = LDK.ConvertUtils.parseDate(val);
-                        else
+                        }
+                        else {
                             val = type.convert(val);
+                        }
                     }
 
                     model.set(field.name, val);
@@ -191,59 +195,6 @@ LDK.StoreUtils = new function(){
             }, this);
 
             return map;
-        },
-
-        /**
-         * Parses a string into a date, normalizing for the current timezone.  Date.parse()
-         * will make different timezone assumptions, depending on date format.  For example,
-         * 2010-02-04 is assumed to be GMT, while 2/4/2010 is assume to match the local machine.
-         * This method tries to infer the date format, and if an ISO date is provided, it will convert the
-         * date object to the current timezone.
-         * @param val
-         */
-        normalizeDateString: function(val){
-            if (!val || Ext4.isDate(val)){
-                return val;
-            }
-            else if (Ext4.isNumber(val)){
-                return new Date(val);
-            }
-
-            else if (Ext4.isString(val)) {
-                //try to guess format:
-                var date;
-                //ISO dates are assumed to be GMT, so we convert to local time, letting Ext normalize timezone
-                if (Ext4.Date.parse(val, Date.patterns.ISO8601Long)){
-                    date = Ext4.Date.parse(val, Date.patterns.ISO8601Long);
-                }
-                else if (Ext4.Date.parse(val, Date.patterns.ISO8601Short)){
-                    date = Ext4.Date.parse(val, Date.patterns.ISO8601Short);
-                }
-                else if (val.indexOf('Z') != -1)
-                {
-                    var parsed = Date.parse(val);
-                    if (parsed)
-                        date = new Date(parsed);
-                }
-                else {
-                    //with non ISO dates, browsers seem to accept tacking the timezone to the end
-                    var parsed = Date.parse(val + ' ' + Ext4.Date.getTimezone(new Date()));
-                    if (parsed)
-                        date = new Date(parsed);
-                }
-
-                if (date){
-                    var mills = Date.parse(Ext4.Date.format(date, 'm/d/Y H:i'));
-                    if (!mills == date.getTime()){
-                        console.error('Date doesn\'t match: ' + val + '/' + date.toString());
-                        return null;
-                    }
-                    else {
-                        return date;
-                    }
-                }
-            }
-            return val;
         },
 
         sortStoreByFieldNames: function(store, fieldNames){

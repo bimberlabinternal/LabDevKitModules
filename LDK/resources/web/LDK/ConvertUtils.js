@@ -20,15 +20,40 @@ LDK.ConvertUtils = new function(){
         var result = null,
                 parsedDate;
 
+        if (value instanceof Date) {
+            return value;
+        }
+
         useStrict = Ext4.isDefined(useStrict) ? useStrict : false;
 
         if (Ext4.Date.formatContainsHourInfo(format)) {
             // if parse format contains hour information, no DST adjustment is necessary
             result = Ext4.Date.parse(value, format, useStrict);
         } else {
-            // set time to 12 noon, then clear the time
-            parsedDate = Ext4.Date.parse(value + ' ' + 12, format + ' ' + 'H', useStrict);
+            // The core of the parsing problem comes from JS Date.parse() treating ISO 8601 short differently from other date formats:
+            // https://www.w3.org/TR/NOTE-datetime
+            // Example:
+            // new Date('2024-01-01')
+            // Sun Dec 31 2023 16:00:00 GMT-0800 (Pacific Standard Time)
+            // new Date('1/1/2024')
+            // Mon Jan 01 2024 00:00:00 GMT-0800 (Pacific Standard Time)
+
+            // Therefore special case this format and append the browser's time zone:
+            if (format === 'c' & value.length === 10) {
+                var offset = new Date().getTimezoneOffset() / 60;
+                var operator = offset < 0 ? '-' : '+';
+
+                format = format + ' ' + 'Z'
+                value = value + ' GMT' + operator + Math.abs(offset)
+
+                console.log('ISO short:')
+                console.log(format)
+                console.log(value)
+            }
+
+            parsedDate = Ext4.Date.parse(value, format, useStrict);
             if (parsedDate) {
+                console.log('Parsed using: ' + value + ' / ' + format)
                 result = Ext4.Date.clearTime(parsedDate);
             }
         }
@@ -58,9 +83,22 @@ LDK.ConvertUtils = new function(){
                 formats.push(format);
             formats = formats.concat(DATEFORMATS);
 
+            // Much of the problem comes from permissive parsing ISO 8601 dates:
+            // See 'c' format: https://docs.sencha.com/extjs/4.2.1/#!/api/Ext.Date
+            // And http://www.w3.org/TR/NOTE-datetime
+            // The issue is that this treats any date beginning with YYYY-MM-DD as ISO8601,
+            // and assumes GMT as the date/time. In general, we want the string '2024-01-01' to be treated as the browser's timezone
+            if (formats.indexOf('c') > -1) {
+                formats = Ext4.Array.remove(formats, 'c')
+                formats.push('c')
+            }
+
             var val;
-            for (var i=0; i < formats.length && !val; ++i) {
+            for (var i=0; i < formats.length; ++i) {
                 val = safeParseDate(value, formats[i]);
+                if (val) {
+                    break;
+                }
             }
 
             // two digit years tend to get parsed as 1900, rather than 2000s, so we make assumptions about dates more than 90 in the past
@@ -76,7 +114,7 @@ LDK.ConvertUtils = new function(){
             }
 
             Ext4.Array.forEach(results.metaData.fields, function(field){
-                if (field.jsonType == 'date'){
+                if (field.jsonType === 'date'){
                     Ext4.Array.forEach(results.rows, function(row){
                         if (row[field.name]){
                             row[field.name] = LDK.ConvertUtils.parseDate(row[field.name]);
