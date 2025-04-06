@@ -213,7 +213,7 @@ LDK.StoreUtils = new function(){
         /**
          * A sorter function that can be used to sort an Ext store based on one or more fields.  The primary advantage is that this sorter uses the column
          * metadata to sort on the displayValue, instead of rawValue for lookup columns, which is usually what the user expects.
-         * @param {array} fieldList An ordered array of field metadata objects.
+         * @param {array} fields An ordered array of field metadata objects.
          * @returns {function} The sorter function that can be passed to the sort() method of an Ext.data.Store.
          */
         getStoreSortFn: function(fields){
@@ -249,12 +249,12 @@ LDK.StoreUtils = new function(){
                         var rec1;
                         var rec2;
                         rec1 = store.findExact(item.valueField, a.get(item.term));
-                        if(rec1 != -1){
+                        if(rec1 !== -1){
                             rec1 = store.getAt(rec1);
                             val1 = rec1.get(item.displayField) || '';
                         }
                         rec2 = store.findExact(item.valueField, b.get(item.term));
-                        if(rec2 != -1){
+                        if(rec2 !== -1){
                             rec2 = store.getAt(rec2);
                             val2 = rec2.get(item.displayField) || '';
                         }

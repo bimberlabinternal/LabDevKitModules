@@ -304,6 +304,9 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         String dateFormat3 = "MM/dd/yy";
         checkDate("02/20/11", dateFormat3);
         checkDate("3/5/99", dateFormat3);
+
+        String clientFormattedString = (String)executeScript("return Ext4.Date.format(LDK.ConvertUtils.parseDate('2024-01-01', 'c'), 'Y-m-d');");
+        assertEquals("Incorrect date parsing", clientFormattedString, "2024-01-01");
     }
 
     private void checkDate(String dateStr, String javaFormatStr) throws ParseException

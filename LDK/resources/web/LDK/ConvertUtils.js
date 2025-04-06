@@ -39,21 +39,12 @@ LDK.ConvertUtils = new function(){
             // Mon Jan 01 2024 00:00:00 GMT-0800 (Pacific Standard Time)
 
             // Therefore special case this format and append the browser's time zone:
-            if (format === 'c' & value.length === 10) {
-                var offset = new Date().getTimezoneOffset() / 60;
-                var operator = offset < 0 ? '-' : '+';
-
-                format = format + ' ' + 'Z'
-                value = value + ' GMT' + operator + Math.abs(offset)
-
-                console.log('ISO short:')
-                console.log(format)
-                console.log(value)
+            if (format === 'c' && value.length === 10) {
+                format = 'Y-m-d';
             }
 
             parsedDate = Ext4.Date.parse(value, format, useStrict);
             if (parsedDate) {
-                console.log('Parsed using: ' + value + ' / ' + format)
                 result = Ext4.Date.clearTime(parsedDate);
             }
         }
@@ -83,12 +74,12 @@ LDK.ConvertUtils = new function(){
                 formats.push(format);
             formats = formats.concat(DATEFORMATS);
 
-            // Much of the problem comes from permissive parsing ISO 8601 dates:
             // See 'c' format: https://docs.sencha.com/extjs/4.2.1/#!/api/Ext.Date
             // And http://www.w3.org/TR/NOTE-datetime
             // The issue is that this treats any date beginning with YYYY-MM-DD as ISO8601,
-            // and assumes GMT as the date/time. In general, we want the string '2024-01-01' to be treated as the browser's timezone
-            if (formats.indexOf('c') > -1) {
+            // and assumes GMT as the date/time. In general, we want the string '2024-01-01' to be treated as the browser's timezone.
+            // Therefore push this to the lowest priority, which will allow other formats to preferentially parse date-only values
+            if (format !== 'c' && formats.indexOf('c') > -1) {
                 formats = Ext4.Array.remove(formats, 'c')
                 formats.push('c')
             }
