@@ -59,6 +59,7 @@ import org.labkey.api.laboratory.assay.AssayDataProvider;
 import org.labkey.api.laboratory.assay.AssayImportMethod;
 import org.labkey.api.laboratory.assay.AssayParser;
 import org.labkey.api.laboratory.query.ContainerIncrementingTable;
+import org.labkey.api.laboratory.query.TabbedReportFilterProvider;
 import org.labkey.api.laboratory.security.LaboratoryAdminPermission;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleHtmlView;
@@ -1567,22 +1568,29 @@ public class LaboratoryController extends SpringActionController
             for (String key : json.keySet())
             {
                 String providerName = AbstractNavItem.inferDataProviderNameFromKey(key);
-                DataProvider provider = LaboratoryService.get().getDataProvider(providerName);
-
-                //for some types, no DataProvider, was explicitly registered, such as many assays
-                //in these cases we cannot infer the owning module.
-                if (provider != null && provider.getOwningModule() != null)
+                if ("tabReportFilterProvider".equals(providerName))
                 {
-                    if (!activeModules.contains(provider.getOwningModule()))
+                    // Ignore
+                }
+                else
+                {
+                    DataProvider provider = LaboratoryService.get().getDataProvider(providerName);
+
+                    //for some types, no DataProvider, was explicitly registered, such as many assays
+                    //in these cases we cannot infer the owning module.
+                    if (provider != null && provider.getOwningModule() != null)
                     {
-                        toActivate.add(provider.getOwningModule());
+                        if (!activeModules.contains(provider.getOwningModule()))
+                        {
+                            toActivate.add(provider.getOwningModule());
+                        }
                     }
                 }
 
                 map.put(key, json.get(key) == null ? null : String.valueOf(json.get(key)));
             }
 
-            if (toActivate.size() > 0)
+            if (!toActivate.isEmpty())
             {
                 toActivate.addAll(activeModules);
                 getContainer().setActiveModules(toActivate);
@@ -1818,6 +1826,16 @@ public class LaboratoryController extends SpringActionController
                 }
                 results.put(LaboratoryService.NavItemCategory.misc.name(), json);
             }
+
+            List<JSONObject> json = new ArrayList<>();
+            for (TabbedReportFilterProvider item : LaboratoryService.get().getTabbedReportFilterProviderProviders(getContainer(), getUser()))
+            {
+                if (form.isIncludeAll() || item.isAvailable(getContainer(), getUser()))
+                {
+                    json.add(item.toJSON(getContainer(), getUser()));
+                }
+            }
+            results.put("tabbedReportFilterProviderProviders", json);
 
             results.put("success", true);
 

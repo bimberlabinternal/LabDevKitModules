@@ -50,16 +50,55 @@ Ext4.define('Laboratory.panel.ItemVisibilityPanel', {
         this.results = results;
 
         for (var i in Laboratory.ITEM_CATEGORY){
-            if (Laboratory.ITEM_CATEGORY[i].name == Laboratory.ITEM_CATEGORY.settings.name)
+            if (Laboratory.ITEM_CATEGORY[i].name === Laboratory.ITEM_CATEGORY.settings.name)
                 continue;
 
             this.renderSection(Laboratory.ITEM_CATEGORY[i].name, Laboratory.ITEM_CATEGORY[i].label);
         }
+
+        if (this.results.tabbedReportFilterProviderProviders) {
+            this.renderTabbedReportFilterProviderProviders(this.results.tabbedReportFilterProviderProviders)
+        }
+    },
+
+    renderTabbedReportFilterProviderProviders: function(items) {
+        this.remove(this.down('#loading'));
+
+        var cfg = {
+            xtype: 'container',
+            border: false,
+            defaults: {
+                border: false
+            },
+            style: 'margin-bottom: 20px;',
+            itemCategory: 'tabbedReportFilterTypes',
+            items: [{
+                html: '<b>Tabbed Report Filter Types</b>',
+                style: 'padding-bottom: 5px;'
+            }]
+        }
+
+        var sectionItems = [];
+        Ext4.each(items, function(item){
+            sectionItems.push({
+                xtype: 'checkbox',
+                width: 800,
+                style: 'margin-left: 5px;',
+                navItem: item,
+                boxLabel: item.label,
+                checked: item.isVisible,
+                itemCategory: 'tabbedReportFilterTypes'
+            });
+        }, this);
+
+        sectionItems = LDK.Utils.sortByProperty(sectionItems, 'boxLabel');
+        cfg.items = cfg.items.concat(sectionItems);
+        this.add(cfg);
     },
 
     renderSection: function(name, label){
         var items = this.results[name];
-        var showReportCategory = name == 'tabbedReports';
+        var showReportCategory = name === 'tabbedReports';
 
         this.remove(this.down('#loading'));
 
@@ -92,7 +131,7 @@ Ext4.define('Laboratory.panel.ItemVisibilityPanel', {
                         //if items are marked as children of this item, toggle their visibility.
                         //this is primarily used for reports
                         field.up('form').getForm().getFields().each(function(item){
-                            if (item.navItem && item.navItem.ownerKey == field.navItem.key){
+                            if (item.navItem && item.navItem.ownerKey === field.navItem.key){
                                 item.setValue(val);
                             }
                         }, this);

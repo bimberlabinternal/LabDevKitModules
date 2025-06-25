@@ -21,9 +21,6 @@
 <%@ page import="org.labkey.api.view.JspView" %>
 <%@ page import="org.labkey.api.view.template.ClientDependencies" %>
 <%@ page import="org.labkey.laboratory.LaboratoryServiceImpl" %>
-<%@ page import="java.lang.Override" %>
-<%@ page import="java.lang.String" %>
-<%@ page import="java.lang.StringBuilder" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%!
     @Override
@@ -38,6 +35,11 @@
 
         for (TabbedReportFilterProvider p : LaboratoryServiceImpl.get().getTabbedReportFilterProviderProviders(getContainer(), getUser()))
         {
+            if (!p.isVisible(getContainer(), getUser()))
+            {
+                continue;
+            }
+
             JSONObject config = new JSONObject();
             config.put("xtype", h(p.getXType()));
             config.put("inputValue", h(p.getInputValue()));

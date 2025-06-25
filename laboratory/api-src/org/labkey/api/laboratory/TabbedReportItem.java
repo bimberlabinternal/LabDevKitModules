@@ -46,6 +46,8 @@ public class TabbedReportItem extends AbstractNavItem
     private final Map<String, FieldKey> _additionalKeys = new HashMap<>();
 
     public static final String OVERRIDES_PROP_KEY = "laboratory.tabItemOverride";
+    public static final String FILTER_PROP_KEY = "laboratory.tabItemFilterOverride";
+
     protected static final Logger _log = LogManager.getLogger(TabbedReportItem.class);
 
     public TabbedReportItem(DataProvider provider, String name, String label, String reportCategory)

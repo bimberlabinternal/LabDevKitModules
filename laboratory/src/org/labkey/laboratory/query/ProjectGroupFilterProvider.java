@@ -2,13 +2,12 @@ package org.labkey.laboratory.query;
 
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.ColumnInfo;
-import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.laboratory.TabbedReportItem;
 import org.labkey.api.laboratory.query.TabbedReportFilterProvider;
+import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.FieldKey;
-import org.labkey.api.security.User;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.laboratory.LaboratoryModule;
@@ -21,9 +20,9 @@ import java.util.Map;
 public class ProjectGroupFilterProvider implements TabbedReportFilterProvider
 {
     @Override
-    public boolean isAvailable(Container c, User u)
+    public Module getOwningModule()
     {
-        return c.getActiveModules().contains(ModuleLoader.getInstance().getModule(LaboratoryModule.class));
+        return ModuleLoader.getInstance().getModule(LaboratoryModule.class);
     }
 
     @Override

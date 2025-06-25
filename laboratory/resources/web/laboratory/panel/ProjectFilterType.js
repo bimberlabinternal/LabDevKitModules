@@ -83,10 +83,10 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
 
         var filters = this.getFilters();
         var report = tab.report;
-        var projectFieldName = (filters.projectFilterMode === 'overlappingProjects') ? report.additionalFieldKeys?.overlappingProjectsFieldName : report.additionalFieldKeys?.allProjectsFieldName;
+        var projectFieldName = (filters.projectFilterMode === 'overlappingProjects') ? report.additionalFieldKeys?.overlappingProjectsFieldKey : report.additionalFieldKeys?.allProjectsFieldKey;
         if (!projectFieldName){
-            if (filters.projectFilterMode === 'overlappingProjects' && !report.additionalFieldKeys?.overlappingProjectsFieldName){
-                projectFieldName = report.additionalFieldKeys?.allProjectsFieldName;
+            if (filters.projectFilterMode === 'overlappingProjects' && !report.additionalFieldKeys?.overlappingProjectsFieldKey){
+                projectFieldName = report.additionalFieldKeys?.allProjectsFieldKey;
 
                 if (projectFieldName)
                     Ext4.Msg.alert('Warning', 'This reports supports project filtering, but cannot filter by overlapping projects, since it lacks a properly configured date field.  All animals assigned to the project will be shown');
@@ -125,7 +125,7 @@ Ext4.define('Laboratory.panel.ProjectFilterType', {
     },
 
     validateReportForFilterType: function(report){
-        if (!report.additionalFieldKeys?.allProjectsFieldName){
+        if (!report.additionalFieldKeys?.allProjectsFieldKey){
             return 'This report cannot be used with the selected filter type, because the report does not contain a field with project information';
         }
 
