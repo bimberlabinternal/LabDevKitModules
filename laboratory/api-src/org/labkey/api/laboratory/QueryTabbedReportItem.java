@@ -88,14 +88,13 @@ public class QueryTabbedReportItem extends TabbedReportItem
             return null;
         }
 
-        inferColumnsFromTable(ti);
+        inferColumnsFromTable(ti, c, u);
         JSONObject json = super.toJSON(c, u);
 
         json.put("schemaName", getSchemaName());
         json.put("queryName", getQueryName());
         String viewName = getDefaultViewName(c, getOwnerKey());
 
-        // TODO: should we always override here?
         if (getViewName() != null)
         {
             viewName = getViewName();

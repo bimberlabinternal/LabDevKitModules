@@ -728,6 +728,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         _tabbedReportFilterProviders.add(provider);
     }
 
+    @Override
     public List<TabbedReportFilterProvider> getTabbedReportFilterProviderProviders(final Container c, final User u)
     {
         return _tabbedReportFilterProviders.stream().filter(d -> d.isAvailable(c, u)).toList();

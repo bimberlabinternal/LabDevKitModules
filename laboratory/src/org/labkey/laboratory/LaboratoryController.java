@@ -2347,8 +2347,10 @@ public class LaboratoryController extends SpringActionController
             JspView<Object> view = new JspView<>("/org/labkey/laboratory/view/dataBrowser.jsp", form);
             view.setTitle("Data Browser");
             view.setHidePageTitle(true);
-            //view.setFrame(WebPartView.FrameType.NONE);
-            //getPageConfig().setTemplate(PageConfig.Template.None);
+
+            LaboratoryServiceImpl.get().getTabbedReportFilterProviderProviders(getContainer(), getUser()).forEach(p -> {
+                p.getClientDependencies().forEach(view::addClientDependency);
+            });
 
             return view;
         }

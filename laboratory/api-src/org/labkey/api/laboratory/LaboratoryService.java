@@ -128,6 +128,8 @@ abstract public class LaboratoryService
 
     abstract public void registerTabbedReportFilterProvider(TabbedReportFilterProvider provider);
 
+    abstract public List<TabbedReportFilterProvider> getTabbedReportFilterProviderProviders(final Container c, final User u);
+
     public static enum NavItemCategory
     {
         samples(),

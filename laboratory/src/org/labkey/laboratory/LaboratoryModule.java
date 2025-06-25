@@ -49,6 +49,7 @@ import org.labkey.api.view.template.ClientDependency;
 import org.labkey.api.writer.ContainerUser;
 import org.labkey.laboratory.notification.LabSummaryNotification;
 import org.labkey.laboratory.query.LaboratoryDemographicsProvider;
+import org.labkey.laboratory.query.ProjectGroupFilterProvider;
 import org.labkey.laboratory.query.WorkbookModel;
 import org.labkey.laboratory.security.LaboratoryAdminRole;
 
@@ -119,7 +120,9 @@ public class LaboratoryModule extends ExtendedSimpleModule
                 {
                     JspView<Object> view = new JspView<>("/org/labkey/laboratory/view/dataBrowser.jsp", new Object());
                     view.setTitle("Laboratory Data Browser");
-                    //view.setFrame(WebPartView.FrameType.NONE);
+                    LaboratoryServiceImpl.get().getTabbedReportFilterProviderProviders(portalCtx.getContainer(), portalCtx.getUser()).forEach(p -> {
+                        p.getClientDependencies().forEach(view::addClientDependency);
+                    });
 
                     if (portalCtx.getContainer().hasPermission(portalCtx.getUser(), LaboratoryAdminPermission.class) || portalCtx.getContainer().hasPermission(portalCtx.getUser(), AdminPermission.class))
                     {
@@ -164,6 +167,7 @@ public class LaboratoryModule extends ExtendedSimpleModule
         LaboratoryService.get().registerDataProvider(new SampleTypeDataProvider());
         LaboratoryService.get().registerDataProvider(new ExtraDataSourcesDataProvider(this));
         LaboratoryService.get().registerDemographicsProvider(new LaboratoryDemographicsProvider());
+        LaboratoryService.get().registerTabbedReportFilterProvider(new ProjectGroupFilterProvider());
 
         DetailsURL details = DetailsURL.fromString("/laboratory/siteLabSettings.view");
         details.setContainerContext(ContainerManager.getSharedContainer());

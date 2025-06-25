@@ -17,16 +17,16 @@ package org.labkey.api.laboratory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.laboratory.query.TabbedReportFilterProvider;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
-import org.labkey.api.util.PageFlowUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,8 +43,7 @@ public class TabbedReportItem extends AbstractNavItem
 
     protected FieldKey _subjectIdFieldKey = null;
     protected FieldKey _sampleDateFieldKey = null;
-    protected FieldKey _overlappingProjectsFieldKey = null;
-    protected FieldKey _allProjectsFieldKey = null;
+    private final Map<String, FieldKey> _additionalKeys = new HashMap<>();
 
     public static final String OVERRIDES_PROP_KEY = "laboratory.tabItemOverride";
     protected static final Logger _log = LogManager.getLogger(TabbedReportItem.class);
@@ -94,24 +93,18 @@ public class TabbedReportItem extends AbstractNavItem
         if (_sampleDateFieldKey != null)
             json.put("dateFieldName", _sampleDateFieldKey);
 
-        if (_overlappingProjectsFieldKey != null)
-        {
-            json.put("overlappingProjectsFieldName", _overlappingProjectsFieldKey.toString());
-            json.put("overlappingProjectsFieldKeyArray", new JSONArray(_overlappingProjectsFieldKey.getParts()));
-        }
-
-        if (_allProjectsFieldKey != null)
-        {
-            json.put("allProjectsFieldName", _allProjectsFieldKey.toString());
-            json.put("allProjectsFieldKeyArray", new JSONArray(_allProjectsFieldKey.getParts()));
-        }
+        JSONObject keys = new JSONObject();
+        _additionalKeys.forEach((name, fk) -> {
+            keys.put(name, fk.toString());
+        });
+        json.put("additionalFieldKeys", keys);
 
         json.put("reportType", getReportType());
 
         return json;
     }
 
-    protected void inferColumnsFromTable(TableInfo ti)
+    protected void inferColumnsFromTable(TableInfo ti, Container c, User u)
     {
         for (ColumnInfo ci : ti.getColumns())
         {
@@ -125,17 +118,9 @@ public class TabbedReportItem extends AbstractNavItem
             }
         }
 
-        if (_overlappingProjectsFieldKey == null || _allProjectsFieldKey == null)
+        for (TabbedReportFilterProvider p : LaboratoryService.get().getTabbedReportFilterProviderProviders(c, u))
         {
-            FieldKey overlapKey = FieldKey.fromString("overlappingProjectsPivot");
-            FieldKey allKey = FieldKey.fromString("allProjectsPivot");
-
-            Map<FieldKey, ColumnInfo> colMap = _queryCache.getColumns(ti, PageFlowUtil.set(overlapKey, allKey));
-            if (_overlappingProjectsFieldKey == null && colMap.containsKey(overlapKey))
-                _overlappingProjectsFieldKey = colMap.get(overlapKey).getFieldKey();
-
-            if (_allProjectsFieldKey == null && colMap.containsKey(allKey))
-                _allProjectsFieldKey = colMap.get(allKey).getFieldKey();
+            _additionalKeys.putAll(p.getAdditionalFieldKeys(ti, this, _additionalKeys));
         }
     }
 
@@ -169,24 +154,9 @@ public class TabbedReportItem extends AbstractNavItem
         _sampleDateFieldKey = sampleDateFieldKey;
     }
 
-    public FieldKey getOverlappingProjectsFieldKey()
+    public void setKeyOverride(String name, FieldKey key)
     {
-        return _overlappingProjectsFieldKey;
-    }
-
-    public void setOverlappingProjectsFieldKey(FieldKey overlappingProjectsFieldKey)
-    {
-        _overlappingProjectsFieldKey = overlappingProjectsFieldKey;
-    }
-
-    public FieldKey getAllProjectsFieldKey()
-    {
-        return _allProjectsFieldKey;
-    }
-
-    public void setAllProjectsFieldKey(FieldKey allProjectsFieldKey)
-    {
-        _allProjectsFieldKey = allProjectsFieldKey;
+        _additionalKeys.put(name, key);
     }
 
     public void setVisible(boolean visible)
