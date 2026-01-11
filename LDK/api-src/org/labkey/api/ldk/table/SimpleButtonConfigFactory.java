@@ -125,7 +125,17 @@ public class SimpleButtonConfigFactory implements ButtonConfigFactory
     @Override
     public boolean isAvailable(TableInfo ti)
     {
-        return _owner == null || ti.getUserSchema().getContainer().getActiveModules().contains(_owner);
+        if (_owner != null && !ti.getUserSchema().getContainer().getActiveModules().contains(_owner))
+        {
+            return false;
+        }
+
+        if (_permission != null && !ti.getUserSchema().getContainer().hasPermission(ti.getUserSchema().getUser(), _permission))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

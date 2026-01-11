@@ -469,6 +469,11 @@ public class DefaultTableCustomizer implements TableCustomizer
         for (ButtonConfigFactory fact : buttons)
         {
             NavTree newButton = fact.create(ti);
+            if (!fact.isAvailable(ti) || !fact.isVisible(ti))
+            {
+                continue;
+            }
+
             if (!btnNameMap.containsKey(newButton.getText()))
             {
                 btnNameMap.put(newButton.getText(), newButton);
