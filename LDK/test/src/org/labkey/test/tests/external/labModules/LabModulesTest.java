@@ -1888,7 +1888,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         DataRegionTable dr = new DataRegionTable("query", this);
         dr.checkAllOnPage();
 
-        dr.clickHeaderMenu("More Actions", false);
+        dr.clickHeaderButton("More Actions");
         assertElementPresent(Locator.tagWithText("a", "Bulk Edit"));
 
         impersonateRole("Reader");
@@ -1896,7 +1896,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         dr = new DataRegionTable("query", this);
         dr.checkAllOnPage();
 
-        dr.clickHeaderMenu("More Actions", false);
+        dr.clickHeaderButton("More Actions");
         assertElementNotPresent(Locator.tagWithText("a", "Bulk Edit"));
     }
 }
