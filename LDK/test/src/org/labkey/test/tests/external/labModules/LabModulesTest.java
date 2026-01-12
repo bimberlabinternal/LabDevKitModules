@@ -1891,7 +1891,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         dr.clickHeaderButton("More Actions");
         assertElementPresent(Locator.tagWithText("a", "Bulk Edit"));
 
-        impersonateRole("Reader");
+        impersonateRole("Editor");
         refresh();
 
         dr = new DataRegionTable("query", this);
