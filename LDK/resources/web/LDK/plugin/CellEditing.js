@@ -53,7 +53,8 @@ Ext4.define('LDK.grid.plugin.CellEditing', {
             hasCellEditOverrides: true,
             revertInvalid: false,
             completeOnEnter: false,
-            alignment: 'tl-tl?'
+            // No trailing '?': viewport-constraining pins editors for off-screen columns to the window edge instead of their cell
+            alignment: 'tl-tl'
         });
 
         //NOTE: this is an override to fix an Ext4 bug involving revertInvalid
