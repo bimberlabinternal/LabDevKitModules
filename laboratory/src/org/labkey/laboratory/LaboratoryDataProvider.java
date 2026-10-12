@@ -372,7 +372,7 @@ public class LaboratoryDataProvider extends AbstractDataProvider
     {
         if (_cache == null)
         {
-            _cache = CacheManager.getStringKeyCache(1000, CacheManager.UNLIMITED, "LaboratoryDataProviderCache");
+            _cache = CacheManager.getCache(String.class, 1000, CacheManager.UNLIMITED, "LaboratoryDataProviderCache");
         }
 
         return _cache;

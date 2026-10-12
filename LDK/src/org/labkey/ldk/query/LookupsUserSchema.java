@@ -56,7 +56,7 @@ public class LookupsUserSchema extends SimpleUserSchema
 
     static
     {
-        _cache = CacheManager.getStringKeyCache(1000, CacheManager.UNLIMITED, "LookupsUserSchema");
+        _cache = CacheManager.getCache(String.class, 1000, CacheManager.UNLIMITED, "LookupsUserSchema");
     }
 
     public static final String NAME = "lookups";
