@@ -15,7 +15,7 @@
  */
 package org.labkey.api.ldk.table;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.AbstractTableInfo;
@@ -263,13 +263,13 @@ abstract public class AbstractDataDefinedTable<SchemaType extends UserSchema> ex
             for (int idx = 1; idx <= input.getColumnCount(); idx++)
             {
                 ColumnInfo col = input.getColumnInfo(idx);
-                if (StringUtils.equalsIgnoreCase(_filterColumn, col.getName()))
+                if (Strings.CI.equals(_filterColumn, col.getName()))
                 {
                     inputColMap.put(_filterColumn, idx);
                     continue;
                 }
 
-                if (StringUtils.equalsIgnoreCase(_valueColumn, col.getName()))
+                if (Strings.CI.equals(_valueColumn, col.getName()))
                 {
                     inputColMap.put(_valueColumn, idx);
                     continue;

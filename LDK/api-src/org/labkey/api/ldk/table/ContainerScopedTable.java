@@ -16,7 +16,7 @@
 package org.labkey.api.ldk.table;
 
 import org.apache.commons.beanutils.ConversionException;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -246,13 +246,13 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
             for (int idx = 1; idx <= input.getColumnCount(); idx++)
             {
                 ColumnInfo col = input.getColumnInfo(idx);
-                if (StringUtils.equalsIgnoreCase(_pseudoPk, col.getName()))
+                if (Strings.CI.equals(_pseudoPk, col.getName()))
                 {
                     inputColMap.put(_pseudoPk, idx);
                     continue;
                 }
 
-                if (StringUtils.equalsIgnoreCase(getContainerFilterColumn(), col.getName()))
+                if (Strings.CI.equals(getContainerFilterColumn(), col.getName()))
                 {
                     inputColMap.put(getContainerFilterColumn(), idx);
                 }

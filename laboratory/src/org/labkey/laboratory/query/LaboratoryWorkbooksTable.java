@@ -15,7 +15,7 @@
  */
 package org.labkey.laboratory.query;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
@@ -216,25 +216,25 @@ public class LaboratoryWorkbooksTable extends SimpleUserSchema.SimpleTable
             for (int idx = 1; idx <= input.getColumnCount(); idx++)
             {
                 ColumnInfo col = input.getColumnInfo(idx);
-                if (StringUtils.equalsIgnoreCase(WORKBOOK_ID_COl, col.getName()))
+                if (Strings.CI.equals(WORKBOOK_ID_COl, col.getName()))
                 {
                     inputColMap.put(WORKBOOK_ID_COl, idx);
                     continue;
                 }
 
-                if (StringUtils.equalsIgnoreCase(LaboratoryWorkbooksTable.PARENT_COL, col.getName()))
+                if (Strings.CI.equals(LaboratoryWorkbooksTable.PARENT_COL, col.getName()))
                 {
                     inputColMap.put(PARENT_COL, idx);
                     continue;
                 }
 
-                if (StringUtils.equalsIgnoreCase(LaboratoryWorkbooksTable.CONTAINER_ROWID_COL, col.getName()))
+                if (Strings.CI.equals(LaboratoryWorkbooksTable.CONTAINER_ROWID_COL, col.getName()))
                 {
                     inputColMap.put(CONTAINER_ROWID_COL, idx);
                     continue;
                 }
 
-                if (StringUtils.equalsIgnoreCase(LaboratoryWorkbooksTable.WORKBOOK_COL, col.getName()))
+                if (Strings.CI.equals(LaboratoryWorkbooksTable.WORKBOOK_COL, col.getName()))
                 {
                     outputColMap.put(WORKBOOK_COL, inputColMap.put(WORKBOOK_COL, idx));
                 }

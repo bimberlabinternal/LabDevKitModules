@@ -15,7 +15,7 @@
  */
 package org.labkey.api.laboratory.query;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Aggregate;
@@ -297,13 +297,13 @@ public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
             for (int idx = 1; idx <= input.getColumnCount(); idx++)
             {
                 ColumnInfo col = input.getColumnInfo(idx);
-                if (StringUtils.equalsIgnoreCase(_incrementingCol, col.getName()))
+                if (Strings.CI.equals(_incrementingCol, col.getName()))
                 {
                     inputColMap.put(_incrementingCol, idx);
                     continue;
                 }
 
-                if (StringUtils.equalsIgnoreCase(getContainerFilterColumn(), col.getName()))
+                if (Strings.CI.equals(getContainerFilterColumn(), col.getName()))
                 {
                     inputColMap.put(getContainerFilterColumn(), idx);
                 }
