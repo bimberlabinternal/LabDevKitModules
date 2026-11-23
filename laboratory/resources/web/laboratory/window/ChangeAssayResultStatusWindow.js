@@ -86,6 +86,7 @@ Ext4.define('Laboratory.window.ChangeAssayResultStatusWindow', {
             method: 'POST',
             schemaName: this.schemaName || dataRegion.schemaName,
             queryName: this.queryName || dataRegion.queryName,
+            columns: keyField + ",Folder",
             filterArray: [
                 LABKEY.Filter.create(keyField, checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
             ],
@@ -102,7 +103,8 @@ Ext4.define('Laboratory.window.ChangeAssayResultStatusWindow', {
                 }
 
                 Ext4.Array.forEach(data.rows, function(row){
-                    var obj = {statusflag: status};
+                    var obj = {statusflag: status, Folder: row.Folder};
+                    LDK.Assert.assertNotEmpty('Missing value for Folder in ChangeAssayResultStatusWindow', row.Folder);
                     obj[keyField] = row[keyField];
                     toUpdate.push(obj);
                 }, this);

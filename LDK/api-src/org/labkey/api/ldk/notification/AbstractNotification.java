@@ -19,8 +19,13 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableSelector;
 import org.labkey.api.module.Module;
+import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryUrls;
+import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.logging.LogHelper;
@@ -84,5 +89,41 @@ abstract public class AbstractNotification implements Notification
     public Module getOwnerModule()
     {
         return _owner;
+    }
+
+    protected void genericQueryCheck(Container c, User u, StringBuilder msg, String schemaName, String queryName, String message)
+    {
+        genericQueryCheck(c, u, msg, schemaName, queryName, message, null);
+    }
+
+    protected void genericQueryCheck(Container c, User u, StringBuilder msg, String schemaName, String queryName, String message, @Nullable SimpleFilter filter)
+    {
+        TableInfo ti = getTableInfo(u, c, schemaName, queryName);
+
+        TableSelector ts = new TableSelector(ti, filter, null);
+        long count = ts.getRowCount();
+        if (count > 0)
+        {
+            msg.append("<b>WARNING: There are ").append(count).append(" ").append(message).append("</b><br>\n");
+            msg.append("<p><a href='").append(getExecuteQueryUrl(c, schemaName, queryName, null, filter)).append("'>Click here to view them</a><br>\n\n");
+            msg.append("<hr>\n\n");
+        }
+    }
+
+    protected TableInfo getTableInfo(User u, Container c, String schemaName, String queryName)
+    {
+        UserSchema us = QueryService.get().getUserSchema(u, c, schemaName);
+        if (us == null)
+        {
+            throw new IllegalStateException("Missing user schema: " + schemaName);
+        }
+
+        TableInfo ti = us.getTable(queryName);
+        if (ti == null)
+        {
+            throw new IllegalStateException("Missing table: " + schemaName + "." + queryName);
+        }
+
+        return ti;
     }
 }
